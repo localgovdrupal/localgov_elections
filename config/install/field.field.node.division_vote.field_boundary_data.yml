@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_boundary_data
+    - node.type.division_vote
+  module:
+    - geofield
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: node.division_vote.field_boundary_data
+field_name: field_boundary_data
+entity_type: node
+bundle: division_vote
+label: 'Boundary data'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: geofield

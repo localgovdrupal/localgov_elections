@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.election
+  module:
+    - text
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: node.election.body
+field_name: body
+entity_type: node
+bundle: election
+label: Notes
+description: 'Comments about election useful for public record'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

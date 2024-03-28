@@ -1,0 +1,5 @@
+administer boundary_source:
+  title: 'Administer boundary source'
+
+can fetch boundaries:
+  title: 'Can fetch boundaries from a source'

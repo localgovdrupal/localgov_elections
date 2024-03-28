@@ -1,0 +1,26 @@
+<div class="ward-results-wrapper">
+  {% if chart %}
+    <div class="ward-chart">
+      {{ chart }}
+    </div>
+  {% endif %}
+
+  {% if result %}
+    <div class="ward-result">
+      <div class="result-header">
+        <h2>{{ "Result"|t }}</h2>
+      </div>
+      <div class="ward-results">
+        {{ result }}
+      </div>
+    </div>
+  {% endif %}
+  {% if analysis %}
+    <div class="ward-analysis">
+      <div class="analysis-header">
+        <h2>{{ "Analysis"|t }}</h2>
+      </div>
+      {{ analysis }}
+    </div>
+  {% endif %}
+</div>

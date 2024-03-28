@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - geocoder_geofield
+  enforced:
+    module:
+      - localgov_elections_reporting
+_core:
+  default_config_hash: Iz5RanuE22G7V_Dza-tRy6mZFBV6SU6_61pXPjMamQw
+id: kml_file
+label: 'KML File'
+plugin: kmlfile
+configuration: {  }

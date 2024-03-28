@@ -1,0 +1,62 @@
+.results-analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+.ward-results .view-content {
+  padding: 1rem;
+}
+
+.ward-results-wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.view-district-results, .ward-analysis {
+  border: var(--table-border);
+}
+
+.view-district-results .view-header, .ward-analysis .analysis-header, .result-header {
+  background-color: var(--color-accent);
+  color: white;
+  padding: 1rem;
+}
+
+.view-district-results .view-header h2, .analysis-header h2, .result-header h2 {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.box {
+  padding: 1rem;
+}
+
+.box > .hold-gain {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.dot {
+  height: 1rem;
+  width: 1rem;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid black;
+  margin-right: 0.5rem;
+}
+
+.label-wrapper {
+  display: inline-flex;
+}
+
+.results-analysis-grid > * {
+  border-bottom: var(--table-border);
+  margin-bottom: 0.1rem;
+}
+
+.box > * {
+  width: fit-content;
+  margin: 0 auto;
+}

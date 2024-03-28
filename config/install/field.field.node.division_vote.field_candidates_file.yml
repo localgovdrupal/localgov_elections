@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_candidates_file
+    - node.type.division_vote
+  module:
+    - file
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: node.division_vote.field_candidates_file
+field_name: field_candidates_file
+entity_type: node
+bundle: division_vote
+label: 'Candidates List (File)'
+description: 'Upload a PDF describing the candidates'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-candidates'
+  file_extensions: pdf
+  max_filesize: ''
+  description_field: false
+field_type: file

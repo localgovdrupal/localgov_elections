@@ -1,0 +1,559 @@
+<?php
+
+use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\views\ViewExecutable;
+
+
+/**
+ * Implements hook_theme().
+ */
+function localgov_elections_reporting_theme($existing, $type, $theme, $path)
+{
+  return [
+      'ward_result' => [
+          'variables' => [
+              'chart' => NULL,
+              'result' => NULL,
+              'analysis' => NULL,
+          ],
+      ],
+      'election_menu' => [
+          'variables' => [
+              'links' => NULL,
+          ],
+      ],
+  ];
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function localgov_elections_reporting_entity_presave(Drupal\Core\Entity\EntityInterface $entity)
+{
+  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'division_vote') {
+
+    // Trigger when division vote saved to update the winning candidate only
+    // if 'Hold or Gain' stated
+    $candidates = $entity->get('field_candidates');
+    $finalised = $entity->field_votes_finalised?->value;
+    if ($finalised == 1) {
+      $results = [];
+
+      // Iterate through candidates and store their votes
+      foreach ($candidates->referencedEntities() as $candidate) {
+        $votes = $candidate->get('field_votes')->value;
+        $cand_id = $candidate->id();
+        $results[] = ['cand' => $cand_id, 'votes' => $votes];
+      }
+
+      if ($results) {
+        //Sort by Vote results into descending order
+        $votes = array_column($results, 'votes');
+        $sorted = array_multisort($votes, SORT_DESC, $results);
+
+        // If sort worked, pull 1st result and update field_winning_candidate
+        if ($sorted) {
+          if (isset($results[0])) {
+            $winner = $results[0]['cand'];
+          }
+          // Only update field_winning_candidate if there is a result (ie, one or
+          // more candidates standing and Hold/Gain set
+          if (isset($winner)) {
+            $candidate = \Drupal\paragraphs\Entity\Paragraph::load($winner);
+            $entity->field_winning_candidate = $candidate;
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_predelete()
+ *
+ * @param Drupal\Core\Entity\EntityInterface $entity
+ */
+function localgov_elections_reporting_entity_predelete(Drupal\Core\Entity\EntityInterface $entity)
+{
+  //Triggered just before an Election node is deleted
+  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'election') {
+    $election_id = $entity->id();
+    $election_title = $entity->getTitle();
+    //Delete all Division Vote entities referencing this election
+    $deleted = 0;
+
+    $areas_query = Drupal::entityTypeManager()->getStorage('node')->getQuery();
+    $areas_query->condition('type', 'division_vote');
+    $areas_query->condition('status', 1);
+    $areas_query->condition('field_election', $election_id);
+    $areas_query->accessCheck(FALSE);
+    $areas = $areas_query->execute();
+
+    if ($areas) {
+      $areas = Drupal::entityTypeManager()->getStorage('node')->loadMultiple($areas);
+      foreach ($areas as $area) {
+        try {
+          $area->delete();
+          $deleted++;
+        } catch (\Drupal\Core\Entity\EntityStorageException $exception) {
+          \Drupal::logger('election')->error("Could not delete area with id " . $area->id());
+        }
+      }
+    }
+
+    \Drupal::logger('election')
+        ->notice("Election " . $election_title . " (ID " . $election_id . ") was deleted. " . $deleted . " Division Votes deleted");
+    Drupal::messenger()
+        ->addStatus($deleted . ' Division Votes deleted from system');
+  }
+}
+
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function localgov_elections_reporting_views_data_alter(array &$data)
+{
+  $data['node']['ward_majority'] = [
+      'title' => t('Ward majority'),
+      'field' => [
+          'title' => t('Ward majority'),
+          'help' => t('Calculates the difference between number of votes of first and second results in an electoral area.'),
+          'id' => 'ward_majority',
+      ],
+  ];
+  $data['node']['ward_party'] = [
+      'title' => t('Ward winning party'),
+      'field' => [
+          'title' => t('Ward winning party'),
+          'help' => t('Winning party in an electoral area for an election.'),
+          'id' => 'ward_party',
+      ],
+  ];
+  $data['node']['election_turnout'] = [
+      'title' => t('Election turnout'),
+      'field' => [
+          'title' => t('Election turnout'),
+          'help' => t('Sums all votes cast with all candidates in election plus all spoiled votes.'),
+          'id' => 'election_turnout',
+      ],
+  ];
+  $data['node']['election_majority'] = [
+      'title' => t('Election majority'),
+      'field' => [
+          'title' => t('Election majority'),
+          'help' => t('Counts number of seats in election, divides by 2 and adds 1 to calculate majority.'),
+          'id' => 'election_majority',
+      ],
+  ];
+
+  $data['node']['ward_candidates'] = [
+      'title' => t('Candidate results for a ward'),
+      'field' => [
+          'title' => t('Candidate results for a ward'),
+          'help' => t('Produces all candidates results for each area/ward in a specific election.'),
+          'id' => 'ward_candidates',
+      ],
+  ];
+
+  $data['node']['ward_candidates_candidate'] = [
+      'title' => t('Candidate result for a ward'),
+      'field' => [
+          'title' => t('Candidate result for a ward'),
+          'help' => t('Produces all candidates results for each area/ward in a specific election.'),
+          'id' => 'ward_candidates_candidate',
+      ],
+  ];
+
+  $data['node']['ward_candidates_party'] = [
+      'title' => t('Candidate party result for a ward'),
+      'field' => [
+          'title' => t('Candidate party result for a ward'),
+          'help' => t('Produces all candidates results for each area/ward in a specific election.'),
+          'id' => 'ward_candidates_party',
+      ],
+  ];
+
+  $data['node']['ward_candidates_votes'] = [
+      'title' => t('Candidate votes result for a ward'),
+      'field' => [
+          'title' => t('Candidate votes result for a ward'),
+          'help' => t('Produces all candidates results for each area/ward in a specific election.'),
+          'id' => 'ward_candidates_votes',
+      ],
+  ];
+
+  $data['taxonomy_term_data']['election_share'] = [
+      'title' => t('Percentage of election share'),
+      'field' => [
+          'title' => t('Percentage of election share'),
+          'help' => t('List percentage of election share for each party in a specific election.'),
+          'id' => 'election_share',
+      ],
+  ];
+  $data['taxonomy_term_data']['election_seats_party'] = [
+      'title' => t('Election seat wins'),
+      'field' => [
+          'title' => t('Election seat wins'),
+          'help' => t('Sums all seats won by party in this election.'),
+          'id' => 'election_seats_party',
+      ],
+      'sort' => [
+          'id' => 'standard',
+      ],
+      'filter' => [
+          'id' => 'standard',
+      ],
+  ];
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function localgov_elections_reporting_menu_local_tasks_alter(&$data, $route_name)
+{
+  // Hide 'Results timelines' tab from all nodes except 'Election' content types.
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    // You can get nid and anything else you need from the node object.
+    $type = $node->getType();
+    if ($type != 'election') {
+      unset($data['tabs'][0]['views_view:view.election_results_timeline.page_1']);
+      unset($data['tabs'][0]['views_view:view.election_results_vot.page_1']);
+      unset($data['tabs'][0]['views_view:view.electoral_candidates.page_1']);
+      unset($data['tabs'][0]['views_view:view.electoral_map.page_1']);
+    } else {
+      $appropriate_fetch_routes = [
+          "entity.node.canonical",
+          "entity.node.edit_form",
+          "entity.node.version_history",
+          "entity.node.delete_form",
+          "entity.node.preview_link_generate"
+      ];
+      if (in_array($route_name, $appropriate_fetch_routes)) {
+        $data['tabs'][0]['boundary_fetch'] = array(
+            '#theme' => 'menu_local_task',
+            '#weight' => 100,
+            '#link' => array(
+                'title' => t('Add areas'),
+                'url' => Url::fromRoute('localgov_elections_reporting.boundary_fetch',
+                    ['node' => $node->id()]),
+            ),
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function localgov_elections_reporting_preprocess_node(&$variables)
+{
+  $node = $variables['elements']['#node'];
+
+  if ($node->bundle() == 'division_vote') {
+    $finalised = $node->field_votes_finalised?->value;
+    $not_contested = $node->get('field_seat_not_contested')?->value;
+
+    if ($finalised == 1) {
+      if($not_contested){
+        $variables['content']['results'] = [
+            '#children' => t('This seat was not contested.'),
+        ];
+      } else {
+        $block_manager = \Drupal::service('plugin.manager.block');
+
+      $plugin_block = $block_manager->createInstance('analysis_block', []);
+      $analysis = $plugin_block->build();
+
+      // Add the cache tags/contexts.
+      \Drupal::service('renderer')
+          ->addCacheableDependency($analysis, $plugin_block);
+
+      $variables['content']['results'] = [
+          '#theme' => 'ward_result',
+          '#chart' => [
+              '#type' => 'view',
+              '#name' => 'district_results',
+              '#arguments' => [$node->id()],
+          ],
+          '#result' => [
+              '#type' => 'view',
+              '#name' => 'district_results',
+              '#display_id' => 'block_2',
+              '#arguments' => [$node->id()],
+          ],
+          '#analysis' => $analysis,
+          '#attached' => ['library' => ['localgov_elections_reporting/party_colours']],
+      ];
+      }
+    } else {
+      $variables['content']['results'] = [
+          '#children' => t('No results have been declared yet.'),
+      ];
+    }
+
+  } elseif ($node->bundle() == 'election') {
+    $variables['content']['results_fieldset'] = [
+        '#type' => 'container',
+        '#prefix' => '<div class="county-summary"> <div class="county-header" ><h2>' . t("Election summary") . '</h2></div>',
+        '#suffix' => '</div>',
+    ];
+
+    $variables['content']['results_fieldset']['sub_heading'] = [
+        '#type' => 'container',
+        '#prefix' => '<div class="subheading">',
+        '#suffix' => '</div>',
+    ];
+
+    $variables['content']['results_fieldset']['sub_heading']['election_results_electorate'] = [
+        '#type' => 'view',
+        '#name' => 'election_results',
+        '#display_id' => 'block_1',
+        '#arguments' => [$node->id()],
+    ];
+
+    $variables['content']['results_fieldset']['sub_heading']['election_results_turnout'] = [
+        '#type' => 'view',
+        '#name' => 'election_results',
+        '#display_id' => 'block_2',
+        '#arguments' => [$node->id()],
+    ];
+
+    $variables['content']['results_fieldset']['election_results_by_party'] = [
+        '#type' => 'view',
+        '#name' => 'election_results_via_parties',
+        '#display_id' => 'block_1',
+        '#arguments' => [$node->id()],
+    ];
+
+    $variables['content']['results_fieldset']['election_results_majority'] = [
+        '#type' => 'view',
+        '#name' => 'election_results',
+        '#display_id' => 'block_5',
+        '#arguments' => [$node->id()],
+    ];
+
+    $variables['content']['election_results_summary_table'] = [
+        '#type' => 'view',
+        '#name' => 'election_results',
+        '#display_id' => 'block_3',
+        '#arguments' => [$node->id()],
+    ];
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function localgov_elections_reporting_views_pre_render(ViewExecutable $view)
+{
+
+  if ($view->id() == 'electoral_candidates') {
+    $view->element['#attached']['library'][] = 'localgov_elections_reporting/electoral_candidates_view';
+  }
+
+  if ($view->id() == 'election_results_timeline') {
+    $view->element['#attached']['drupalSettings']['localgov_elections_reporting']['parties'] = _localgov_elections_reporting_party_colours();
+    $view->element['#attached']['library'][] = 'localgov_elections_reporting/results_timeline';
+    $view->element['#attached']['library'][] = 'localgov_elections_reporting/party_colours';
+  }
+
+  if ($view->id() == 'election_results_vot') {
+    $view->element['#attached']['library'][] = 'localgov_elections_reporting/results_share';
+  }
+
+  if ($view->id() == 'election_results') {
+    if ($view->getDisplay()->display['id'] == 'block_3') {
+      $view->element['#attached']['library'][] = 'localgov_elections_reporting/party_colours';
+    }
+  }
+}
+
+
+/**
+ * Implements hook_chart_definition_CHART_ID_alter().
+ */
+function localgov_elections_reporting_chart_definition_election_results_via_parties_block_1_alter(array &$definition, array $element, $chart_id)
+{
+  $definition['yAxis'][0]['allowDecimals'] = FALSE;
+  if (!empty($definition['series'][0]['data'])) {
+    foreach ($definition['series'][0]['data'] as &$entry) {
+      if ($entry == NULL) {
+        $entry = 0;
+      }
+    }
+  }
+  if ($majority = _localgov_elections_reporting_calc_majority()) {
+    $max = 0;
+    if (!empty($definition['series'][0]['data'])) {
+      $max = max($definition['series'][0]['data']);
+    }
+
+    if ($majority > $max) {
+      $max = $majority;
+    }
+
+    $definition['yAxis'][0]['plotLines'] = [
+        [
+            'color' => '#8c8a8a',
+            'width' => 6,
+            'value' => $majority,
+            'dashStyle' => 'LongDash',
+        ],
+    ];
+    $definition['yAxis'][0]['max'] = $max + 4;
+
+  }
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function localgov_elections_reporting_page_attachments(array &$attachments)
+{
+  $route = Drupal::routeMatch();
+
+  if ($node = $route->getParameter('node')) {
+    if ($node != NULL && $node instanceof \Drupal\node\NodeInterface) {
+      if ($node->bundle() == 'election') {
+        $attachments['#attached']['library'][] = 'localgov_elections_reporting/election';
+      } elseif ($node->bundle() == 'division_vote') {
+        $attachments['#attached']['library'][] = 'localgov_elections_reporting/division_results';
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_chart_alter().
+ */
+function localgov_elections_reporting_chart_alter(array &$element, $chart_id)
+{
+  $element['#attached']['library'][] = 'localgov_elections_reporting/charts_overrides';
+  $element['#attached']['drupalSettings']['localgov_elections_reporting']['parties'] = _localgov_elections_reporting_party_colours();
+}
+
+function _localgov_elections_reporting_calc_majority()
+{
+  $node = \Drupal::routeMatch()->getParameter('node');
+  $majority = NULL;
+  if ($node instanceof \Drupal\node\NodeInterface) {
+    // Arg must be NID of an Election content type
+    if ($node->getType() == 'election') {
+      $election = $node->id();
+
+      //Find all 'Election Area' nodes referencing this election
+      $query = \Drupal::entityQuery('node')
+          ->condition('type', 'division_vote')
+          ->condition('field_election', $election);
+      $query->accessCheck(FALSE);
+      $num_rows = $query->count()->execute();
+      $majority = (floor($num_rows / 2)) + 1;
+      return (int)$majority;
+    }
+  }
+}
+
+
+function _localgov_elections_reporting_party_colours()
+{
+  $results = [];
+  $terms = Drupal::entityTypeManager()
+      ->getStorage('taxonomy_term')
+      ->loadByProperties(['vid' => 'party']);
+  if ($terms && is_array($terms)) {
+    foreach ($terms as $term) {
+      $colour = $term->field_party_colour?->first()?->color;
+      $abbr = $term->field_abbreviation?->value;
+      if ($colour && $abbr) {
+        $abbr = strtolower($abbr);
+
+        $results[$abbr] = [
+            'text-colour' => $term->field_text_colour?->first()?->color,
+            'colour' => $colour,
+            'full_name' => $term->name?->value,
+            'abbr' => $abbr,
+        ];
+      }
+    }
+  }
+  return $results;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function localgov_elections_reporting_preprocess_election_menu(&$variables)
+{
+  $attributes = new \Drupal\Core\Template\Attribute();
+  $attributes->setAttribute('id', 'election-menu');
+  $variables['attributes'] = $attributes;
+
+  $current = Drupal::routeMatch()->getRouteName();
+  foreach ($variables['links'] as $link) {
+    /** @var Drupal\Core\Link $url */
+    $url = $link['link'];
+    if ($url->getUrl()->getRouteName() == $current) {
+      if ($node = Drupal::routeMatch()->getParameter('node')) {
+        if ($node instanceof \Drupal\node\NodeInterface) {
+          if ($node->bundle() == 'division_vote') {
+            return;
+          }
+        }
+      }
+      $link['attributes']->addClass('active');
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function localgov_elections_reporting_preprocess_block(&$variables)
+{
+  if ($variables['base_plugin_id'] == 'localgov_elections_reporting_electionmenu') {
+    $variables['attributes']['class'][] = 'election-menu-block';
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function localgov_elections_reporting_form_node_division_vote_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id)
+{
+  $form['#validate'][] = "localgov_elections_reporting_area_vote_form_validation";
+}
+
+/**
+ * Validation function for area vote node forms.
+ */
+function localgov_elections_reporting_area_vote_form_validation($form, \Drupal\Core\Form\FormStateInterface $form_state)
+{
+  $contested = $form_state->getValue('field_seat_not_contested')['value'];
+  $candidates = $form_state->getValue('field_candidates');
+  $candidate_keys = array_filter(array_keys($candidates), function ($key) {
+    return is_int($key);
+  });
+
+  if ($contested && count($candidate_keys) > 1) {
+    $form_state->setErrorByName('field_candidates', t("If the seat is <b>not</b> contested there should only be one candidate."));
+  }
+
+  if ($contested) {
+    $storage = $form_state->get('field_storage');
+    if (isset($storage['#parents']['#fields']['field_candidates']))
+      $candidates = $storage['#parents']['#fields']['field_candidates'];
+    foreach ($candidates['paragraphs'] as $entry) {
+      /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
+      if (isset($entry['entity'])) {
+        $entry = $entry['entity'];
+        if (!$entry->get('field_votes')->isEmpty()) {
+          $form_state->setErrorByName('field_candidates', t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
+        }
+      }
+    }
+  }
+}

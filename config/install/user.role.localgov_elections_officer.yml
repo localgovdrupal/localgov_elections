@@ -1,0 +1,45 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.division_vote
+    - node.type.election
+    - taxonomy.vocabulary.party
+  module:
+    - node
+    - system
+    - taxonomy
+    - toolbar
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: localgov_elections_officer
+label: 'Elections Officer'
+weight: 7
+is_admin: null
+permissions:
+  - 'access administration pages'
+  - 'access content overview'
+  - 'access taxonomy overview'
+  - 'access toolbar'
+  - 'create division_vote content'
+  - 'create election content'
+  - 'create terms in party'
+  - 'delete any division_vote content'
+  - 'delete any election content'
+  - 'delete division_vote revisions'
+  - 'delete election revisions'
+  - 'delete own division_vote content'
+  - 'delete own election content'
+  - 'delete terms in party'
+  - 'edit any division_vote content'
+  - 'edit any election content'
+  - 'edit own division_vote content'
+  - 'edit own election content'
+  - 'edit terms in party'
+  - 'revert division_vote revisions'
+  - 'revert election revisions'
+  - 'view division_vote revisions'
+  - 'view election revisions'
+  - 'view own unpublished content'
+  - 'view the administration theme'

@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_votes_finalised
+    - node.type.division_vote
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: node.division_vote.field_votes_finalised
+field_name: field_votes_finalised
+entity_type: node
+bundle: division_vote
+label: 'Votes finalised'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

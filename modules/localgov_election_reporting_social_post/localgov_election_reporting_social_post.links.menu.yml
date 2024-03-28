@@ -1,0 +1,5 @@
+localgov_election_reporting_social_post.settings:
+  title: Election Social Integration Settings
+  parent: social_api.admin_config
+  route_name: localgov_election_reporting_social_post.settings
+  weight: 10

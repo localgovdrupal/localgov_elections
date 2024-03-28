@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - geocoder_geofield
+  enforced:
+    module:
+      - localgov_elections_reporting
+_core:
+  default_config_hash: MUY5wbLRpAnVFjMmQcfHrZ-rzoTvX-xeX8VT-T8yH2M
+id: gpx_file
+label: 'GPX File'
+plugin: gpxfile
+configuration: {  }

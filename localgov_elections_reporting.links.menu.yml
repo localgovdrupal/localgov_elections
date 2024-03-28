@@ -1,0 +1,5 @@
+entity.boundary_source.overview:
+  title: Boundary Sources
+  parent: system.admin_structure
+  description: 'List of and configure boundary sources'
+  route_name: entity.boundary_source.collection

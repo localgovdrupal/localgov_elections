@@ -1,0 +1,1 @@
+message_template: 'Candidate [node:field_winning_candidate:entity:field_candidate_forenames] [node:field_winning_candidate:entity:field_candidate] won for the [node:field_winning_candidate:entity:field_party] party with [node:field_winning_candidate:entity:field_votes] votes in [node:field_area_name:value]!'

@@ -1,0 +1,9 @@
+<div {{ attributes }}>
+  {% if links %}
+    <ul class="election-menu-list">
+    {% for link in links %}
+      <li {{ link.attributes.addClass('election-menu-link') }}>{{ link.link }} <i class="fa-solid fa-chevron-right"></i></li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+</div>

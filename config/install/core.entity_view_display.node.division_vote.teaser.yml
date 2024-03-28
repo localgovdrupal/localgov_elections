@@ -1,0 +1,66 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.division_vote.field_area_name
+    - field.field.node.division_vote.field_boundary_data
+    - field.field.node.division_vote.field_candidates
+    - field.field.node.division_vote.field_candidates_file
+    - field.field.node.division_vote.field_election
+    - field.field.node.division_vote.field_electorate
+    - field.field.node.division_vote.field_hold_or_gain
+    - field.field.node.division_vote.field_previous_result
+    - field.field.node.division_vote.field_previous_winner
+    - field.field.node.division_vote.field_previous_year
+    - field.field.node.division_vote.field_seat_not_contested
+    - field.field.node.division_vote.field_spoils
+    - field.field.node.division_vote.field_votes_finalised
+    - field.field.node.division_vote.field_winning_candidate
+    - node.type.division_vote
+  module:
+    - user
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: node.division_vote.teaser
+targetEntityType: node
+bundle: division_vote
+mode: teaser
+content:
+  analysis:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  hold_gain:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+  results:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_area_name: true
+  field_boundary_data: true
+  field_candidates: true
+  field_candidates_file: true
+  field_election: true
+  field_electorate: true
+  field_hold_or_gain: true
+  field_previous_result: true
+  field_previous_winner: true
+  field_previous_year: true
+  field_seat_not_contested: true
+  field_spoils: true
+  field_votes_finalised: true
+  field_winning_candidate: true
+  search_api_excerpt: true

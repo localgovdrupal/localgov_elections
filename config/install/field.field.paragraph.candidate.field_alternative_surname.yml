@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_alternative_surname
+    - paragraphs.paragraphs_type.candidate
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: paragraph.candidate.field_alternative_surname
+field_name: field_alternative_surname
+entity_type: paragraph
+bundle: candidate
+label: 'Alternative surname'
+description: 'Commonly used alternative surname of the candidate if one is provided'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

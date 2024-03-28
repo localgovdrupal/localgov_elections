@@ -1,0 +1,64 @@
+<?php
+
+namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+
+use Drupal\views\Plugin\views\field\FieldPluginBase;
+use Drupal\views\ResultRow;
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Field handler to flag the node type.
+ *
+ * @ViewsField("party_name")
+ */
+class PartyName extends FieldPluginBase {
+
+  /**
+   * Leave empty to avoid a query on this field.
+   */
+  public function query() {
+
+  }
+
+  /**
+   * Render function for the party_name field.
+   *
+   * Displays a participating party in an electoral area (Ward).
+   *
+   * @{inheritdoc}
+   */
+  public function render(ResultRow $values) {
+    $election = $values->_entity;
+
+    //Iterate through each candidate and store votes
+    $party_name = NULL;
+    $results = [];
+
+    //Find all 'Areas vote' (division_vote) nodes referencing this election
+    $query = \Drupal::entityQuery('node')
+        ->condition('type', 'division_vote')
+        ->condition('field_election', $election);
+    $query->accessCheck(FALSE);
+    $wards = $query->execute();
+
+    // Add all candidate votes + spoils for each ward
+    foreach ($wards as $ward_id) {
+      $ward = \Drupal\node\Entity\Node::load($ward_id);
+      $candidates = $ward->get('field_candidates');
+
+      foreach ($candidates->referencedEntities() as $candidate) {
+        $party = Term::load($candidate->get('field_party')->target_id);
+        $party_name = $party->getTitle->value;
+        $results[] = ['name' => $party_name];
+      }
+    }
+
+    // Return party names
+    if ($results) {
+      $party_name = $results[0]['name'];
+    }
+
+    return $party_name;
+  }
+
+}

@@ -1,0 +1,46 @@
+<?php
+
+use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Entity\EntityStorageException;
+use Symfony\Component\Yaml\Yaml;
+
+/**
+ * Implements hook_install().
+ */
+function localgov_elections_reporting_install($is_syncing) {
+  $module_path = \Drupal::getContainer()
+    ->get('module_handler')
+    ->getModule('localgov_elections_reporting')
+    ->getPath();
+
+  $overrides = $module_path . '/config/override';
+  $files = new FileStorage($overrides);
+
+  foreach ($files->listAll() as $id) {
+    $config_data = $files->read($id);
+    $config = \Drupal::configFactory()->getEditable($id);
+    $config->setData($config_data)->save();
+  }
+}
+
+
+/**
+ * Implements hook_uninstall().
+ *
+ */
+function localgov_elections_reporting_uninstall($is_syncing) {
+  $storage_handler = \Drupal::entityTypeManager()
+    ->getStorage('node');
+  $nodes = $storage_handler->loadByProperties(['type' => 'election']);
+  try {
+    $storage_handler->delete($nodes);
+  } catch (EntityStorageException $e) {
+  }
+  $nodes = $storage_handler->loadByProperties(['type' => 'division_vote']);
+  try {
+    $storage_handler->delete($nodes);
+  } catch (EntityStorageException $e) {
+  }
+}
+
+

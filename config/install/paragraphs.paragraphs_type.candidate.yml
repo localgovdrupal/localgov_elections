@@ -1,0 +1,12 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: candidate
+label: Candidate
+icon_uuid: null
+icon_default: null
+description: 'Details of Candidate and vote'
+behavior_plugins: {  }

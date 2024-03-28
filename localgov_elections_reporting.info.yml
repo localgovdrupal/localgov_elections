@@ -1,0 +1,23 @@
+name: LocalGov Elections Reporting
+description: Election reporting module.
+type: module
+package: LocalGov Drupal
+core_version_requirement: ^9 || ^10
+
+dependencies:
+  - drupal:autocomplete_deluxe
+  - drupal:node
+  - drupal:taxonomy
+  - drupal:views
+  - drupal:charts
+  - drupal:color_field
+  - drupal:leaflet
+  - drupal:geofield
+  - drupal:field_formatter_class
+  - drupal:paragraphs_table
+  - drupal:leaflet_views
+  - drupal:views_field_view
+  - drupal:charts_highcharts
+  - drupal:geocoder_field
+  - drupal:geocoder_geofield
+

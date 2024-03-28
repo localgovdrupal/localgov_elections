@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - taxonomy
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: electoral_area
+label: 'Electoral area'
+type: 'canonical_entities:taxonomy_term'
+pattern: '/district/division/[term:tid]/[term:name]'
+selection_criteria:
+  a508314b-551e-41c7-b769-18515682afa6:
+    id: 'entity_bundle:taxonomy_term'
+    negate: false
+    uuid: a508314b-551e-41c7-b769-18515682afa6
+    context_mapping:
+      taxonomy_term: taxonomy_term
+    bundles:
+      electoral: electoral
+selection_logic: and
+weight: -5
+relationships: {  }

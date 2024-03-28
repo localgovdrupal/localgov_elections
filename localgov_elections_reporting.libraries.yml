@@ -1,0 +1,68 @@
+selectall:
+  version: 1.x
+  js:
+    js/selectall.js: { }
+  dependencies:
+    - core/jquery
+    - core/drupal
+
+election:
+  version: 1.x
+  css:
+    theme:
+      css/variables.css: { }
+      css/election-results.css: { }
+
+electoral_candidates_view:
+  version: 1.x
+  css:
+    theme:
+      css/variables.css: { }
+      css/electoral-candidates-view.css: { }
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css': { type: external,  minified: true }
+
+division_results:
+  version: 1.x
+  css:
+    theme:
+      css/variables.css: { }
+      css/ward-results.css: { }
+
+results_share:
+  version: 1.x
+  css:
+    theme:
+      css/variables.css: { }
+      css/results-share.css: { }
+
+results_timeline:
+  version: 1.x
+  css:
+    theme:
+      css/variables.css: { }
+      css/election-timeline.css: { }
+
+
+charts_overrides:
+  js:
+    js/charts-override.js: { weight: -5 }
+  dependencies:
+    - charts/global
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+
+party_colours:
+  js:
+    js/election-party-colours.js: { }
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/drupalSettings
+
+election_menu:
+  version: 1.x
+  css:
+    theme:
+      css/election-menu.css: { }
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css': { type: external,  minified: true }

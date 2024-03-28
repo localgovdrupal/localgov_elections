@@ -1,0 +1,75 @@
+.winner {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+.ward-candidate-results, .views-field-ward-candidates-party {
+  vertical-align: top;
+}
+.view-election-results-timeline .view-header {
+  background-color: var(--color-accent);
+  color: white;
+  padding: 1rem;
+}
+
+.winner.result-row {
+  margin-bottom: 2rem;
+}
+
+.view-election-results-timeline .view-header h2 {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.view-election-results-timeline th {
+  background-color: unset;
+  border-bottom: var(--table-border);
+}
+
+.key-result {
+  text-transform: uppercase;
+  display: flex;
+}
+
+.key-result .winning-party {
+  padding: 0.25rem;
+  color: white;
+}
+
+.ward-candidate-results > * {
+  margin-bottom: 0.5rem;
+}
+
+.winning-party.grn {
+  background-color: var(--green-party);
+}
+
+.winning-party.con {
+  background-color: var(--conservative);
+}
+
+.winning-party.lab {
+  background-color: var(--labour);
+}
+
+.winning-party.ldm {
+  background-color: var(--liberal-democrats);
+  color: black;
+}
+
+.winning-party.ind {
+  background-color: var(--independent);
+}
+
+.hold-gain {
+  padding: 0.25rem;
+  margin: 0 0.25rem;
+}
+
+.hold {
+  border: var(--table-border);
+}
+
+.key-result .hold-gain.gain {
+  color: white;
+  background-color: black;
+}

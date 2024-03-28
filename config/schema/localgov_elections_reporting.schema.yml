@@ -1,0 +1,17 @@
+localgov_elections_reporting.boundary_source.*:
+  type: config_entity
+  label: Boundary Source
+  mapping:
+    id:
+      type: string
+      label: ID
+    label:
+      type: label
+      label: Label
+    uuid:
+      type: string
+    description:
+      type: string
+    plugin:
+      type: string
+      label: 'Plugin'

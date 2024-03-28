@@ -1,0 +1,69 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_winning_candidate
+    - node.type.division_vote
+    - paragraphs.paragraphs_type.candidate
+  module:
+    - entity_reference_revisions
+  enforced:
+    module:
+      - localgov_elections_reporting
+id: node.division_vote.field_winning_candidate
+field_name: field_winning_candidate
+entity_type: node
+bundle: division_vote
+label: 'Winning candidate'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      candidate: candidate
+    negate: 0
+    target_bundles_drag_drop:
+      candidate:
+        weight: 14
+        enabled: true
+      division_vote:
+        weight: 15
+        enabled: false
+      from_library:
+        weight: 16
+        enabled: false
+      localgov_contact:
+        weight: 17
+        enabled: false
+      localgov_featured_campaign:
+        weight: 18
+        enabled: false
+      localgov_ia_block:
+        weight: 19
+        enabled: false
+      localgov_image:
+        weight: 20
+        enabled: false
+      localgov_labelled_icon:
+        weight: 21
+        enabled: false
+      localgov_link:
+        weight: 22
+        enabled: false
+      localgov_newsroom_teaser:
+        weight: 23
+        enabled: false
+      localgov_subscribe_panel:
+        weight: 24
+        enabled: false
+      localgov_text:
+        weight: 25
+        enabled: false
+      topic_list_builder:
+        weight: 26
+        enabled: false
+field_type: entity_reference_revisions
