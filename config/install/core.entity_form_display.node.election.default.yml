@@ -5,6 +5,8 @@ dependencies:
     - field.field.node.election.body
     - field.field.node.election.field_add_all_areas
     - field.field.node.election.field_date
+    - field.field.node.election.field_display_majority_details
+    - field.field.node.election.field_display_map
     - field.field.node.election.field_organisation
     - field.field.node.election.field_service_type
     - field.field.node.election.field_type_of_election
@@ -23,7 +25,6 @@ third_party_settings:
     group_election:
       children:
         - group_description
-        - group_election_areas
         - group_additional_information
       label: Election
       region: content
@@ -41,6 +42,8 @@ third_party_settings:
         - title
         - field_date
         - field_type_of_election
+        - field_display_map
+        - field_display_majority_details
       label: Details
       region: content
       parent_name: group_election
@@ -96,6 +99,20 @@ content:
     weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_display_majority_details:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_display_map:
+    type: boolean_checkbox
+    weight: 4
+    region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   field_organisation:
     type: link_default
