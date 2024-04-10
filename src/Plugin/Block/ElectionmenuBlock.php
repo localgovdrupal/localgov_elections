@@ -74,16 +74,23 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
    *
    * @return array
    */
-  private function getLinks(): array {
+  private function getLinks(NodeInterface $node): array {
     $urls = [];
     $urls[] = [
       'attributes' => new Attribute(),
       'link' => Link::fromTextAndUrl(t('Summary'), Url::fromRoute('entity.node.canonical', ['node' => $this->node->id()])),
     ];
-    $urls[] = [
-      'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl(t('Electoral map'), Url::fromRoute('view.electoral_map.page_1', ['node' => $this->node->id()])),
-    ];
+
+    // Allow editors to hide the map
+    // It certainly won't work when we allow multiple winners / seats
+    $display_map = $node->get('field_display_map')?->value;
+    if ($display_map == "1") {
+      $urls[] = [
+          'attributes' => new Attribute(),
+          'link' => Link::fromTextAndUrl(t('Electoral map'), Url::fromRoute('view.electoral_map.page_1', ['node' => $this->node->id()])),
+      ];
+    }
+
     $urls[] = [
       'attributes' => new Attribute(),
       'link' => Link::fromTextAndUrl(t('Results timeline'), Url::fromRoute('view.election_results_timeline.page_1', ['node' => $this->node->id()])),
@@ -127,7 +134,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       $build['#theme'] = 'election_menu';
       $build['#cache']['max-age'] = 0;
       $build['#attached']['library'][] = 'localgov_elections_reporting/election_menu';
-      $build['#links'] = $this->getLinks();
+      $build['#links'] = $this->getLinks($node);
     }
 
 
