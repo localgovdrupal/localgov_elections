@@ -83,7 +83,11 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
 
     // Allow editors to hide the map
     // It certainly won't work when we allow multiple winners / seats
-    $display_map = $node->get('field_display_map')?->value;
+    if ($node->hasField('field_display_map')) {
+      $display_map = $node->get('field_display_map')?->value;
+    } else {
+      $display_map = FALSE;
+    }
     if ($display_map == "1") {
       $urls[] = [
           'attributes' => new Attribute(),

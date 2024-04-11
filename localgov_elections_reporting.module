@@ -296,7 +296,11 @@ function localgov_elections_reporting_preprocess_node(&$variables)
     }
 
   } elseif ($node->bundle() == 'election') {
-    $display_majority = $node->get("field_display_majority_details")?->value;
+    if ($node->hasField('field_display_majority_details')) {
+      $display_majority = $node->get("field_display_majority_details")?->value;
+    } else {
+      $display_majority = FALSE;
+    }
     $variables['content']['results_fieldset'] = [
         '#type' => 'container',
         '#prefix' => '<div class="county-summary"> <div class="county-header" ><h2>' . t("Election summary") . '</h2></div>',
@@ -402,7 +406,11 @@ function localgov_elections_reporting_chart_definition_election_results_via_part
 
       // Allow hiding of plot line
       if ($election = Drupal::request()->get('node')) {
-        $display_majority_details = $election->get("field_display_majority_details")?->value;
+        if ($election->hasField("field_display_majority_details")){
+          $display_majority_details = $election->get("field_display_majority_details")?->value;
+        } else {
+          $display_majority_details = FALSE;
+        }
         if($display_majority_details){
           $definition['yAxis'][0]['plotLines'] = [
               [
