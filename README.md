@@ -5,10 +5,10 @@ the LocalGov Drupal distribution.
 
 ## Features
 
-- First past the post single seat per ward elections
-- 'All-out' and not 'all-out' elections
+- First past the post single seat per electoral area elections
+- 'All-out' and not 'all-out' (e.g. halves or thirds) elections 
 - Table, graph and map based views of the results
-- Extensible boundary source provider for ward and geo data
+- Extensible boundary source provider for electoral areas and geo data
 - Social media posting of results (currently Twitter / X)
 
 ## How to use

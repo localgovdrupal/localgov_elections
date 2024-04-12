@@ -6,22 +6,24 @@
   - [Add a boundary source](#add-a-boundary-source)
   - [Add Parties](#add-parties)
   - [Create an election](#create-an-election)
-  - [Add candidate and ward details](#add-candidate-and-ward-details)
+  - [Add candidate and electoral area details](#add-candidate-and-electoral-area-details)
   - [A not 'all-out' election](#a-not-all-out-election)
 - [Running an election](#running-an-election)
-  - [Entering Ward results](#entering-ward-results)
+  - [Entering electoral area results](#entering-electoral-area-results)
   - [Tweet the result](#tweet-the-result)
 
 ## Preparing for an election
 
 The steps to prepare for an election are as follows:
 
-- Add a boundary source
+- Add a boundary source (optional)
 - Add terms to Party taxonomy
 - Create an election
-- Add the candidate and ward details
+- Add the candidate and electoral area details
 
 ### Add a boundary source
+
+> NOTE: You can skip this step if you don't plan to use the mapping and/or have a small number of electoral areas and are happy to enter them manually.
 
 1. Go to `Structure > Boundary Sources` or `/admin/structure/boundary-source`.
 2. Your available providers will be shown in the top right. The default provider is the UK Office of National Statistics 2023 Wards. You can add your own providers. ![image](images/boundary-provider.png)
@@ -47,17 +49,28 @@ If you are interested in writing your own boundary provider plugin, you can read
 
 1. Go to `Content > Add content > Election` or `/node/add/election`
 2. Add in the required details.
-3. Click Save.
-4. The tabs for view, edit, delete etc contains a tab for `Add areas`, click that.
+3. **Map Display**: If you are manually adding electoral areas or don't wish to show the map toggle the `Display map` slider from the default `on` to  `off`
+3. **Majority Display**: If you you are reporting on a sub-set of an election e.g. a Council reporting on the UK Westminster constituencies in their area then toggle the `Display majority details` slider from the default `on` to `off`
+4. Click Save.
+
+#### Using a boundary source to create electoral areas
+1. After clicking Save in step 4 above, the tabs for view, edit, delete etc contains a tab for `Add areas`, click that.
 5. If you have more than one Boundary Source configured, select the one you wish to use.
 6. Now select the Areas you wish in the election. NOTE if preparing for an election which is only electing a proportion of seats you need to select all seats not just those being contested.
 7. Click Fetch.
 
-### Add candidate and ward details
+#### Manually creating electoral areas
+For each electoral area you need, do the following:
+1. Go to `Content > Add content > Areas vote` or `/node/add/division_vote`
+2. Add the Title and Area name. You can also [Add candidate and electoral area details](#add-candidate-and-electoral-area-details) at the same time if you wish.
+3. Expand the `References` dropdown and using auto-completed select the election this area is being used in.
+4. Click Save.
 
-1. On viewing the election node you will be presented with a list of Ward results. Use the `[edit]` link to access each ward details. ![image](images/ward-results.png)  
+### Add candidate and electoral area details
 
-2. You need to add the following details for each ward in the preparation stage
+1. On viewing the election node you will be presented with a list of electoral area results. Use the `[edit]` link to access each electoral area details. ![image](images/ward-results.png)  
+
+2. You need to add the following details for each electoral area in the preparation stage
    1. Details tab - Eligible voters
    2. Candidates and Votes - Candidates (see below) and PDF list of candidates (optional)
    3. Previous election details (optional)
@@ -66,19 +79,19 @@ If you are interested in writing your own boundary provider plugin, you can read
 
 1. In the Candidates and Votes tab, click the Add Candidate button
 2. Complete all the details on the form except Votes in the Result section.
-3. Repeat for all candidates in the ward
+3. Repeat for all candidates in the electoral area
 
 ### A not 'all-out' election
 
-If you are preparing for an election which is not 'all out' and only elects a proportion of seats then when adding ward details you need to click the 'Seat not contested' slider for the wards which are not being contested this time. You will also need to add the details of the incumbant 'candidate'. This is so majority calculations still work.
+If you are preparing for an election which is not 'all out' and only elects a proportion of seats then when adding electoral area details you need to click the 'Seat not contested' slider for the electoral areas which are not being contested this time. You will also need to add the details of the incumbant 'candidate'. This is so majority calculations still work.
 
 ## Running an election
 
 Once the results from the count start to come in you can enter them from viewing the election node. 
 
-### Entering Ward results
+### Entering electoral area results
 
-1. In the list of wards on the election node view click `[edit]` for the ward concerned.
+1. In the list of electoral areas on the election node view click `[edit]` for the electoral area concerned.
 2. For each candidate listed, click the Edit button and enter the number of votes they received.
 3. Click the 'Votes finalised' slider to confirm this result is declared.
 4. In the Overall results tab enter the number of spoils and whether it was a Hold or Gain for the winning party.
@@ -88,7 +101,7 @@ Once the results from the count start to come in you can enter them from viewing
 
 The module will need configured before use. Please see the submodule [documentation](modules/localgov_election_reporting_social_post/README.md) for instructions.
 
-1. Having followed the process for [Entering Ward results](#entering-ward-results) you click Save and Tweet.
+1. Having followed the process for [Entering electoral area results](#entering-electoral-area-results) you click Save and Tweet.
 2. You are then presented with a screen to select the account (as setup in submodule [documentation](modules/localgov_election_reporting_social_post/README.md)) and the message to tweet. This supports tokens. ![image](images/tweet.png)
 3. Click Preview
 4. You can them Edit or Tweet.
