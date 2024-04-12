@@ -38,7 +38,8 @@ class WardCandidatesParty extends FieldPluginBase {
     if (isset($winner)) {
       $party_term = Term::load($winner->get('field_party')->target_id);
       $party = $party_term->getName();
-      $party_abbr = strtolower($party_term->get('field_abbreviation')->value);
+      $party_abbr = $party_term->get('field_abbreviation')?->value
+      ? strtolower($party_term->get('field_abbreviation')->value) : "";
       $votes = $winner->get('field_votes')->value;
       $markup .= '<div class="winner result-row">';
 
