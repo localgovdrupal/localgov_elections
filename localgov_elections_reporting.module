@@ -296,6 +296,11 @@ function localgov_elections_reporting_preprocess_node(&$variables)
     }
 
   } elseif ($node->bundle() == 'election') {
+    if ($node->hasField('field_display_majority_details')) {
+      $display_majority = $node->get("field_display_majority_details")?->value;
+    } else {
+      $display_majority = FALSE;
+    }
     $variables['content']['results_fieldset'] = [
         '#type' => 'container',
         '#prefix' => '<div class="county-summary"> <div class="county-header" ><h2>' . t("Election summary") . '</h2></div>',
@@ -329,12 +334,14 @@ function localgov_elections_reporting_preprocess_node(&$variables)
         '#arguments' => [$node->id()],
     ];
 
-    $variables['content']['results_fieldset']['election_results_majority'] = [
-        '#type' => 'view',
-        '#name' => 'election_results',
-        '#display_id' => 'block_5',
-        '#arguments' => [$node->id()],
-    ];
+    if ($display_majority) {
+      $variables['content']['results_fieldset']['election_results_majority'] = [
+          '#type' => 'view',
+          '#name' => 'election_results',
+          '#display_id' => 'block_5',
+          '#arguments' => [$node->id()],
+      ];
+    }
 
     $variables['content']['election_results_summary_table'] = [
         '#type' => 'view',
@@ -386,26 +393,36 @@ function localgov_elections_reporting_chart_definition_election_results_via_part
       }
     }
   }
-  if ($majority = _localgov_elections_reporting_calc_majority()) {
-    $max = 0;
-    if (!empty($definition['series'][0]['data'])) {
-      $max = max($definition['series'][0]['data']);
+
+    if ($majority = _localgov_elections_reporting_calc_majority()) {
+      $max = 0;
+      if (!empty($definition['series'][0]['data'])) {
+        $max = max($definition['series'][0]['data']);
+      }
+
+      if ($majority > $max) {
+        $max = $majority;
+      }
+
+      // Allow hiding of plot line
+      if ($election = Drupal::request()->get('node')) {
+        if ($election->hasField("field_display_majority_details")){
+          $display_majority_details = $election->get("field_display_majority_details")?->value;
+        } else {
+          $display_majority_details = FALSE;
+        }
+        if($display_majority_details){
+          $definition['yAxis'][0]['plotLines'] = [
+              [
+                  'color' => '#8c8a8a',
+                  'width' => 6,
+                  'value' => $majority,
+                  'dashStyle' => 'LongDash',
+              ],
+          ];
+      }
+      $definition['yAxis'][0]['max'] = $max + 4;
     }
-
-    if ($majority > $max) {
-      $max = $majority;
-    }
-
-    $definition['yAxis'][0]['plotLines'] = [
-        [
-            'color' => '#8c8a8a',
-            'width' => 6,
-            'value' => $majority,
-            'dashStyle' => 'LongDash',
-        ],
-    ];
-    $definition['yAxis'][0]['max'] = $max + 4;
-
   }
 }
 

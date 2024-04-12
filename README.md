@@ -138,7 +138,7 @@ add the following to the sites main composer.json in the `"repositories": [... ]
 You can install this module with the following composer command.
 
 ```
-composer require localgovdrupal/localgov_elections_reporting:^1.0.0
+composer require localgovdrupal/localgov_elections_reporting
 ```
 
 #### Submodules

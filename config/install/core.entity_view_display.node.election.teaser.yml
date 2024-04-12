@@ -6,6 +6,8 @@ dependencies:
     - field.field.node.election.body
     - field.field.node.election.field_add_all_areas
     - field.field.node.election.field_date
+    - field.field.node.election.field_display_majority_details
+    - field.field.node.election.field_display_map
     - field.field.node.election.field_organisation
     - field.field.node.election.field_service_type
     - field.field.node.election.field_type_of_election
@@ -42,6 +44,8 @@ content:
 hidden:
   field_add_all_areas: true
   field_date: true
+  field_display_majority_details: true
+  field_display_map: true
   field_organisation: true
   field_service_type: true
   field_type_of_election: true

@@ -93,8 +93,22 @@ class AnalysisBlock extends BlockBase {
         $markup .= '<div class="value turnout">' . $turnout . '</div>';
       }
 
-      // Calculate majority
-      if (isset($majority)) {
+
+      // Get the parent election so we can figure out if we can display the majority
+      $display_majority = FALSE;
+      if ($election_nodes = $node->get('field_election')->referencedEntities()) {
+        if(isset($election_nodes[0])){
+          $election_node = $election_nodes[0];
+          if ($election_node->hasField('field_display_majority_details')) {
+            if ($election_node->get('field_display_majority_details')?->value == "1") {
+              $display_majority = TRUE;
+            }
+          }
+        }
+      }
+
+      // Display majority if we can
+      if ($display_majority && isset($majority)) {
         $markup .= '<div class="label majority">Majority</div>';
         $markup .= '<div class="value majority">' . $majority . '</div>';
       }
