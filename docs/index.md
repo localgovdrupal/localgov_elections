@@ -99,9 +99,9 @@ Once the results from the count start to come in you can enter them from viewing
 
 ### Tweet the result
 
-The module will need configured before use. Please see the submodule [documentation](modules/localgov_election_reporting_social_post/README.md) for instructions.
+The module will need configured before use. Please see the submodule [documentation](../modules/localgov_election_reporting_social_post/README.md) for instructions.
 
 1. Having followed the process for [Entering electoral area results](#entering-electoral-area-results) you click Save and Tweet.
-2. You are then presented with a screen to select the account (as setup in submodule [documentation](modules/localgov_election_reporting_social_post/README.md)) and the message to tweet. This supports tokens. ![image](images/tweet.png)
+2. You are then presented with a screen to select the account (as setup in submodule [documentation](../modules/localgov_election_reporting_social_post/README.md)) and the message to tweet. This supports tokens. ![image](images/tweet.png)
 3. Click Preview
 4. You can them Edit or Tweet.
