@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\field\Entity\FieldStorageConfig;
 use Symfony\Component\Yaml\Yaml;
@@ -106,4 +107,33 @@ function localgov_elections_reporting_update_9000() {
       }
     }
     drupal_flush_all_caches();
+}
+
+/**
+ * Area votes: sets area name field to required and stop adding empty candidates.
+ */
+function localgov_elections_reporting_update_9001() {
+
+  /** @var Drupal\field\Entity\FieldConfig $area_name_config */
+  $area_name_config = \Drupal\field\Entity\FieldConfig::loadByName('node', 'division_vote','field_area_name');
+  if ($area_name_config) {
+    $area_name_config->setRequired(TRUE);
+    $area_name_config->save();
+    Drupal::logger('localgov_elections_reporting')->notice("Set field_area_name to required");
+
+  }
+
+  /** @var EntityFormDisplay $area_vote_form_display */
+  $area_vote_form_display = EntityFormDisplay::load('node.division_vote.default');
+  if ($area_vote_form_display) {
+    $candidate_component = $area_vote_form_display->getComponent('field_candidates');
+    $new_config = $candidate_component;
+    $new_config['settings']['default_paragraph_type'] = '_none';
+    $new_config['settings']['features']['convert'] = '0';
+    $area_vote_form_display->setComponent('field_candidates', $new_config);
+    $area_vote_form_display->save();
+    Drupal::logger('localgov_elections_reporting')
+        ->notice("Removed default candidate paragraph for field_candidates");
+  }
+  drupal_flush_all_caches();
 }
