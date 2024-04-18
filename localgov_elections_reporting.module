@@ -573,4 +573,10 @@ function localgov_elections_reporting_area_vote_form_validation($form, \Drupal\C
       }
     }
   }
+
+  // Should not be able to finalise votes without having at least one candidate.
+  $finalised = $form_state->getValue('field_votes_finalised')['value'];
+  if($finalised && sizeof($candidate_keys) < 1){
+    $form_state->setErrorByName('field_candidates', t("You cannot finalise the votes with no candidates"));
+  }
 }
