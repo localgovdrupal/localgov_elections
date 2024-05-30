@@ -137,3 +137,32 @@ function localgov_elections_reporting_update_9001() {
   }
   drupal_flush_all_caches();
 }
+
+/**
+ * Update views that were missing validation.
+ */
+function localgov_elections_reporting_update_9002() {
+    $module_path = \Drupal::getContainer()
+        ->get('module_handler')
+        ->getModule('localgov_elections_reporting')
+        ->getPath();
+
+    $config_to_update = [
+        'views.view.electoral_candidates',
+        'views.view.election_results_vot',
+        'views.view.election_results_timeline',
+        'views.view.electoral_map'
+    ];
+
+    $install_dir = new FileStorage($module_path . '/config/install/');
+    foreach ($config_to_update as $config){
+        $data = $install_dir->read($config);
+        $config_obj = \Drupal::configFactory()->getEditable($config);
+        $config_obj->setData($data);
+        $config_obj->save(TRUE);
+    }
+
+    Drupal::logger('localgov_elections_reporting')->notice("Updated views with validation");
+
+    drupal_flush_all_caches();
+}

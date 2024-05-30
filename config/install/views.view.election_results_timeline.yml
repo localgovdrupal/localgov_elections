@@ -5,6 +5,7 @@ dependencies:
     - field.storage.node.field_area_name
     - field.storage.taxonomy_term.field_abbreviation
     - node.type.division_vote
+    - node.type.election
   module:
     - localgov_elections_reporting
     - node
@@ -565,11 +566,16 @@ display:
             sort_order: asc
             number_of_records: 0
             format: default_summary
-          specify_validation: false
+          specify_validation: true
           validate:
-            type: none
+            type: 'entity:node'
             fail: 'not found'
-          validate_options: {  }
+          validate_options:
+            bundles:
+              election: election
+            access: true
+            operation: view
+            multiple: 0
           break_phrase: false
           not: false
       filters:
