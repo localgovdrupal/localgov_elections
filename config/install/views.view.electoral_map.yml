@@ -7,6 +7,7 @@ dependencies:
     - field.storage.node.field_boundary_data
     - field.storage.taxonomy_term.field_party_colour
     - node.type.division_vote
+    - node.type.election
   module:
     - color_field
     - geofield
@@ -339,11 +340,16 @@ display:
             sort_order: asc
             number_of_records: 0
             format: default_summary
-          specify_validation: false
+          specify_validation: true
           validate:
-            type: none
+            type: 'entity:node'
             fail: 'not found'
-          validate_options: {  }
+          validate_options:
+            bundles:
+              election: election
+            access: true
+            operation: view
+            multiple: 0
           break_phrase: false
           not: false
       filters:
