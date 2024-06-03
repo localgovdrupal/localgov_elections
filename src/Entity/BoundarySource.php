@@ -34,7 +34,6 @@ use Drupal\localgov_elections_reporting\BoundarySourceInterface;
  *   admin_permission = "administer boundary_source",
  *   links = {
  *     "collection" = "/admin/structure/boundary-source",
- *     "add-form" = "/admin/structure/boundary-source/add",
  *     "edit-form" = "/admin/structure/boundary-source/{boundary_source}",
  *     "delete-form" = "/admin/structure/boundary-source/{boundary_source}/delete",
  *   },
