@@ -21,8 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Autocomplete controller for UK Constituency 2024 provider.
  */
-class UkConstituencyTwentyFourAutoComplete extends ControllerBase
-{
+class UkConstituencyTwentyFourAutoComplete extends ControllerBase {
 
   /**
    * The ONS dataset endpoint.
@@ -34,53 +33,51 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase
   /**
    * The HTTP client.
    *
-   * @var Client
+   * @var \GuzzleHttp\Client
    */
   protected Client $httpClient;
 
   /**
    * The default cache backend.
    *
-   * @var CacheBackendInterface
+   * @var \Drupal\Core\Cache\CacheBackendInterface
    */
   protected CacheBackendInterface $cacheBackend;
 
   /**
    * The logger.
    *
-   * @var LoggerChannelInterface
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
   protected LoggerChannelInterface $logger;
 
   /**
    * Constructs the autocomplete route.
    *
-   * @param Client $http_client
+   * @param \GuzzleHttp\Client $http_client
    *   The HTTP client.
-   * @param CacheBackendInterface $cache_backend
+   * @param \Drupal\Core\Cache\CacheBackendInterface $cache_backend
    *   Default cache backend.
-   * @param MessengerInterface $messenger
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service.
-   * @param LoggerChannelFactoryInterface $logger_channel_factory
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_channel_factory
    *   Logger channel factory.
    */
-  public function __construct(Client                        $http_client,
-                              CacheBackendInterface         $cache_backend,
-                              MessengerInterface            $messenger,
-                              LoggerChannelFactoryInterface $logger_channel_factory)
-  {
+  public function __construct(
+      Client $http_client,
+      CacheBackendInterface $cache_backend,
+      MessengerInterface $messenger,
+      LoggerChannelFactoryInterface $logger_channel_factory) {
     $this->httpClient = $http_client;
     $this->cacheBackend = $cache_backend;
     $this->messenger = $messenger;
     $this->logger = $logger_channel_factory->get('localgov_elections_constituency_provider');
   }
 
-
   /**
    * {@inheritDoc}
    */
-  public static function create(ContainerInterface $container)
-  {
+  public static function create(ContainerInterface $container) {
     return new static(
         $container->get('http_client'),
         $container->get('cache.default'),
@@ -89,25 +86,25 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase
     );
   }
 
-
   /**
    * Fetches constituency names.
    *
    * Fetches constituency names from ONS or from local cache if available.
    *
    * @return array|null
+   *   Will return the array of data or null if it cannot.
+   *
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  private function fetchConstituencies()
-  {
+  private function fetchConstituencies() {
     if ($this->cacheBackend->get(CacheKey::CONSTITUENCY_NAMES_KEY) === FALSE) {
       $response = $this->httpClient->get($this->constituencyEndpoint);
       $body = $response->getBody()->getContents();
-      $json_decoded = json_decode($body, true);
+      $json_decoded = json_decode($body, TRUE);
 
       if (!empty($json_decoded['features']) && is_array($json_decoded['features'])) {
         $constituencies = array_map(function ($feature) {
-          return $feature['attributes']['PCON24NM'] ?? null;
+          return $feature['attributes']['PCON24NM'] ?? NULL;
         },
             $json_decoded['features']
         );
@@ -120,8 +117,7 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase
   /**
    * Builds the response.
    */
-  public function build(Request $request): JsonResponse
-  {
+  public function build(Request $request): JsonResponse {
     $results = [];
 
     $query = $request->query->get('q');
@@ -136,14 +132,16 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase
 
     try {
       $constituencies = $this->fetchConstituencies();
-    } catch (GuzzleException $exception) {
-      $this->messenger->addError($this->t("Could not get autocomplete results. Query failed with: " . $exception->getMessage()));
+    }
+    catch (GuzzleException $exception) {
+      $this->messenger->addError($this->t("Could not get autocomplete results. Query failed with: @message",
+          ["@message" => $exception->getMessage()]));
       $this->logger->error($exception->getMessage());
       return new JsonResponse($results);
     }
 
     // Look through the results and see if the query matches any of what we have
-    // We're going for a query IN approach here to allow partial matches
+    // We're going for a query IN approach here to allow partial matches.
     foreach ($constituencies as $item) {
       if (str_contains(strtolower($item), strtolower($query))) {
         $results[] = ['value' => $item, 'label' => $item];

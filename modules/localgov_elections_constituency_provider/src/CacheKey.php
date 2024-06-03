@@ -5,8 +5,7 @@ namespace Drupal\localgov_elections_constituency_provider;
 /**
  * Generic class to expose cache keys.
  */
-class CacheKey
-{
+class CacheKey {
 
   /**
    * The cache key for constituency names.

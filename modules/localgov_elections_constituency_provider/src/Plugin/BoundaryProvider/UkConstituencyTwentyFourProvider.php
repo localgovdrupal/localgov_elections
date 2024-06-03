@@ -1,9 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Drupal\localgov_elections_constituency_provider\Plugin\BoundaryProvider;
 
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -11,9 +11,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_elections_reporting\BoundaryProviderPluginBase;
 use Drupal\localgov_elections_reporting\BoundarySourceInterface;
 use Drupal\node\NodeStorageInterface;
-use Drupal\paragraphs\Entity\Paragraph;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -28,22 +26,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implements ContainerFactoryPluginInterface
-{
+class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implements ContainerFactoryPluginInterface {
+
 
   use StringTranslationTrait;
 
   /**
    * Node storage.
    *
-   * @var NodeStorageInterface
+   * @var \Drupal\node\NodeStorageInterface
    */
   protected NodeStorageInterface $nodeStorage;
 
   /**
    * The HTTP client.
    *
-   * @var Client
+   * @var \GuzzleHttp\Client
    */
   protected Client $httpClient;
 
@@ -57,15 +55,14 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   /**
    * The Messenger service.
    *
-   * @var MessengerInterface
+   * @var \Drupal\Core\Messenger\MessengerInterface
    */
   protected MessengerInterface $messenger;
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition)
-  {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
         $configuration,
         $plugin_id,
@@ -77,29 +74,29 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   }
 
   /**
+   * Constructs Provider.
+   *
    * @param array $configuration
-   *  Plugin configuration.
-   * @param $plugin_id
+   *   Plugin configuration.
+   * @param string $plugin_id
    *   Plugin ID.
-   * @param $plugin_definition
+   * @param array $plugin_definition
    *   Plugin implementation definition.
-   * @param NodeStorageInterface $node_storage
+   * @param \Drupal\node\NodeStorageInterface $node_storage
    *   Node storage.
-   * @param Client $http_client
+   * @param \GuzzleHttp\Client $http_client
    *   HTTP client.
-   * @param MessengerInterface $messenger
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service.
    */
   public function __construct(
-      array                $configuration,
+      array $configuration,
                            $plugin_id,
                            $plugin_definition,
       NodeStorageInterface $node_storage,
-      Client               $http_client,
-      MessengerInterface   $messenger
-
-  )
-  {
+      Client $http_client,
+      MessengerInterface $messenger
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->nodeStorage = $node_storage;
     $this->httpClient = $http_client;
@@ -109,16 +106,14 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration()
-  {
+  public function defaultConfiguration() {
     return [];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isConfigurable()
-  {
+  public function isConfigurable() {
     return TRUE;
   }
 
@@ -129,22 +124,22 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
    *   An array of constituencies that will be queried against the ONS.
    *
    * @return array
-   *   An array of features fetched from the ONS which contain boundary information.
+   *   An array of features fetched from the ONS which contain
+   *   boundary information.
    *
-   * @throws GuzzleException
+   * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  private function fetchBoundaryInformation(array $constituencies)
-  {
-    // Build the rest of the endpoint. The where condition needs added
+  private function fetchBoundaryInformation(array $constituencies) {
+    // Build the rest of the endpoint. The where condition needs added.
     $features = [];
-    // Create an array to hold the encoded parts
+    // Create an array to hold the encoded parts.
     $encoded_parts = [];
 
-    // Loop through the constituencies to build the encoded query parts
+    // Loop through the constituencies to build the encoded query parts.
     foreach ($constituencies as $constituency) {
-      // Encode the individual parts
+      // Encode the individual parts.
       $part = urlencode("PCON24NM") . "%20%3D%20" . urlencode("'" . $constituency . "'");
-      // Add the encoded part to the array
+      // Add the encoded part to the array.
       $encoded_parts[] = $part;
     }
 
@@ -165,22 +160,21 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   /**
    * {@inheritdoc}
    */
-  public function createBoundaries(BoundarySourceInterface $entity, array $form_values)
-  {
+  public function createBoundaries(BoundarySourceInterface $entity, array $form_values) {
     $boundaries = $this->fetchBoundaryInformation($form_values["plugin"]["config"]["constituencies"]);
     $election = $form_values['election'];
     $election_node = $this->nodeStorage->load($election);
     $n_areas = 0;
 
     foreach ($boundaries as $boundary) {
-      /** @var Paragraph $area_paragraph */
+      /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
       $area = $this->nodeStorage->create(
           [
-              'type' => 'division_vote',
-              'field_area_name' => $boundary["properties"]["PCON24NM"],
-              'field_boundary_data' => json_encode($boundary),
-              'field_election' => ['target_id' => $election],
-              'title' => $election_node->getTitle() . ' - ' . $boundary["properties"]["PCON24NM"]
+            'type' => 'division_vote',
+            'field_area_name' => $boundary["properties"]["PCON24NM"],
+            'field_boundary_data' => json_encode($boundary),
+            'field_election' => ['target_id' => $election],
+            'title' => $election_node->getTitle() . ' - ' . $boundary["properties"]["PCON24NM"],
           ]
       );
       $area->save();
@@ -191,30 +185,25 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
     }
   }
 
-
   /**
    * {@inheritDoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state)
-  {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     return [];
   }
 
   /**
    * {@inheritDoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state)
-  {
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
 
   }
 
   /**
    * {@inheritDoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state)
-  {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
 
   }
-
 
 }
