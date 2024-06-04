@@ -57,3 +57,7 @@ charts_default_settings:
         overflow: ''
       shadow: 0
     exporting_library: 0
+advanced:
+  debug: false
+  requirements:
+    cdn: true

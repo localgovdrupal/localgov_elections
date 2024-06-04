@@ -17,122 +17,6 @@ See the [Documentation](docs/index.md) for more details
 
 ## Installing
 
-### Before installing
-
-As the libraries for Highcharts are not coming from Packagist they need to be defined in the root package. To do this
-add the following to the sites main composer.json in the `"repositories": [... ]` section.
-
-```
-        {
-            "type": "package",
-            "package": {
-                "name": "highcharts/highcharts",
-                "version": "8.2.2",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "highcharts"
-                },
-                "dist": {
-                    "url": "https://code.highcharts.com/8.2.2/highcharts.js",
-                    "type": "file"
-                },
-                "require": {
-                    "composer/installers": "^1.0 || ^2.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "highcharts/more",
-                "version": "8.2.2",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "highcharts_more"
-                },
-                "dist": {
-                    "url": "https://code.highcharts.com/8.2.2/highcharts-more.js",
-                    "type": "file"
-                },
-                "require": {
-                    "composer/installers": "^1.0 || ^2.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "highcharts/exporting",
-                "version": "8.2.2",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "highcharts_exporting"
-                },
-                "dist": {
-                    "url": "https://code.highcharts.com/8.2.2/modules/exporting.js",
-                    "type": "file"
-                },
-                "require": {
-                    "composer/installers": "^1.0 || ^2.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "highcharts/export-data",
-                "version": "8.2.2",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "highcharts_export-data"
-                },
-                "dist": {
-                    "url": "https://code.highcharts.com/8.2.2/modules/export-data.js",
-                    "type": "file"
-                },
-                "require": {
-                    "composer/installers": "^1.0 || ^2.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "highcharts/accessibility",
-                "version": "8.2.2",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "highcharts_accessibility"
-                },
-                "dist": {
-                    "url": "https://code.highcharts.com/8.2.2/modules/accessibility.js",
-                    "type": "file"
-                },
-                "require": {
-                    "composer/installers": "^1.0 || ^2.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-                "package": {
-                "name": "highcharts/3d",
-                "version": "8.2.2",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "highcharts_3d"
-                },
-                "dist": {
-                    "url": "https://code.highcharts.com/8.2.2/highcharts-3d.js",
-                    "type": "file"
-                },
-                "require": {
-                    "composer/installers": "^1.0 || ^2.0"
-                }
-            }
-        }
-```
-
 ### Installation
 
 You can install this module with the following composer command.
@@ -140,6 +24,10 @@ You can install this module with the following composer command.
 ```
 composer require localgovdrupal/localgov_elections_reporting
 ```
+
+#### Libraries
+
+The libraries required by Charts/Highcharts are included, by default via CDN. If you wish to have these locally follow the instructions at https://www.drupal.org/docs/contributed-modules/charts/50x-getting-started#s-using-composer-and-wikimediacomposer-merge-plugin which uses the `composer.json` provided by the Charts module to install. 
 
 #### Submodules
 
