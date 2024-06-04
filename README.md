@@ -27,7 +27,7 @@ composer require localgovdrupal/localgov_elections_reporting
 
 #### Libraries
 
-The libraries required by Charts/Highcharts are included, by default via CDN, if you wish to have these locally follow the instructions at https://www.drupal.org/docs/contributed-modules/charts/50x-getting-started#s-using-composer-and-wikimediacomposer-merge-plugin which uses the `composer.json` provided by the Charts module to install. 
+The libraries required by Charts/Highcharts are included, by default via CDN. If you wish to have these locally follow the instructions at https://www.drupal.org/docs/contributed-modules/charts/50x-getting-started#s-using-composer-and-wikimediacomposer-merge-plugin which uses the `composer.json` provided by the Charts module to install. 
 
 #### Submodules
 
