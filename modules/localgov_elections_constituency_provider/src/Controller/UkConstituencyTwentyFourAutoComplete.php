@@ -28,7 +28,7 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase {
    *
    * @var string
    */
-  protected string $constituencyEndpoint = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PCON_MAY_2024_UK_BFE/FeatureServer/0/query?where=1%3D1&outFields=PCON24NM&returnGeometry=false&outSR=4326&f=json";
+  protected string $constituencyEndpoint = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BFC/FeatureServer/0/query?where=1%3D1&outFields=PCON24NM&returnGeometry=false&outSR=4326&f=json";
 
   /**
    * The HTTP client.

@@ -50,7 +50,7 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
    *
    * @var string
    */
-  protected string $boundaryEndpoint = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PCON_MAY_2024_UK_BFE/FeatureServer/0/query?outFields=PCON24NM&outSR=4326&f=geojson&where={{ constituencies }}";
+  protected string $boundaryEndpoint = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BFC/FeatureServer/0/query?outFields=PCON24NM&outSR=4326&f=geojson&where={{ constituencies }}";
 
   /**
    * The Messenger service.
