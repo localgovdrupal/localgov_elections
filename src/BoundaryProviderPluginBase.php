@@ -12,6 +12,13 @@ abstract class BoundaryProviderPluginBase extends PluginBase implements Boundary
 
   protected $configInstance;
 
+  /**
+   * An associative array containing the plugin's configuration.
+   *
+   * @var array $config
+   */
+  protected $config;
+
   public function setConfigInstance(BoundarySourceInterface $config_instance)
   {
     $this->configInstance = $config_instance;

@@ -12,11 +12,18 @@ use Drupal\Core\Plugin\DefaultSingleLazyPluginCollection;
 class BoundaryPluginCollection extends DefaultSingleLazyPluginCollection {
 
   /**
-   * The event-source ID this plugin collection belongs to.
+   * The ID this plugin collection belongs to.
    *
    * @var string
    */
   protected $boundarySourceId;
+
+  /**
+   * The boundary source entity.
+   *
+   * @var BoundarySourceInterface
+   */
+  protected $boundarySource;
 
   /**
    * Constructs a new BoundaryPluginCollection.
@@ -27,11 +34,11 @@ class BoundaryPluginCollection extends DefaultSingleLazyPluginCollection {
    *   The ID of the plugin instance.
    * @param array $configuration
    *   An array of configuration.
-   * @param BoundarySourceInterface $bondary_source
+   * @param BoundarySourceInterface $boundary_source
    *   The unique ID of the boundary source entity using this plugin.
    */
-  public function __construct(PluginManagerInterface $manager, $instance_id, array $configuration, $bondary_source) {
-    $this->boundarySource = $bondary_source;
+  public function __construct(PluginManagerInterface $manager, $instance_id, array $configuration, BoundarySourceInterface $boundary_source) {
+    $this->boundarySource = $boundary_source;
     parent::__construct($manager, $instance_id, $configuration);
   }
 
