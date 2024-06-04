@@ -7,6 +7,13 @@ core_version_requirement: ^9 || ^10
 dependencies:
   - drupal:autocomplete_deluxe
   - drupal:node
+  - drupal:field_group
+  - drupal:path
+  - drupal:datetime
+  - drupal:options
+  - drupal:link
+  - drupal:menu_ui
+  - drupal:toolbar
   - drupal:taxonomy
   - drupal:views
   - drupal:charts
@@ -20,4 +27,5 @@ dependencies:
   - drupal:charts_highcharts
   - drupal:geocoder_field
   - drupal:geocoder_geofield
+
 

@@ -1,0 +1,7 @@
+localgov_elections_constituency_provider.uk_constituency_auto_complete:
+  path: '/uk-constituency-twenty-four-auto-complete'
+  defaults:
+    _title: 'Uk Constituency Auto Complete'
+    _controller: '\Drupal\localgov_elections_constituency_provider\Controller\UkConstituencyTwentyFourAutoComplete::build'
+  requirements:
+    _permission: 'can fetch boundaries'

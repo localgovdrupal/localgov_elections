@@ -26,9 +26,9 @@ The steps to prepare for an election are as follows:
 > NOTE: You can skip this step if you don't plan to use the mapping and/or have a small number of electoral areas and are happy to enter them manually.
 
 1. Go to `Structure > Boundary Sources` or `/admin/structure/boundary-source`.
-2. Your available providers will be shown in the top right. The default provider is the UK Office of National Statistics 2023 Wards. You can add your own providers. ![image](images/boundary-provider.png)
-3. Click the `+` button for the provider you wish to use,
-4. Give the Boundary source a label and provider your Local Authority ONS code. e.g. Westmorland & Furness council is E06000064.
+2. The available providers will be shown in the "Add a Provider" section. ![image](images/boundary-provider.png)
+3. Select the provider you wish to use from the dropdown and click "Add",
+4. Give the Boundary source a label and complete any other required fields. Each provider should provide documentation as to what the fields are.
 5. Click Save.
 
 #### Creating a Boundary Provider

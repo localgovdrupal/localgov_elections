@@ -34,7 +34,8 @@ The libraries required by Charts/Highcharts are included, by default via CDN. If
 You may also wish to use the submodules provided as part of the Localgov Election Reporting module. They are:
 
 1. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 Wards
-2. LocalGov Elections Reporting Social Post Integration - Post results to social media (Twitter/X)
+2. Localgov Elections Parliamentary Constituency Provider - Boundary source provider for Office of National Statistics 2024 constituency boundaries
+3. LocalGov Elections Reporting Social Post Integration - Post results to social media (Twitter/X)
 
 Further details for these modules are in their own module READMEs and the [Documentation](docs/index.md).
 
