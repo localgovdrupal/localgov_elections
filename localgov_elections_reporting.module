@@ -379,6 +379,24 @@ function localgov_elections_reporting_views_pre_render(ViewExecutable $view)
   }
 }
 
+/**
+ * Implements hook_views_post_render().
+ */
+function localgov_elections_reporting_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache) {
+    if ($view->id() == 'election_results_via_parties') {
+        // Remove rows from rendered output where party is not standing in election (these rows will be NULL)
+        $rows = $output["#rows"]["block_1__election_seats_party_0"]["#data"];
+        $idx = 0;
+        $removed = 0;
+        foreach ($rows as $row) {
+            if (!isset($row)) {
+                array_splice($output["#rows"]["block_1__election_seats_party_0"]["#data"], $idx-$removed, 1);
+                $removed++;
+            }
+            $idx++;
+        }
+    }
+}
 
 /**
  * Implements hook_chart_definition_CHART_ID_alter().
