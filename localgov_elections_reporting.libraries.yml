@@ -33,7 +33,6 @@ results_share:
   css:
     theme:
       css/variables.css: { }
-      css/results-share.css: { }
 
 results_timeline:
   version: 1.x

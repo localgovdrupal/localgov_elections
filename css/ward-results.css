@@ -14,21 +14,6 @@
   row-gap: 1rem;
 }
 
-.view-district-results, .ward-analysis {
-  border: var(--table-border);
-}
-
-.view-district-results .view-header, .ward-analysis .analysis-header, .result-header {
-  background-color: var(--color-accent);
-  color: white;
-  padding: 1rem;
-}
-
-.view-district-results .view-header h2, .analysis-header h2, .result-header h2 {
-  margin-bottom: 0;
-  font-size: 1rem;
-}
-
 .box {
   padding: 1rem;
 }
