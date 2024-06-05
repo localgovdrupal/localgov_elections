@@ -17,6 +17,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 final class BoundarySourceListBuilder extends ConfigEntityListBuilder {
 
+  /**
+   * Form builder service.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
   protected FormBuilderInterface $formBuilder;
 
   /**

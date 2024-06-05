@@ -43,4 +43,3 @@ localgov_elections_reporting.boundary_fetch:
     parameters:
       node:
         type: entity:node
-

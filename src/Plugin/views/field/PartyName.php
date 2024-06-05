@@ -2,9 +2,10 @@
 
 namespace Drupal\localgov_elections_reporting\Plugin\views\field;
 
+use Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
-use Drupal\taxonomy\Entity\Term;
 
 /**
  * Field handler to flag the node type.
@@ -30,20 +31,20 @@ class PartyName extends FieldPluginBase {
   public function render(ResultRow $values) {
     $election = $values->_entity;
 
-    //Iterate through each candidate and store votes
+    // Iterate through each candidate and store votes.
     $party_name = NULL;
     $results = [];
 
-    //Find all 'Areas vote' (division_vote) nodes referencing this election
+    // Find all 'Areas vote' (division_vote) nodes referencing this election.
     $query = \Drupal::entityQuery('node')
-        ->condition('type', 'division_vote')
-        ->condition('field_election', $election);
+      ->condition('type', 'division_vote')
+      ->condition('field_election', $election);
     $query->accessCheck(FALSE);
     $wards = $query->execute();
 
-    // Add all candidate votes + spoils for each ward
+    // Add all candidate votes + spoils for each ward.
     foreach ($wards as $ward_id) {
-      $ward = \Drupal\node\Entity\Node::load($ward_id);
+      $ward = Node::load($ward_id);
       $candidates = $ward->get('field_candidates');
 
       foreach ($candidates->referencedEntities() as $candidate) {
@@ -53,7 +54,7 @@ class PartyName extends FieldPluginBase {
       }
     }
 
-    // Return party names
+    // Return party names.
     if ($results) {
       $party_name = $results[0]['name'];
     }

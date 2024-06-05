@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace Drupal\localgov_elections_reporting;
 
@@ -13,6 +15,7 @@ interface BoundarySourceInterface extends ConfigEntityInterface {
    * Get the plugin instance.
    *
    * @return mixed
+   *   The plugin instance.
    */
   public function getPlugin();
 
@@ -20,6 +23,7 @@ interface BoundarySourceInterface extends ConfigEntityInterface {
    * Get the plugin's settings.
    *
    * @return mixed
+   *   The plugin's settings which is an array.
    */
   public function getSettings();
 

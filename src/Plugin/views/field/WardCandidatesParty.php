@@ -2,10 +2,10 @@
 
 namespace Drupal\localgov_elections_reporting\Plugin\views\field;
 
-use Drupal\views\Plugin\views\field\FieldPluginBase;
-use Drupal\views\ResultRow;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\views\Plugin\views\field\FieldPluginBase;
+use Drupal\views\ResultRow;
 
 /**
  * Field handler to list results in each ward.
@@ -46,13 +46,15 @@ class WardCandidatesParty extends FieldPluginBase {
       $markup .= '<div class="key-result">';
       $markup .= '<span class="winning-party ' . $party_abbr . '">' . $party . '</span> ';
       if (isset($hold_gain)) {
-          $markup .= '<span class="hold-gain ' . strtolower($hold_gain) . '">' . $hold_gain . '</span>';
+        $markup .= '<span class="hold-gain ' . strtolower($hold_gain) . '">' . $hold_gain . '</span>';
       }
-      $markup .= '</div>';// end of key-result DIV
-      $markup .= '</div>'; // end of winner DIV
+      // End of key-result DIV.
+      $markup .= '</div>';
+      // End of winner DIV.
+      $markup .= '</div>';
     }
 
-    //Iterate through each candidate and store name, party and votes
+    // Iterate through each candidate and store name, party and votes.
     $results = [];
     $candidates = $area_vote->get('field_candidates');
 
@@ -66,33 +68,33 @@ class WardCandidatesParty extends FieldPluginBase {
         'surname' => $surname,
         'forenames' => $forenames,
         'party' => $party,
-        'votes' => $votes];
+        'votes' => $votes,
+      ];
     }
 
-    //Sort results into descending order by votes and ignore 1st result (winner)
+    // Sort results into descending order by votes and
+    // ignore 1st result (winner)
     if ($results) {
       $votes = array_column($results, 'votes');
       $sorted = array_multisort($votes, SORT_DESC, $results);
 
-      // Generate markup
+      // Generate markup.
       if ($sorted) {
-        //Remove 1st result (winner)
-        $top_result = array_shift($results);
+        // Remove 1st result (winner)
         foreach ($results as $result) {
           $party = $result['party'];
           $votes = $result['votes'];
           $markup .= '<div class="loser result-row">';
           $markup .= '<div class="party">' . $party . '</div>';
-          $markup .= '</div>'; // end of loser DIV
+          // End of loser DIV.
+          $markup .= '</div>';
         }
       }
     }
 
-    return
-      [
-        '#markup' => $markup,
-      ];
+    return [
+      '#markup' => $markup,
+    ];
   }
-
 
 }

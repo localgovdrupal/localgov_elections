@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace Drupal\localgov_elections_reporting\Annotation;
 
@@ -33,7 +35,8 @@ class BoundaryProvider extends Plugin {
   /**
    * An array of plugin provided forms.
    *
-   * Returns an array of plugin provided forms. We only support the download form at the moment.
+   * Returns an array of plugin provided forms. We only support the download
+   * form at the moment.
    *
    * @returns array
    */

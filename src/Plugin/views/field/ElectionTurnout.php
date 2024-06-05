@@ -2,7 +2,7 @@
 
 namespace Drupal\localgov_elections_reporting\Plugin\views\field;
 
-use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\node\Entity\Node;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
 
@@ -32,50 +32,48 @@ class ElectionTurnout extends FieldPluginBase {
     $node = $values->_entity;
     $election = $node->id();
 
-    //Find all 'Election Area' nodes referencing this election
+    // Find all 'Election Area' nodes referencing this election.
     $query = \Drupal::entityQuery('node')
       ->condition('type', 'division_vote')
       ->condition('field_election', $election);
     // OR ->condition('field_election', $node);
     // OR ->condition('field_election.entity:node.entity_id', $election);
-    // Exclude contested
-
-    //Bypass any access permission issues  ********** Query this regarding unpublished nodes *******************************
+    // Exclude contested.
     $query->accessCheck(FALSE);
     $wards = $query->execute();
 
     $turnout = 0;
     $electorate = 0;
 
-    // Add all candidate votes + spoils for each ward
+    // Add all candidate votes + spoils for each ward.
     foreach ($wards as $ward_id) {
-      $ward = \Drupal\node\Entity\Node::load($ward_id);
+      $ward = Node::load($ward_id);
 
-      if($ward->get("field_seat_not_contested")?->value == "1"){
+      if ($ward->get("field_seat_not_contested")?->value == "1") {
         continue;
       }
 
-      // Find spoils and add to turnout
+      // Find spoils and add to turnout.
       $spoils = $ward->get('field_spoils')->value;
       $turnout += $spoils;
 
-      //Iterate through each candidate and add votes to turnout
+      // Iterate through each candidate and add votes to turnout.
       $candidates = $ward->get('field_candidates');
 
-      /** @var Paragraph $candidate */
+      /** @var \Drupal\paragraphs\Entity\Paragraph $candidate */
       foreach ($candidates->referencedEntities() as $candidate) {
-          $votes = $candidate->get('field_votes')->value;
-          $turnout += $votes;
+        $votes = $candidate->get('field_votes')->value;
+        $turnout += $votes;
       }
 
-      // Find electorate and add to running total
+      // Find electorate and add to running total.
       $eligible_electorate = $ward->get('field_electorate')->value;
       if ($ward->field_votes_finalised?->value == 1) {
         $electorate += $eligible_electorate;
       }
     }
 
-    // needed to avoid division by 0
+    // Needed to avoid division by 0.
     if ($electorate == 0) {
       return "0%";
     }

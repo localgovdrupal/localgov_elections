@@ -4,7 +4,6 @@ namespace Drupal\localgov_elections_reporting\Plugin\views\field;
 
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
-use Drupal\node\Entity\Node;
 
 /**
  * Field handler to flag the node type.
@@ -31,7 +30,7 @@ class WardMajority extends FieldPluginBase {
   public function render(ResultRow $values) {
     $node = $values->_entity;
 
-    //Iterate through each candidate and store votes
+    // Iterate through each candidate and store votes.
     $first = 0;
     $second = 0;
     $results = [];
@@ -43,21 +42,21 @@ class WardMajority extends FieldPluginBase {
       $results[] = $votes;
     }
 
-    //Sort Vote results into descending order resetting array key order
+    // Sort Vote results into descending order resetting array key order.
     $sorted = rsort($results);
 
-    //Work out diff between #1 and #2 for majority value
+    // Work out diff between #1 and #2 for majority value.
     if ($sorted) {
       if (isset($results[0])) {
         $first = $results[0];
       }
       if (isset($results[1])) {
-        // Find DIFF
+        // Find DIFF.
         $second = $results[1];
         $majority = $first - $second;
       }
       else {
-        // Assume only 1 candidate standing
+        // Assume only 1 candidate standing.
         $majority = $first;
       }
     }

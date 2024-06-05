@@ -67,9 +67,9 @@ class BounaryProviderAddForm extends FormBase {
       '#markup' => $this->t("<h3>Add a Provider</h3>"),
     ];
 
-    if(empty($providers)){
+    if (empty($providers)) {
       $form['container']['no_providers'] = [
-          '#markup' => $this->t("<p>You do not appear to have any enabled providers. Make sure to enable them first.</p>"),
+        '#markup' => $this->t("<p>You do not appear to have any enabled providers. Make sure to enable them first.</p>"),
       ];
       return $form;
     }

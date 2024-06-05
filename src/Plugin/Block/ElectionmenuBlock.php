@@ -3,14 +3,13 @@
 namespace Drupal\localgov_elections_reporting\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
-use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
-use Drupal\paragraphs\Entity\Paragraph;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -32,10 +31,18 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
   protected $routeMatch;
 
   /**
+   * The election node.
    *
-   * @var NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected NodeInterface $node;
+
+  /**
+   * The entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Constructs a new ElectionmenuBlock instance.
@@ -51,10 +58,13 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
    *   The plugin implementation definition.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The current route match.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, RouteMatchInterface $route_match) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, RouteMatchInterface $route_match, EntityTypeManagerInterface $entity_type_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->routeMatch = $route_match;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -65,7 +75,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('current_route_match')
+      $container->get('current_route_match'),
+        $container->get('entity_type.manager')
     );
   }
 
@@ -73,39 +84,41 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
    * Get links for the block.
    *
    * @return array
+   *   An array of links.
    */
   private function getLinks(NodeInterface $node): array {
     $urls = [];
     $urls[] = [
       'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl(t('Summary'), Url::fromRoute('entity.node.canonical', ['node' => $this->node->id()])),
+      'link' => Link::fromTextAndUrl($this->t('Summary'), Url::fromRoute('entity.node.canonical', ['node' => $this->node->id()])),
     ];
 
     // Allow editors to hide the map
-    // It certainly won't work when we allow multiple winners / seats
+    // It certainly won't work when we allow multiple winners / seats.
     if ($node->hasField('field_display_map')) {
       $display_map = $node->get('field_display_map')?->value;
-    } else {
+    }
+    else {
       $display_map = FALSE;
     }
     if ($display_map == "1") {
       $urls[] = [
-          'attributes' => new Attribute(),
-          'link' => Link::fromTextAndUrl(t('Electoral map'), Url::fromRoute('view.electoral_map.page_1', ['node' => $this->node->id()])),
+        'attributes' => new Attribute(),
+        'link' => Link::fromTextAndUrl($this->t('Electoral map'), Url::fromRoute('view.electoral_map.page_1', ['node' => $this->node->id()])),
       ];
     }
 
     $urls[] = [
       'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl(t('Results timeline'), Url::fromRoute('view.election_results_timeline.page_1', ['node' => $this->node->id()])),
+      'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.election_results_timeline.page_1', ['node' => $this->node->id()])),
     ];
     $urls[] = [
       'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl(t('Share of the vote'), Url::fromRoute('view.election_results_vot.page_1', ['node' => $this->node->id()])),
+      'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.election_results_vot.page_1', ['node' => $this->node->id()])),
     ];
     $urls[] = [
       'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl(t('Electoral candidates'), Url::fromRoute('view.electoral_candidates.page_1', ['node' => $this->node->id()])),
+      'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.electoral_candidates.page_1', ['node' => $this->node->id()])),
     ];
     return $urls;
   }
@@ -119,16 +132,16 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
 
     if (!($node instanceof NodeInterface)) {
       if (is_int(intval($node))) {
-        $node = Node::load(intval($node));
+        $node = $this->entityTypeManager->getStorage('node')->load((intval($node)));
       }
     }
     if ($node instanceof NodeInterface) {
       if ($node->bundle() == 'division_vote') {
         $node_ref = $node->field_election?->first()->getValue()['target_id'];
         if ($node_ref) {
-          $node = Node::load(intval($node_ref));
+          $node = $this->entityTypeManager->getStorage('node')->load((intval($node_ref)));
         }
-        // should never reach this but return nothing if we do
+        // Should never reach this but return nothing if we do.
         else {
           return [];
         }
@@ -140,7 +153,6 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       $build['#attached']['library'][] = 'localgov_elections_reporting/election_menu';
       $build['#links'] = $this->getLinks($node);
     }
-
 
     return $build;
   }

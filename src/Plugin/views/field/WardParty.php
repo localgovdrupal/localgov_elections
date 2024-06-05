@@ -31,7 +31,7 @@ class WardParty extends FieldPluginBase {
   public function render(ResultRow $values) {
     $node = $values->_entity;
 
-    //Iterate through each candidate and store votes
+    // Iterate through each candidate and store votes.
     $party_name = NULL;
     $abbr = NULL;
     $results = [];
@@ -43,24 +43,24 @@ class WardParty extends FieldPluginBase {
 
       $party_abbr = $party->get('field_abbreviation')->value;
 
-      $results[] = ['abbr' => $party_abbr, 'votes' => $votes, 'name'=> $party->name?->value];
+      $results[] = ['abbr' => $party_abbr, 'votes' => $votes, 'name' => $party->name?->value];
     }
 
-    //Sort results into descending order by votes
+    // Sort results into descending order by votes.
     if ($results) {
       $votes = array_column($results, 'votes');
       $sorted = array_multisort($votes, SORT_DESC, $results);
-      // Find party of 1st result from sorted array
+      // Find party of 1st result from sorted array.
       if ($sorted) {
         $party_name = $results[0]['name'];
         $abbr = $results[0]['abbr'];
-        if($abbr) {
+        if ($abbr) {
           $abbr = strtolower($abbr);
         }
       }
     }
 
-    return Markup::create("<div class='party " . $abbr ."'>" . $party_name . "</div>");
+    return Markup::create("<div class='party " . $abbr . "'>" . $party_name . "</div>");
   }
 
 }

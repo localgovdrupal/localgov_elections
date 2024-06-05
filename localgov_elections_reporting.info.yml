@@ -27,5 +27,3 @@ dependencies:
   - drupal:charts_highcharts
   - drupal:geocoder_field
   - drupal:geocoder_geofield
-
-

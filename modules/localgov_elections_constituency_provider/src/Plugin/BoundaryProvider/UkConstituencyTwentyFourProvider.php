@@ -90,12 +90,12 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
    *   Messenger service.
    */
   public function __construct(
-      array $configuration,
-                           $plugin_id,
-                           $plugin_definition,
-      NodeStorageInterface $node_storage,
-      Client $http_client,
-      MessengerInterface $messenger
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    NodeStorageInterface $node_storage,
+    Client $http_client,
+    MessengerInterface $messenger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->nodeStorage = $node_storage;
