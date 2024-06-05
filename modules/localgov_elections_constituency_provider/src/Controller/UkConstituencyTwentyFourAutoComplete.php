@@ -64,10 +64,11 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase {
    *   Logger channel factory.
    */
   public function __construct(
-      Client $http_client,
-      CacheBackendInterface $cache_backend,
-      MessengerInterface $messenger,
-      LoggerChannelFactoryInterface $logger_channel_factory) {
+    Client $http_client,
+    CacheBackendInterface $cache_backend,
+    MessengerInterface $messenger,
+    LoggerChannelFactoryInterface $logger_channel_factory,
+  ) {
     $this->httpClient = $http_client;
     $this->cacheBackend = $cache_backend;
     $this->messenger = $messenger;

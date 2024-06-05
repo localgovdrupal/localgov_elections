@@ -2,10 +2,10 @@
 
 namespace Drupal\localgov_elections_reporting\Plugin\views\field;
 
-use Drupal\views\Plugin\views\field\FieldPluginBase;
-use Drupal\views\ResultRow;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\views\Plugin\views\field\FieldPluginBase;
+use Drupal\views\ResultRow;
 
 /**
  * Field handler to list results in each ward.
@@ -31,7 +31,6 @@ class WardCandidatesCandidate extends FieldPluginBase {
    */
   public function render(ResultRow $values) {
     $area_vote = $values->_entity;
-    $hold_gain = $area_vote->get('field_hold_or_gain')->value;
     $markup = '<div class="ward-candidate-results">';
 
     $winner = Paragraph::load($area_vote->get('field_winning_candidate')->target_id);
@@ -44,14 +43,17 @@ class WardCandidatesCandidate extends FieldPluginBase {
       if (isset($forenames)) {
         $markup .= ', ' . $forenames;
       }
-      $markup .= '</div>';// end of name DIV
+      // End of name DIV.
+      $markup .= '</div>';
       $markup .= '<div class="key-result">';
-      $markup .= '</div>';// end of key-result DIV
+      // End of key-result DIV.
+      $markup .= '</div>';
 
-      $markup .= '</div>'; // end of winner DIV
+      // End of winner DIV.
+      $markup .= '</div>';
     }
 
-    //Iterate through each candidate and store name, party and votes
+    // Iterate through each candidate and store name, party and votes.
     $results = [];
     $candidates = $area_vote->get('field_candidates');
 
@@ -65,18 +67,19 @@ class WardCandidatesCandidate extends FieldPluginBase {
         'surname' => $surname,
         'forenames' => $forenames,
         'party' => $party,
-        'votes' => $votes];
+        'votes' => $votes,
+      ];
     }
 
-    //Sort results into descending order by votes and ignore 1st result (winner)
+    // Sort results into descending order by votes
+    // and ignore 1st result (winner)
     if ($results) {
       $votes = array_column($results, 'votes');
       $sorted = array_multisort($votes, SORT_DESC, $results);
 
-      // Generate markup
+      // Generate markup.
       if ($sorted) {
-        //Remove 1st result (winner)
-        $top_result = array_shift($results);
+        // Remove 1st result (winner)
         foreach ($results as $result) {
           $surname = $result['surname'];
           $forenames = $result['forenames'];
@@ -92,10 +95,9 @@ class WardCandidatesCandidate extends FieldPluginBase {
       }
     }
 
-    return
-      [
-        '#markup' => $markup,
-      ];
+    return [
+      '#markup' => $markup,
+    ];
   }
 
 }

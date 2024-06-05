@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Drupal\localgov_elections_reporting\Entity;
 
@@ -51,8 +53,7 @@ use Drupal\localgov_elections_reporting\BoundarySourceInterface;
  *   },
  * )
  */
-class BoundarySource extends ConfigEntityBase implements BoundarySourceInterface, EntityWithPluginCollectionInterface
-{
+class BoundarySource extends ConfigEntityBase implements BoundarySourceInterface, EntityWithPluginCollectionInterface {
 
   /**
    * The ID of the entity.
@@ -69,7 +70,9 @@ class BoundarySource extends ConfigEntityBase implements BoundarySourceInterface
   protected string $label;
 
   /**
-   * @var LazyPluginCollection
+   * Lazy plugin collection.
+   *
+   * @var \Drupal\Component\Plugin\LazyPluginCollection
    */
   protected $pluginCollection;
 
@@ -98,8 +101,7 @@ class BoundarySource extends ConfigEntityBase implements BoundarySourceInterface
    * @return \Drupal\Component\Plugin\LazyPluginCollection
    *   The plugin collection.
    */
-  protected function getPluginCollection(): LazyPluginCollection
-  {
+  protected function getPluginCollection(): LazyPluginCollection {
     if (!$this->pluginCollection) {
       $this->pluginCollection = new BoundaryPluginCollection(
           \Drupal::service('plugin.manager.boundary_provider'),
@@ -113,24 +115,22 @@ class BoundarySource extends ConfigEntityBase implements BoundarySourceInterface
   /**
    * {@inheritdoc}
    */
-  public function getPluginCollections(): array
-  {
+  public function getPluginCollections(): array {
     return ['configuration' => $this->getPluginCollection()];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getPlugin()
-  {
+  public function getPlugin() {
     return $this->getPluginCollection()->get($this->plugin);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getSettings()
-  {
+  public function getSettings() {
     return $this->settings;
   }
+
 }

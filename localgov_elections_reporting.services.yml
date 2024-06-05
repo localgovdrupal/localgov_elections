@@ -1,9 +1,4 @@
 services:
-  localgov_elections_reporting.node.insert:
-    class: Drupal\localgov_elections_reporting\EventSubscriber\NodeInsertDivisionVotesSubscriber
-    tags:
-    - { name: 'event_subscriber' }
-
   plugin.manager.boundary_provider:
     class: Drupal\localgov_elections_reporting\BoundaryProviderPluginManager
     parent: default_plugin_manager

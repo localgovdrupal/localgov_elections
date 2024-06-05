@@ -4,7 +4,6 @@ namespace Drupal\localgov_elections_reporting\Plugin\views\field;
 
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
-use Drupal\taxonomy\Entity\Term;
 
 /**
  * Field handler to flag the node type.
@@ -21,12 +20,11 @@ class PartySeats extends FieldPluginBase {
   }
 
   /**
-   * Render function for the part_seats
+   * Render function for the part_seats.
    *
    * @{inheritdoc}
    */
   public function render(ResultRow $values) {
-
 
     return 3;
   }

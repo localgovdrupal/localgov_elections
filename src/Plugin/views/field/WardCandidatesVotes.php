@@ -31,7 +31,6 @@ class WardCandidatesVotes extends FieldPluginBase {
    */
   public function render(ResultRow $values) {
     $area_vote = $values->_entity;
-    $hold_gain = $area_vote->get('field_hold_or_gain')->value;
     $markup = '<div class="ward-candidate-results">';
 
     $winner = Paragraph::load($area_vote->get('field_winning_candidate')->target_id);
@@ -43,10 +42,11 @@ class WardCandidatesVotes extends FieldPluginBase {
       $votes = $winner->get('field_votes')->value;
       $markup .= '<div class="winner result-row">';
       $markup .= '<div class="votes">' . $votes . '</div>';
-      $markup .= '</div>'; // end of winner DIV
+      // End of winner DIV.
+      $markup .= '</div>';
     }
 
-    //Iterate through each candidate and store name, party and votes
+    // Iterate through each candidate and store name, party and votes.
     $results = [];
     $candidates = $area_vote->get('field_candidates');
 
@@ -64,29 +64,28 @@ class WardCandidatesVotes extends FieldPluginBase {
       ];
     }
 
-    //Sort results into descending order by votes and ignore 1st result (winner)
+    // Sort results into descending order by votes and
+    // ignore 1st result (winner)
     if ($results) {
       $votes = array_column($results, 'votes');
       $sorted = array_multisort($votes, SORT_DESC, $results);
 
-      // Generate markup
+      // Generate markup.
       if ($sorted) {
-        //Remove 1st result (winner)
-        $top_result = array_shift($results);
+        // Remove 1st result (winner)
         foreach ($results as $result) {
           $votes = $result['votes'];
           $markup .= '<div class="loser result-row">';
           $markup .= '<div class="votes">' . $votes . '</div>';
-          $markup .= '</div>'; // end of loser DIV
+          // End of loser DIV.
+          $markup .= '</div>';
         }
       }
     }
 
-    return
-      [
-        '#markup' => $markup,
-      ];
+    return [
+      '#markup' => $markup,
+    ];
   }
-
 
 }

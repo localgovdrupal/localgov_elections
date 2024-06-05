@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Drupal\localgov_elections_reporting\Form;
 
@@ -15,21 +17,19 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Boundary Source form.
  */
-class BoundarySourceForm extends EntityForm
-{
+class BoundarySourceForm extends EntityForm {
 
   /**
    * The plugin form factory service.
    *
-   * @var PluginFormFactoryInterface
+   * @var \Drupal\Core\Plugin\PluginFormFactoryInterface
    */
   private PluginFormFactoryInterface $formFactory;
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container)
-  {
+  public static function create(ContainerInterface $container) {
     return new static(
         $container->get('plugin_form.factory'),
         $container->get('entity_type.manager')
@@ -39,13 +39,12 @@ class BoundarySourceForm extends EntityForm
   /**
    * Constructs the boundary source form.
    *
-   * @param PluginFormFactoryInterface $formFactory
+   * @param \Drupal\Core\Plugin\PluginFormFactoryInterface $formFactory
    *   The plugin form factory service.
-   * @param EntityTypeManagerInterface $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager service.
    */
-  public function __construct(PluginFormFactoryInterface $formFactory, EntityTypeManagerInterface $entityTypeManager)
-  {
+  public function __construct(PluginFormFactoryInterface $formFactory, EntityTypeManagerInterface $entityTypeManager) {
     $this->formFactory = $formFactory;
     $this->entityTypeManager = $entityTypeManager;
   }
@@ -53,39 +52,38 @@ class BoundarySourceForm extends EntityForm
   /**
    * {@inheritdoc}
    */
-  public function form(array $form, FormStateInterface $form_state): array
-  {
+  public function form(array $form, FormStateInterface $form_state): array {
 
     $form = parent::form($form, $form_state);
 
     $form['label'] = [
-        '#type' => 'textfield',
-        '#title' => $this->t('Label'),
-        '#maxlength' => 255,
-        '#default_value' => $this->entity->label(),
-        '#required' => TRUE,
+      '#type' => 'textfield',
+      '#title' => $this->t('Label'),
+      '#maxlength' => 255,
+      '#default_value' => $this->entity->label(),
+      '#required' => TRUE,
     ];
 
     // @todo don't know if a description field is actually useful. Should it be removed?
     $form['description'] = [
-        '#type' => 'textarea',
-        '#title' => $this->t('Description'),
-        '#default_value' => $this->entity->get('description'),
+      '#type' => 'textarea',
+      '#title' => $this->t('Description'),
+      '#default_value' => $this->entity->get('description'),
     ];
 
     $form['id'] = [
-        '#type' => 'machine_name',
-        '#default_value' => $this->entity->id(),
-        '#machine_name' => [
-            'exists' => [$this, 'exist'],
-        ],
-        '#disabled' => !$this->entity->isNew(),
+      '#type' => 'machine_name',
+      '#default_value' => $this->entity->id(),
+      '#machine_name' => [
+        'exists' => [$this, 'exist'],
+      ],
+      '#disabled' => !$this->entity->isNew(),
     ];
 
     $form['status'] = [
-        '#type' => 'checkbox',
-        '#title' => $this->t('Enabled'),
-        '#default_value' => $this->entity->status(),
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enabled'),
+      '#default_value' => $this->entity->status(),
     ];
 
     // Add the plugin subform.
@@ -100,8 +98,7 @@ class BoundarySourceForm extends EntityForm
   /**
    * {@inheritdoc}
    */
-  public function save(array $form, FormStateInterface $form_state): int
-  {
+  public function save(array $form, FormStateInterface $form_state): int {
     $result = parent::save($form, $form_state);
     $message_args = ['%label' => $this->entity->label()];
     $this->messenger()->addStatus(
@@ -117,13 +114,15 @@ class BoundarySourceForm extends EntityForm
   /**
    * Utility to get the form.
    *
-   * @param BoundaryProviderInterface $item
+   * @param \Drupal\localgov_elections_reporting\BoundaryProviderInterface $item
    *   The boundary provider item.
+   *
    * @return \Drupal\Core\Plugin\PluginFormInterface|BoundaryProviderInterface
+   *   The form.
+   *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    */
-  protected function getPluginForm(BoundaryProviderInterface $item)
-  {
+  protected function getPluginForm(BoundaryProviderInterface $item) {
     if ($item instanceof PluginWithFormsInterface) {
       return $this->formFactory->createInstance($item, 'configure');
     }
@@ -133,22 +132,20 @@ class BoundarySourceForm extends EntityForm
   /**
    * Helper function, checks whether an EventSource configuration entity exists.
    */
-  public function exist($id)
-  {
+  public function exist($id) {
     $entity = $this->entityTypeManager->getStorage('boundary_source')->getQuery()
-        ->accessCheck(FALSE)
-        ->condition('id', $id)
-        ->execute();
-    return (bool)$entity;
+      ->accessCheck(FALSE)
+      ->condition('id', $id)
+      ->execute();
+    return (bool) $entity;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state)
-  {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     $plugin = $this->getEntity()->getPlugin();
-    if (!is_subclass_of($plugin, BoundaryProviderPluginBase::class)){
+    if (!is_subclass_of($plugin, BoundaryProviderPluginBase::class)) {
       $form_state->setErrorByName('', "Plugin not subclass of BoundaryProviderPluginBase");
       return;
     }
@@ -159,11 +156,9 @@ class BoundarySourceForm extends EntityForm
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state)
-  {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
     $this->getPluginForm($this->entity->getPlugin())->submitConfigurationForm($form['settings'], SubformState::createForSubform($form['settings'], $form, $form_state));
   }
-
 
 }

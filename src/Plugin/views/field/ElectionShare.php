@@ -2,11 +2,10 @@
 
 namespace Drupal\localgov_elections_reporting\Plugin\views\field;
 
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
-use Drupal\node\Entity\Node;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\taxonomy\Entity\Term;
 
 /**
  * Field handler to calculate percentage share of votes cast for a party.
@@ -25,16 +24,16 @@ class ElectionShare extends FieldPluginBase {
   /**
    * Render function for the election_share field.
    *
-   * Displays the percentage share of a political party
+   * Displays the percentage share of a political party.
    *
    * @{inheritdoc}
    */
   public function render(ResultRow $values) {
     // Get value of Area/Division vote (division_vote) from View -
     // unfortunately cannot use this Node directly due to way Views handles
-    // aggregate functions from Custom fields
+    // aggregate functions from Custom fields.
     $entity = $values->_entity;
-    // Get ID of Election
+    // Get ID of Election.
     $election = $entity->get('field_election')->target_id;
     $party = $values->_relationship_entities['field_party'];
     $party_id = $party->id();
@@ -46,28 +45,27 @@ class ElectionShare extends FieldPluginBase {
     // Get ID of current election node (from URL argument)
     // Only works if NID is 2nd arg. I know - flakey.
     // Would be better to grab the Views Contextual Filter
-    //$current_path = \Drupal::service('path.current')->getPath();
-    //$path_args = explode('/', $current_path);
-    //$nid = $path_args[2];
-
+    // $current_path = \Drupal::service('path.current')->getPath();
+    // $path_args = explode('/', $current_path);
+    // $nid = $path_args[2];.
     $node = Node::load($election);
-    if ($node instanceof \Drupal\node\NodeInterface) {
-      // Arg must be NID of an Election content type
+    if ($node instanceof NodeInterface) {
+      // Arg must be NID of an Election content type.
       if ($node->getType() == 'election') {
-        //$election = $node->id();
-        //Find all 'Area vote' (division_vote) nodes referencing this election
+        // $election = $node->id();
+        // Find all 'Area vote' (division_vote) nodes referencing this election
         $query = \Drupal::entityQuery('node')
-            ->condition('type', 'division_vote')
-            ->condition('field_election', $election);
-        // exclude not contested
+          ->condition('type', 'division_vote')
+          ->condition('field_election', $election);
+        // Exclude not contested.
         $query->accessCheck(FALSE);
         $wards = $query->execute();
 
-        // Add all candidate votes + spoils for each ward
+        // Add all candidate votes + spoils for each ward.
         foreach ($wards as $ward_id) {
-          $ward = \Drupal\node\Entity\Node::load($ward_id);
+          $ward = Node::load($ward_id);
 
-          //Iterate through each candidate and add votes to trunout
+          // Iterate through each candidate and add votes to trunout.
           $candidates = $ward->get('field_candidates');
 
           foreach ($candidates->referencedEntities() as $candidate) {
@@ -84,7 +82,6 @@ class ElectionShare extends FieldPluginBase {
         }
       }
     }
-
 
     return $percentage;
   }

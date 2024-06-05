@@ -4,7 +4,6 @@ namespace Drupal\localgov_elections_reporting\Plugin\views\field;
 
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
-use Drupal\taxonomy\Entity\Term;
 
 /**
  * Field handler to flag the node type.
@@ -22,8 +21,6 @@ class PartyAbbr extends FieldPluginBase {
 
   /**
    * Render function for the party_abbr field.
-   *
-   *
    *
    * @{inheritdoc}
    */

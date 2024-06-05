@@ -12,7 +12,7 @@ use Drupal\Core\Entity\EntityInterface;
  */
 class NodeInsertDivisionVotes extends Event {
 
-  const localgov_elections_reporting_NODE_INSERT = 'localgov_elections_reporting.node.insert';
+  const LOCALGOV_ELECTIONS_REPORTING_NODE_INSERT = 'localgov_elections_reporting.node.insert';
 
   /**
    * Node entity.
@@ -25,6 +25,7 @@ class NodeInsertDivisionVotes extends Event {
    * Constructs a node insertion event object.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The node entity.
    */
   public function __construct(EntityInterface $entity) {
     $this->entity = $entity;
@@ -34,8 +35,10 @@ class NodeInsertDivisionVotes extends Event {
    * Get the inserted entity.
    *
    * @return \Drupal\Core\Entity\EntityInterface
+   *   The node entity.
    */
   public function getEntity() {
     return $this->entity;
   }
+
 }

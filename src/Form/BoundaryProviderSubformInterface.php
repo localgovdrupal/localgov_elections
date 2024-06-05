@@ -2,7 +2,6 @@
 
 namespace Drupal\localgov_elections_reporting\Form;
 
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 use Drupal\localgov_elections_reporting\BoundaryProviderInterface;
 
@@ -11,22 +10,25 @@ use Drupal\localgov_elections_reporting\BoundaryProviderInterface;
  *
  * @todo Check if the method below are actually being used.
  */
-interface BoundaryProviderSubformInterface extends PluginFormInterface
-{
+interface BoundaryProviderSubformInterface extends PluginFormInterface {
 
   /**
    * Set the plugin.
    *
-   * @param BoundaryProviderInterface $plugin
+   * @param \Drupal\localgov_elections_reporting\BoundaryProviderInterface $plugin
    *   The boundary provider plugin.
+   *
    * @return void
+   *   Does not return anything.
    */
   public function setPlugin(BoundaryProviderInterface $plugin);
 
   /**
    * Get the plugin.
    *
-   * @return BoundaryProviderInterface
+   * @return \Drupal\localgov_elections_reporting\BoundaryProviderInterface
+   *   The plugin instance.
    */
   public function getPlugin():BoundaryProviderInterface;
+
 }

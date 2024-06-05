@@ -1,8 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Install, update and uninstall functions for the LocalGov Elections Module.
+ */
+
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Symfony\Component\Yaml\Yaml;
 
@@ -25,10 +31,8 @@ function localgov_elections_reporting_install($is_syncing) {
   }
 }
 
-
 /**
  * Implements hook_uninstall().
- *
  */
 function localgov_elections_reporting_uninstall($is_syncing) {
   $storage_handler = \Drupal::entityTypeManager()
@@ -36,86 +40,88 @@ function localgov_elections_reporting_uninstall($is_syncing) {
   $nodes = $storage_handler->loadByProperties(['type' => 'election']);
   try {
     $storage_handler->delete($nodes);
-  } catch (EntityStorageException $e) {
+  }
+  catch (EntityStorageException $e) {
   }
   $nodes = $storage_handler->loadByProperties(['type' => 'division_vote']);
   try {
     $storage_handler->delete($nodes);
-  } catch (EntityStorageException $e) {
+  }
+  catch (EntityStorageException $e) {
   }
 }
-
 
 /**
  * Adds options to hide and display majority details and map for elections.
  */
 function localgov_elections_reporting_update_9000() {
   $module_path = \Drupal::getContainer()
-      ->get('module_handler')
-      ->getModule('localgov_elections_reporting')
-      ->getPath();
+    ->get('module_handler')
+    ->getModule('localgov_elections_reporting')
+    ->getPath();
 
-    // https://drupal.stackexchange.com/questions/227753/how-to-create-a-field-with-hook-update
-    // Fields need to be created properly with field storage config APIs.
-    $fields = [
-        'field.storage.node.field_display_map',
-        'field.storage.node.field_display_majority_details'
-    ];
+  // https://drupal.stackexchange.com/questions/227753/how-to-create-a-field-with-hook-update
+  // Fields need to be created properly with field storage config APIs.
+  $fields = [
+    'field.storage.node.field_display_map',
+    'field.storage.node.field_display_majority_details',
+  ];
 
-    foreach ($fields as $field){
-      $yml = Yaml::parse(file_get_contents($module_path . "/config/install/$field.yml"));
-      if (!FieldStorageConfig::loadByName($yml['entity_type'], $yml['field_name'])) {
-        FieldStorageConfig::create($yml)->save();
+  foreach ($fields as $field) {
+    $yml = Yaml::parse(file_get_contents($module_path . "/config/install/$field.yml"));
+    if (!FieldStorageConfig::loadByName($yml['entity_type'], $yml['field_name'])) {
+      FieldStorageConfig::create($yml)->save();
+    }
+  }
+
+  // These don't need to do any field creation the following should be okay.
+  $config_to_update = [
+    'field.field.node.election.field_display_map',
+    'field.field.node.election.field_display_majority_details',
+    'core.entity_form_display.node.election.default',
+    'core.entity_view_display.node.election.teaser',
+    'core.entity_view_display.node.election.default',
+  ];
+
+  $install_dir = new FileStorage($module_path . '/config/install/');
+  foreach ($config_to_update as $config) {
+    $data = $install_dir->read($config);
+    $config_obj = \Drupal::configFactory()->getEditable($config);
+    $config_obj->setData($data);
+    $config_obj->save(TRUE);
+  }
+
+  $elections = Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
+    'type' => 'election',
+  ]);
+
+  // New field values will be empty so set their defaults.
+  if ($elections) {
+    /** @var \Drupal\node\NodeInterface $election */
+    foreach ($elections as $election) {
+      $election->set("field_display_map", TRUE);
+      $election->set("field_display_majority_details", TRUE);
+      try {
+        $election->save();
+        $id = $election->id();
+        Drupal::logger('localgov_elections_reporting')
+          ->notice("Set default values for new fields field_display_map and field_display_majority_details for election with id $id");
+      }
+      catch (EntityStorageException $exception) {
+        Drupal::logger('localgov_elections_reporting')->error($exception->getMessage());
       }
     }
-
-    // These don't need to do any field creation the following should be okay.
-    $config_to_update = [
-        'field.field.node.election.field_display_map',
-        'field.field.node.election.field_display_majority_details',
-        'core.entity_form_display.node.election.default',
-        'core.entity_view_display.node.election.teaser',
-        'core.entity_view_display.node.election.default'
-    ];
-
-    $install_dir = new FileStorage($module_path . '/config/install/');
-    foreach ($config_to_update as $config){
-      $data = $install_dir->read($config);
-      $config_obj = \Drupal::configFactory()->getEditable($config);
-      $config_obj->setData($data);
-      $config_obj->save(TRUE);
-    }
-
-    $elections = Drupal::entityTypeManager()->getStorage('node')->loadByProperties([
-        'type' => 'election'
-    ]);
-
-    // New field values will be empty so set their defaults.
-    if ($elections){
-      /** @var \Drupal\node\NodeInterface $election */
-      foreach ($elections as $election){
-        $election->set("field_display_map", TRUE);
-        $election->set("field_display_majority_details", TRUE);
-        try {
-          $election->save();
-          $id = $election->id();
-          Drupal::logger('localgov_elections_reporting')
-              ->notice("Set default values for new fields field_display_map and field_display_majority_details for election with id $id");
-        } catch (EntityStorageException $exception){
-          Drupal::logger('localgov_elections_reporting')->error($exception->getMessage());
-        }
-      }
-    }
-    drupal_flush_all_caches();
+  }
+  drupal_flush_all_caches();
 }
 
 /**
- * Area votes: sets area name field to required and stop adding empty candidates.
+ * Sets area name field to required and stop adding empty candidates.
  */
 function localgov_elections_reporting_update_9001() {
 
   /** @var Drupal\field\Entity\FieldConfig $area_name_config */
-  $area_name_config = \Drupal\field\Entity\FieldConfig::loadByName('node', 'division_vote','field_area_name');
+  $area_name_config = FieldConfig::loadByName('node', 'division_vote', 'field_area_name');
   if ($area_name_config) {
     $area_name_config->setRequired(TRUE);
     $area_name_config->save();
@@ -123,7 +129,7 @@ function localgov_elections_reporting_update_9001() {
 
   }
 
-  /** @var EntityFormDisplay $area_vote_form_display */
+  /** @var \Drupal\Core\Entity\Entity\EntityFormDisplay $area_vote_form_display */
   $area_vote_form_display = EntityFormDisplay::load('node.division_vote.default');
   if ($area_vote_form_display) {
     $candidate_component = $area_vote_form_display->getComponent('field_candidates');
@@ -133,7 +139,7 @@ function localgov_elections_reporting_update_9001() {
     $area_vote_form_display->setComponent('field_candidates', $new_config);
     $area_vote_form_display->save();
     Drupal::logger('localgov_elections_reporting')
-        ->notice("Removed default candidate paragraph for field_candidates");
+      ->notice("Removed default candidate paragraph for field_candidates");
   }
   drupal_flush_all_caches();
 }
@@ -142,62 +148,36 @@ function localgov_elections_reporting_update_9001() {
  * Update views that were missing validation.
  */
 function localgov_elections_reporting_update_9002() {
-    $module_path = \Drupal::getContainer()
-        ->get('module_handler')
-        ->getModule('localgov_elections_reporting')
-        ->getPath();
+  $module_path = \Drupal::getContainer()
+    ->get('module_handler')
+    ->getModule('localgov_elections_reporting')
+    ->getPath();
 
-    $config_to_update = [
-        'views.view.electoral_candidates',
-        'views.view.election_results_vot',
-        'views.view.election_results_timeline',
-        'views.view.electoral_map'
-    ];
+  $config_to_update = [
+    'views.view.electoral_candidates',
+    'views.view.election_results_vot',
+    'views.view.election_results_timeline',
+    'views.view.electoral_map',
+  ];
 
-    $install_dir = new FileStorage($module_path . '/config/install/');
-    foreach ($config_to_update as $config){
-        $data = $install_dir->read($config);
-        $config_obj = \Drupal::configFactory()->getEditable($config);
-        $config_obj->setData($data);
-        $config_obj->save(TRUE);
-    }
+  $install_dir = new FileStorage($module_path . '/config/install/');
+  foreach ($config_to_update as $config) {
+    $data = $install_dir->read($config);
+    $config_obj = \Drupal::configFactory()->getEditable($config);
+    $config_obj->setData($data);
+    $config_obj->save(TRUE);
+  }
 
-    Drupal::logger('localgov_elections_reporting')->notice("Updated views with validation");
+  Drupal::logger('localgov_elections_reporting')->notice("Updated views with validation");
 
-    drupal_flush_all_caches();
+  drupal_flush_all_caches();
 }
 
 /**
  * Implements Set Charts module to use CDN.
  */
-function localgov_elections_reporting_update_9003(&$sandbox){
+function localgov_elections_reporting_update_9003(&$sandbox) {
   $charts_config = \Drupal::configFactory()->getEditable('charts.settings');
   $charts_config->set('advanced.requirements.cdn', TRUE);
   $charts_config->save();
-}
-
-/**
- * Updates election results view to remove table sorting
- */
-function localgov_elections_reporting_update_9004() {
-    $module_path = \Drupal::getContainer()
-        ->get('module_handler')
-        ->getModule('localgov_elections_reporting')
-        ->getPath();
-
-    $config_to_update = [
-        'views.view.election_results'
-    ];
-
-    $install_dir = new FileStorage($module_path . '/config/install/');
-    foreach ($config_to_update as $config){
-        $data = $install_dir->read($config);
-        $config_obj = \Drupal::configFactory()->getEditable($config);
-        $config_obj->setData($data);
-        $config_obj->save(TRUE);
-    }
-
-    Drupal::logger('localgov_elections_reporting')->notice("Updated election results view to remove sorting");
-
-    drupal_flush_all_caches();
 }

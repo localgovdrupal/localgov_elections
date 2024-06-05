@@ -3,82 +3,62 @@
 namespace Drupal\localgov_elections_reporting\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-// Do I need the following 3 libraries...? Probably
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\node\Entity\Node;
-use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\node\NodeInterface;
+// Do I need the following 3 libraries...? Probably.
 use Drupal\taxonomy\Entity\Term;
 
 /**
+ * Provides a 'party seats' block.
  *
  * @Block(
  *   id = "party_seats_block",
  *   admin_label = @Translation("Election party seats results")
  * )
- *
  */
 class PartySeatsBlock extends BlockBase {
 
   /**
-   * {@inheritdoc)
+   * {@inheritDoc}
    */
   public function build() {
     $markup = '';
 
-    // Get ID of current election from URL
+    // Get ID of current election from URL.
+    // phpcs:ignore
     $election = \Drupal::routeMatch()->getParameter('node');
-    if ($election instanceof \Drupal\node\NodeInterface) {
+    if ($election instanceof NodeInterface) {
       $nid = $election->id();
       $election_parties = [];
 
-      //Find all 'Areas vote' (division_vote) nodes referencing this election
+      // Find all 'Areas vote' (division_vote) nodes referencing this election.
+      // phpcs:ignore
       $query = \Drupal::entityQuery('node')
-          ->condition('type', 'division_vote')
-          ->condition('field_election', $nid);
+        ->condition('type', 'division_vote')
+        ->condition('field_election', $nid);
       $query->accessCheck(FALSE);
       $wards = $query->execute();
 
-      // OR DO A BIG JOIN ON ABOVE QUERY AND THEN FIND DISTINCT VALUES FOR PARTIES IN ELECTION
-
-
-
-      // ***************
-
-
-
-
-
-
-
-
-      // Find parties
+      // Find parties.
       foreach ($wards as $ward_id) {
-        $ward = \Drupal\node\Entity\Node::load($ward_id);
+        // phpcs:ignore
+        $ward = Node::load($ward_id);
         $candidates = $ward->get('field_candidates');
         $results = [];
 
         foreach ($candidates->referencedEntities() as $candidate) {
+          // phpcs:ignore
           $party = Term::load($candidate->get('field_party')->target_id);
           $party_abbr = $party->get('field_abbreviation')->value;
 
-//          // Only add new parties if partiticpating in election
-//          if (!(in_array($party_abbr, $election_parties))) {
-//            //$party_name = $party->getTitle->value;
-//            //$party_colour = $party->get('field_party_colour');
-//            $election_parties[] = [
-//              'abbr' => $party_abbr,
-//              'count' => 0
-//            ];
-//          }
-          // Store value
           $votes = $candidate->get('field_votes')->value;
           $results[] = ['abbr' => $party_abbr, 'votes' => $votes];
         }
-        // Sort $results
+        // Sort $results.
         if ($results) {
           $votes = array_column($results, 'votes');
           $sorted = array_multisort($votes, SORT_DESC, $results);
-          // Find party of 1st result from sorted array
+          // Find party of 1st result from sorted array.
           if ($sorted) {
             $winning_party_abbr = $results[0]['abbr'];
             $election_parties[$winning_party_abbr]['count'] += 1;
@@ -86,13 +66,12 @@ class PartySeatsBlock extends BlockBase {
         }
       }
 
-
-      // wrapper to be displayed as highcharts table
+      // Wrapper to be displayed as highcharts table.
       $markup .= '<div class="results-seats-chart">';
       foreach ($election_parties as $election_party) {
         $p_abbr = $election_party['abbr'];
-        //$p_name = $election_party['name'];
-        //$p_colour = $election_party['colour'];
+        // $p_name = $election_party['name'];
+        // $p_colour = $election_party['colour'];
         $p_count = $election_party['count'];
 
         if ($p_abbr) {
@@ -105,8 +84,6 @@ class PartySeatsBlock extends BlockBase {
 
       $markup .= '</div>';
     }
-
-
 
     return [
       '#type' => 'markup',
