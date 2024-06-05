@@ -175,3 +175,29 @@ function localgov_elections_reporting_update_9003(&$sandbox){
   $charts_config->set('advanced.requirements.cdn', TRUE);
   $charts_config->save();
 }
+
+/**
+ * Updates election results view to remove table sorting
+ */
+function localgov_elections_reporting_update_9004() {
+    $module_path = \Drupal::getContainer()
+        ->get('module_handler')
+        ->getModule('localgov_elections_reporting')
+        ->getPath();
+
+    $config_to_update = [
+        'views.view.election_results'
+    ];
+
+    $install_dir = new FileStorage($module_path . '/config/install/');
+    foreach ($config_to_update as $config){
+        $data = $install_dir->read($config);
+        $config_obj = \Drupal::configFactory()->getEditable($config);
+        $config_obj->setData($data);
+        $config_obj->save(TRUE);
+    }
+
+    Drupal::logger('localgov_elections_reporting')->notice("Updated election results view to remove sorting");
+
+    drupal_flush_all_caches();
+}
