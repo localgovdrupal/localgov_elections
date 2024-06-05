@@ -176,6 +176,9 @@ function localgov_elections_reporting_update_9003(&$sandbox){
   $charts_config->save();
 }
 
+/**
+ * Updates election results view to remove table sorting
+ */
 function localgov_elections_reporting_update_9004() {
     $module_path = \Drupal::getContainer()
         ->get('module_handler')
