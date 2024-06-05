@@ -1306,7 +1306,7 @@ display:
               empty_column: false
               responsive: ''
             title:
-              sortable: true
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ' '
@@ -1334,7 +1334,7 @@ display:
               empty_column: false
               responsive: ''
             field_candidate:
-              sortable: true
+              sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
@@ -1402,7 +1402,6 @@ display:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
-        - url.query_args
         - 'user.node_grants:view'
         - user.permissions
       tags:
