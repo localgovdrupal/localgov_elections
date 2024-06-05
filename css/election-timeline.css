@@ -5,24 +5,9 @@
 .ward-candidate-results, .views-field-ward-candidates-party {
   vertical-align: top;
 }
-.view-election-results-timeline .view-header {
-  background-color: var(--color-accent);
-  color: white;
-  padding: 1rem;
-}
 
 .winner.result-row {
   margin-bottom: 2rem;
-}
-
-.view-election-results-timeline .view-header h2 {
-  margin-bottom: 0;
-  font-size: 1rem;
-}
-
-.view-election-results-timeline th {
-  background-color: unset;
-  border-bottom: var(--table-border);
 }
 
 .key-result {

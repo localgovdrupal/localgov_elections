@@ -1,25 +1,5 @@
-.view-electoral-candidates tr td {
-  font-weight: 500 !important;
-}
-
 .view-electoral-candidates a > i {
   font-weight: normal;
   font-size: 1.2rem;
   margin-right: 0.5rem;
-}
-
-.view-electoral-candidates th {
-  background-color: unset;
-  border-bottom: var(--table-border);
-}
-
-.view-electoral-candidates .view-header {
-  background-color: var(--color-accent);
-  color: white;
-  padding: 1rem;
-}
-
-.view-electoral-candidates .view-header h2 {
-  margin-bottom: 0;
-  font-size: 1rem;
 }
