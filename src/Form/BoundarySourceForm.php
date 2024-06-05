@@ -136,6 +136,7 @@ class BoundarySourceForm extends EntityForm
   public function exist($id)
   {
     $entity = $this->entityTypeManager->getStorage('boundary_source')->getQuery()
+        ->accessCheck(FALSE)
         ->condition('id', $id)
         ->execute();
     return (bool)$entity;
