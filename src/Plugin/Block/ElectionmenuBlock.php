@@ -101,25 +101,52 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     else {
       $display_map = FALSE;
     }
-    if ($display_map == "1") {
+    // Check that there is geo data to display
+    $results = \Drupal::entityQuery('node')
+      ->condition('type', 'division_vote')
+      ->condition('field_election', $node->id())
+      ->exists('field_boundary_data')
+      ->accessCheck(FALSE)
+      ->execute();
+    // If map to be displayed and there is geo data show the link
+    if ($display_map == "1" && $results) {
       $urls[] = [
         'attributes' => new Attribute(),
         'link' => Link::fromTextAndUrl($this->t('Electoral map'), Url::fromRoute('view.electoral_map.page_1', ['node' => $this->node->id()])),
       ];
     }
 
-    $urls[] = [
-      'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.election_results_timeline.page_1', ['node' => $this->node->id()])),
-    ];
-    $urls[] = [
-      'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.election_results_vot.page_1', ['node' => $this->node->id()])),
-    ];
-    $urls[] = [
-      'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.electoral_candidates.page_1', ['node' => $this->node->id()])),
-    ];
+    // Work out if next 2 links should be displayed i.e. there are finalised votes
+    $results = \Drupal::entityQuery('node')
+      ->condition('type', 'division_vote')
+      ->condition('field_election', $node->id())
+      ->condition('field_votes_finalised', TRUE)
+      ->accessCheck(FALSE)
+      ->execute();
+    if ($results) {
+      $urls[] = [
+        'attributes' => new Attribute(),
+        'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.election_results_timeline.page_1', ['node' => $this->node->id()])),
+      ];
+      $urls[] = [
+        'attributes' => new Attribute(),
+        'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.election_results_vot.page_1', ['node' => $this->node->id()])),
+      ];
+    }
+
+    // Work out if next link should be displayed i.e. there are PDFs uploaded
+    $results = \Drupal::entityQuery('node')
+      ->condition('type', 'division_vote')
+      ->condition('field_election', $node->id())
+      ->exists('field_candidates_file')
+      ->accessCheck(FALSE)
+      ->execute();
+    if ($results) {
+      $urls[] = [
+        'attributes' => new Attribute(),
+        'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.electoral_candidates.page_1', ['node' => $this->node->id()])),
+      ];
+    }
     return $urls;
   }
 
