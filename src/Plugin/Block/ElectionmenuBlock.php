@@ -101,14 +101,14 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     else {
       $display_map = FALSE;
     }
-    // Check that there is geo data to display
+    // Check that there is geo data to display.
     $results = \Drupal::entityQuery('node')
       ->condition('type', 'division_vote')
       ->condition('field_election', $node->id())
       ->exists('field_boundary_data')
       ->accessCheck(FALSE)
       ->execute();
-    // If map to be displayed and there is geo data show the link
+    // If map to be displayed and there is geo data show the link.
     if ($display_map == "1" && $results) {
       $urls[] = [
         'attributes' => new Attribute(),
@@ -116,7 +116,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       ];
     }
 
-    // Work out if next 2 links should be displayed i.e. there are finalised votes
+    // Should next 2 links should be displayed i.e. there are finalised votes.
     $results = \Drupal::entityQuery('node')
       ->condition('type', 'division_vote')
       ->condition('field_election', $node->id())
@@ -134,7 +134,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       ];
     }
 
-    // Work out if next link should be displayed i.e. there are PDFs uploaded
+    // Work out if next link should be displayed i.e. there are PDFs uploaded.
     $results = \Drupal::entityQuery('node')
       ->condition('type', 'division_vote')
       ->condition('field_election', $node->id())
