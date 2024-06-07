@@ -102,7 +102,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       $display_map = FALSE;
     }
     // Check that there is geo data to display.
-    $results = \Drupal::entityQuery('node')
+    $query = $this->entityTypeManager->getStorage('node')->getQuery();
+    $results = $query->condition('type', 'division_vote')
       ->condition('type', 'division_vote')
       ->condition('field_election', $node->id())
       ->exists('field_boundary_data')
@@ -117,7 +118,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     }
 
     // Should next 2 links should be displayed i.e. there are finalised votes.
-    $results = \Drupal::entityQuery('node')
+    $query = $this->entityTypeManager->getStorage('node')->getQuery();
+    $results = $query->condition('type', 'division_vote')
       ->condition('type', 'division_vote')
       ->condition('field_election', $node->id())
       ->condition('field_votes_finalised', TRUE)
@@ -135,7 +137,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     }
 
     // Work out if next link should be displayed i.e. there are PDFs uploaded.
-    $results = \Drupal::entityQuery('node')
+    $query = $this->entityTypeManager->getStorage('node')->getQuery();
+    $results = $query->condition('type', 'division_vote')
       ->condition('type', 'division_vote')
       ->condition('field_election', $node->id())
       ->exists('field_candidates_file')
