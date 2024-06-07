@@ -1,0 +1,15 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+    - localgov_elections_reporting
+    - localgov_menu_link_group
+id: localgov_menu_link_group_election
+group_label: Election
+weight: 13
+parent_menu: admin
+parent_menu_link: 'admin_toolbar_tools.extra_links:node.add'
+child_menu_links:
+  - 'admin_toolbar_tools.extra_links:node.add.election'
+  - 'admin_toolbar_tools.extra_links:node.add.division_vote'
