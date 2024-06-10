@@ -192,7 +192,7 @@ function localgov_elections_reporting_update_9004(&$sandbox) {
     ->getPath();
 
   $config_to_update = [
-    'views.view.electoral_map'
+    'views.view.electoral_map',
   ];
 
   $install_dir = new FileStorage($module_path . '/config/install/');
