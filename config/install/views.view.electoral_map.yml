@@ -407,7 +407,7 @@ display:
             options: '{"position":"topright","setView":"untilPanOrZoom","returnToPrevBounds":true,"keepCurrentZoomLevel":true,"strings":{"title":"Locate my position"}}'
             automatic: false
           map_position:
-            force: true
+            force: false
             center:
               lat: 54.481
               lon: -2.972

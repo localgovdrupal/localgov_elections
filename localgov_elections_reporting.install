@@ -181,3 +181,16 @@ function localgov_elections_reporting_update_9003(&$sandbox) {
   $charts_config->set('advanced.requirements.cdn', TRUE);
   $charts_config->save();
 }
+
+/**
+ * Ensures map uses auto-boxing.
+ */
+function localgov_elections_reporting_update_9004(&$sandbox) {
+
+  $config_obj = \Drupal::configFactory()->getEditable('views.view.electoral_map');
+  $config_obj->set('display.default.display_options.style.options.map_position.force', FALSE);
+  $config_obj->save();
+
+  Drupal::logger('localgov_elections_reporting')->notice("Updated map to use auto-boxing");
+
+}
