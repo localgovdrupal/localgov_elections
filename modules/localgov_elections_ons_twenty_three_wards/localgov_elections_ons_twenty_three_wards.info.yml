@@ -1,8 +1,8 @@
 name: LocalGov Elections Reporting ONS Wards 2023
 description: ONS Wards 2023 Plugin
 type: module
-package: Localgov Elections Reporting
+package: LocalGov Drupal
 core_version_requirement: ^9 || ^10
 
 dependencies:
-  - drupal:localgov_elections_reporting
+  - localgov_elections_reporting:localgov_elections_reporting

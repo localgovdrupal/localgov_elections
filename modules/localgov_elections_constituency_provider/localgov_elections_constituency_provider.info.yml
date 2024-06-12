@@ -1,7 +1,7 @@
 name: 'Localgov Elections Parliamentary Constituency Provider'
 type: module
 description: 'Provides a UK constituency boundary provider. Data source: https://geoportal.statistics.gov.uk/datasets/ons::westminster-parliamentary-constituencies-future-boundaries-uk-bfe-3/about'
-package: Localgov Elections Reporting
+package: LocalGov Drupal
 core_version_requirement: ^9 || ^10
 dependencies:
-  - drupal:localgov_elections_reporting
+  - localgov_elections_reporting:localgov_elections_reporting
