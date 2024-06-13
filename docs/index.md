@@ -44,6 +44,7 @@ If you are interested in writing your own boundary provider plugin, you can read
    - Name: Labour; Abbreviation: LAB; Party colour: 228,13,59; Opacity: 0; Text colour: 250,250,250; Opacity: 1;
    - Name: Conservative; Abbreviation: CON; Party colour: 1,174,239; Opacity: 0; Text colour: 0,0,0; Opacity: 1;
    - NOTE: Ensure that the text colour and Party colour have enough contrast to be accessible
+   - See [more parties and their colours](https://docs.google.com/spreadsheets/d/161Df7tQFZrKhVPAy4vCT19RoDXl2dAsqOWRdOkNInp4/edit#gid=0) (not tested for accessibility)
 
 ### Create an election
 
