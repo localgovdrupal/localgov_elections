@@ -5,7 +5,10 @@ package: LocalGov Drupal
 core_version_requirement: ^9 || ^10
 
 dependencies:
-  - drupal:autocomplete_deluxe
+  - autocomplete_deluxe:autocomplete_deluxe
+  - charts:charts
+  - charts:charts_highcharts
+  - color_field:color_field
   - drupal:node
   - drupal:field_group
   - drupal:path
@@ -16,14 +19,11 @@ dependencies:
   - drupal:toolbar
   - drupal:taxonomy
   - drupal:views
-  - drupal:charts
-  - drupal:color_field
-  - drupal:leaflet
-  - drupal:geofield
-  - drupal:field_formatter_class
-  - drupal:paragraphs_table
-  - drupal:leaflet_views
-  - drupal:views_field_view
-  - drupal:charts_highcharts
-  - drupal:geocoder_field
-  - drupal:geocoder_geofield
+  - field_formatter_class:field_formatter_class
+  - geofield:geofield
+  - geocoder:geocoder_field
+  - geocoder:geocoder_geofield
+  - leaflet:leaflet
+  - leaflet:leaflet_views
+  - paragraphs_table:paragraphs_table
+  - views_field_view:views_field_view
