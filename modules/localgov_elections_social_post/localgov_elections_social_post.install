@@ -15,4 +15,3 @@ function localgov_elections_social_post_install() {
     \Drupal::service('module_installer')->uninstall(['localgov_election_reporting_social_post']);
   }
 }
-
