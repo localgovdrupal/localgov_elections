@@ -1,0 +1,7 @@
+name: 'LocalGov Elections Reporting - UK Parties'
+type: module
+description: 'Adds UK parties to the parties taxonomy.'
+package: LocalGov Drupal
+core_version_requirement: ^10 || ^11
+dependencies:
+  - localgov_elections_reporting:localgov_elections_reporting
