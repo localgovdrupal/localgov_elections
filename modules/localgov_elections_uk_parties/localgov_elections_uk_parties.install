@@ -2,11 +2,14 @@
 
 /**
  * @file
- * Install, update and uninstall functions for the LocalGov Elections Reporting - UK Parties module.
+ * Install, update and uninstall functions for the UK Parties module.
  */
 
 use Drupal\taxonomy\Entity\Term;
 
+/**
+ * Implements hook_install().
+ */
 function localgov_elections_uk_parties_install() {
 
   $parties_vocabulary = 'party';
@@ -135,7 +138,7 @@ function localgov_elections_uk_parties_install() {
   ];
 
   foreach ($parties as $party => $details) {
-    $term = Term::create([
+    Term::create([
       'parent' => [],
       'name' => $party,
       'vid' => $parties_vocabulary,
