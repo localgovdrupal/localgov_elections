@@ -505,7 +505,20 @@ display:
           admin_label: 'field_party: Taxonomy term'
           plugin_id: standard
           required: false
-      header: {  }
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text
+          empty: false
+          content:
+            value: "<h2>Electoral map</h2>\r\n<p>Choose a highlighted area on the map to see further information<p>"
+            format: wysiwyg
+          tokenize: false
       footer: {  }
       display_extenders: {  }
     cache_metadata:
