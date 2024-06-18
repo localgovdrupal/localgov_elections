@@ -29,3 +29,16 @@
 .election-menu-link.active a {
   color: white;
 }
+
+.election-menu-block__button-container {
+  display: flex;
+  justify-content: end;
+}
+
+#election-menu {
+  display: block;
+}
+
+#election-menu[aria-hidden="true"] {
+  display: none;
+}

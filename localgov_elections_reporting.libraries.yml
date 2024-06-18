@@ -65,3 +65,8 @@ election_menu:
     theme:
       css/election-menu.css: { }
       'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css': { type: external,  minified: true }
+  js:
+    js/election-menu.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupal.debounce
