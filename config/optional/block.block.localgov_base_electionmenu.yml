@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - localgov_elections_reporting
+    - system
+  enforced:
+    module:
+      - localgov_elections_reporting
+  theme:
+    - localgov_base
+id: localgov_base_electionmenu
+theme: localgov_base
+region: sidebar_first
+weight: 0
+provider: null
+plugin: localgov_elections_reporting_electionmenu
+settings:
+  id: localgov_elections_reporting_electionmenu
+  label: 'Election Menu'
+  label_display: '0'
+  provider: localgov_elections_reporting
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: "/election/*\r\n/election/*/*\r\n/*/*/results\r\n/*/*/share\r\n/*/*/electoral-map\r\n/*/*/candidates"
