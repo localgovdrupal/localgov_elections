@@ -145,6 +145,9 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase {
     // We're going for a query IN approach here to allow partial matches.
     foreach ($constituencies as $item) {
       if (str_contains(strtolower($item), strtolower($query))) {
+        if (strpos($item, ",")) {
+          $item = '"' . $item . '"';
+        }
         $results[] = ['value' => $item, 'label' => $item];
       }
     }

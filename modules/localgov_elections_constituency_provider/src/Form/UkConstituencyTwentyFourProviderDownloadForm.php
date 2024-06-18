@@ -113,8 +113,8 @@ class UkConstituencyTwentyFourProviderDownloadForm implements BoundaryProviderSu
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
     // Make sure we only get triggered on submit and not ajax events too.
     if ($form_state->getTriggeringElement()['#type'] == 'submit') {
-      $values = explode(',', $form_state->getValue('constituencies'));
-      $values = array_map('trim', $values);
+      $values = str_getcsv($form_state->getValue('constituencies'));
+      $values = array_map(fn($value): string => trim(trim($value), '"'), $values);
 
       // Fetch the cached constituency names and make
       // sure we're not using a random one we've never
@@ -134,8 +134,8 @@ class UkConstituencyTwentyFourProviderDownloadForm implements BoundaryProviderSu
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     // Map the constituencies into an array instead.
     $constituencies = $form_state->getValue('constituencies');
-    $values = explode(',', $constituencies);
-    $values = array_map('trim', $values);
+    $values = str_getcsv($constituencies);
+    $values = array_map(fn($value): string => trim(trim($value), '"'), $values);
     $form_state->setValue('constituencies', $values);
   }
 
