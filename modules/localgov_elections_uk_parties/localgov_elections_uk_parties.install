@@ -1,0 +1,151 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the UK Parties module.
+ */
+
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Implements hook_install().
+ */
+function localgov_elections_uk_parties_install() {
+
+  $parties_vocabulary = 'party';
+
+  $parties = [
+    'Conservative' => [
+      'abbreviation' => 'Con',
+      'link' => 'https://www.conservatives.com/',
+      'colour' => '#0a3b7c',
+      'text_colour' => '#ffffff',
+    ],
+    'Labour' => [
+      'abbreviation' => 'Lab',
+      'link' => 'https://www.labour.org.uk/',
+      'colour' => '#e4003b',
+      'text_colour' => '#ffffff',
+    ],
+    'Liberal Democrats' => [
+      'abbreviation' => 'LD',
+      'link' => 'https://www.libdems.org.uk',
+      'colour' => '#faa61a',
+      'text_colour' => '#000000',
+    ],
+    'Green Party' => [
+      'abbreviation' => 'GP',
+      'link' => 'https://www.greenparty.org.uk/',
+      'colour' => '#00643b',
+      'text_colour' => '#ffffff',
+    ],
+    'Scottish National Party' => [
+      'abbreviation' => 'SNP',
+      'link' => 'https://www.snp.org/',
+      'colour' => '#fdf38e',
+      'text_colour' => '#000000',
+    ],
+    'Plaid Cymru' => [
+      'abbreviation' => 'PC',
+      'link' => 'https://www.partyof.wales/',
+      'colour' => '#005b54',
+      'text_colour' => '#ffff00',
+    ],
+    'UK Independence Party' => [
+      'abbreviation' => 'UKIP',
+      'link' => 'https://www.ukip.org/',
+      'colour' => '#6d3177',
+      'text_colour' => '#ffffff',
+    ],
+    'Democratic Unionist Party' => [
+      'abbreviation' => 'DUP',
+      'link' => 'https://www.mydup.com/',
+      'colour' => '#db151d',
+      'text_colour' => '#ffffff',
+    ],
+    'Sinn Féin' => [
+      'abbreviation' => 'SF',
+      'link' => 'https://www.sinnfein.ie/',
+      'colour' => '#326760',
+      'text_colour' => '#ffffff',
+    ],
+    'Social Democratic and Labour Party' => [
+      'abbreviation' => 'SDLP',
+      'link' => 'https://www.sdlp.ie/',
+      'colour' => '#2aa82c',
+      'text_colour' => '#ffffff',
+    ],
+    'Ulster Unionist Party' => [
+      'abbreviation' => 'UUP',
+      'link' => 'https://uup.org/',
+      'colour' => '#48a5ee',
+      'text_colour' => '#ffffff',
+    ],
+    'Alliance Party of Northern Ireland' => [
+      'abbreviation' => 'APNI',
+      'link' => 'https://www.allianceparty.org/',
+      'colour' => '#f6cb2f',
+      'text_colour' => '#000000',
+    ],
+    'Green Party of England and Wales' => [
+      'abbreviation' => 'GPEW',
+      'link' => 'https://www.greenparty.org.uk/',
+      'colour' => '#02a95b',
+      'text_colour' => '#ffffff',
+    ],
+    'Reform UK' => [
+      'abbreviation' => 'RU',
+      'link' => 'https://www.reform.uk/',
+      'colour' => '#12b6cf',
+      'text_colour' => '#ffffff',
+    ],
+    'Workers Party of Britain' => [
+      'abbreviation' => 'WPB',
+      'link' => 'https://workerspartybritain.org/',
+      'colour' => '#1723d8',
+      'text_colour' => '#ffffff',
+    ],
+    'Alba Party' => [
+      'abbreviation' => 'AP',
+      'link' => 'https://www.albaparty.org/',
+      'colour' => '#005eb8',
+      'text_colour' => '#ffffff',
+    ],
+    'Scottish Greens' => [
+      'abbreviation' => 'SGP',
+      'link' => 'https://greens.scot/',
+      'colour' => '#00b140',
+      'text_colour' => '#ffffff',
+    ],
+    'Traditional Unionist Voice' => [
+      'abbreviation' => 'TUV',
+      'link' => 'https://tuv.org.uk/',
+      'colour' => '#0c3a6a',
+      'text_colour' => '#ffffff',
+    ],
+    'People Before Profit' => [
+      'abbreviation' => 'PBP',
+      'link' => 'https://www.peoplebeforeprofit.ie/',
+      'colour' => '#e91d50',
+      'text_colour' => '#ffffff',
+    ],
+    'Liberal Party' => [
+      'abbreviation' => 'LP',
+      'link' => 'http://www.liberal.org.uk/',
+      'colour' => '#eb7a43',
+      'text_colour' => '#ffffff',
+    ],
+  ];
+
+  foreach ($parties as $party => $details) {
+    Term::create([
+      'parent' => [],
+      'name' => $party,
+      'vid' => $parties_vocabulary,
+      'field_political_party_uri' => $details['link'],
+      'field_abbreviation' => $details['abbreviation'],
+      'field_party_colour' => $details['colour'],
+      'field_text_colour' => $details['text_colour'],
+    ])->save();
+  }
+}
