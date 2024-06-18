@@ -1,8 +1,8 @@
-localgov_elections_social_post.area_vote_social_post:
+localgov_elections_reporting_social_post.area_vote_social_post:
   path: '/node/{node}/social-post'
   defaults:
     _title: 'Area Vote Social Post'
-    _form: 'Drupal\localgov_elections_social_post\Form\AreaVoteSocialPostForm'
+    _form: 'Drupal\localgov_elections_reporting_social_post\Form\AreaVoteSocialPostForm'
   requirements:
     _permission: 'can access election social posting'
     node: \d+
@@ -12,10 +12,10 @@ localgov_elections_social_post.area_vote_social_post:
       node:
         type: entity:node
 
-localgov_elections_social_post.settings:
+localgov_elections_reporting_social_post.settings:
   path: '/admin/config/elections/social-post-integration/settings'
   defaults:
     _title: 'Settings'
-    _form: 'Drupal\localgov_elections_social_post\Form\SettingsForm'
+    _form: 'Drupal\localgov_elections_reporting_social_post\Form\SettingsForm'
   requirements:
     _permission: 'administer site configuration'

@@ -8,7 +8,7 @@
 /**
  * Implements hook_install().
  */
-function localgov_elections_social_post_install() {
+function localgov_elections_reporting_social_post_install() {
   // Check if localgov_election_reporting_social_post module is installed.
   // If so, uninstall it, so we can use this module instead.
   if (\Drupal::moduleHandler()->moduleExists('localgov_election_reporting_social_post')) {
