@@ -10,7 +10,7 @@ use Drupal\taxonomy\Entity\Term;
 /**
  * Implements hook_install().
  */
-function localgov_elections_uk_parties_install() {
+function localgov_elections_reporting_uk_parties_install() {
 
   $parties_vocabulary = 'party';
 
