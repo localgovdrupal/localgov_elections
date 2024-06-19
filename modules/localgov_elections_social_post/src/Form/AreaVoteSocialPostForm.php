@@ -150,7 +150,7 @@ class AreaVoteSocialPostForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL): array {
-    if ($node->bundle() != "division_vote") {
+    if ($node->bundle() != "localgov_area_vote") {
       $this->messenger()->addError("Can only post from area vote nodes");
       return $form;
     }

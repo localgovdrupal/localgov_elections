@@ -31,10 +31,10 @@ class PartySeatsBlock extends BlockBase {
       $nid = $election->id();
       $election_parties = [];
 
-      // Find all 'Areas vote' (division_vote) nodes referencing this election.
+      // Find all 'Areas vote' (localgov_area_vote) nodes referencing this election.
       // phpcs:ignore
       $query = \Drupal::entityQuery('node')
-        ->condition('type', 'division_vote')
+        ->condition('type', 'localgov_area_vote')
         ->condition('localgov_election', $nid);
       $query->accessCheck(FALSE);
       $wards = $query->execute();

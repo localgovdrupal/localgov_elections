@@ -13,7 +13,7 @@ use Drupal\Core\Url;
  */
 function localgov_elections_social_post_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $node = $form_state->getFormObject()->getEntity();
-  if ($node->bundle() == "division_vote") {
+  if ($node->bundle() == "localgov_area_vote") {
     $form['actions']['save_and_add_areas'] = $form['actions']['submit'];
     $form['actions']['save_and_add_areas']['#value'] = t("Save and Tweet");
     $form['actions']['save_and_add_areas']['#submit'][] = "localgov_elections_social_post_save_and_tweet";

@@ -39,7 +39,7 @@ class ElectionMajority extends FieldPluginBase {
 
         // Find all 'Election Area' nodes referencing this election.
         $query = \Drupal::entityQuery('node')
-          ->condition('type', 'division_vote')
+          ->condition('type', 'localgov_area_vote')
           ->condition('localgov_election', $election);
         // Has to include the not contesed.
         $query->accessCheck(FALSE);

@@ -197,7 +197,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
       /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
       $area = $this->nodeStorage->create(
           [
-            'type' => 'division_vote',
+            'type' => 'localgov_area_vote',
             'field_area_name' => $boundary['properties']['WD23NM'],
             'localgov_election_boundary_data' => json_encode($boundary),
             'localgov_election' => ['target_id' => $election],

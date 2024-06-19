@@ -29,7 +29,7 @@ class ElectionShare extends FieldPluginBase {
    * @{inheritdoc}
    */
   public function render(ResultRow $values) {
-    // Get value of Area/Division vote (division_vote) from View -
+    // Get value of Area/Division vote (localgov_area_vote) from View -
     // unfortunately cannot use this Node directly due to way Views handles
     // aggregate functions from Custom fields.
     $entity = $values->_entity;
@@ -53,9 +53,9 @@ class ElectionShare extends FieldPluginBase {
       // Arg must be NID of an Election content type.
       if ($node->getType() == 'localgov_election') {
         // $election = $node->id();
-        // Find all 'Area vote' (division_vote) nodes referencing this election
+        // Find all 'Area vote' (localgov_area_vote) nodes referencing this election
         $query = \Drupal::entityQuery('node')
-          ->condition('type', 'division_vote')
+          ->condition('type', 'localgov_area_vote')
           ->condition('localgov_election', $election);
         // Exclude not contested.
         $query->accessCheck(FALSE);

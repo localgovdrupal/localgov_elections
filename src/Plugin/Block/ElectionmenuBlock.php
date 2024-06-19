@@ -103,8 +103,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     }
     // Check that there is geo data to display.
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
-    $results = $query->condition('type', 'division_vote')
-      ->condition('type', 'division_vote')
+    $results = $query->condition('type', 'localgov_area_vote')
+      ->condition('type', 'localgov_area_vote')
       ->condition('localgov_election', $node->id())
       ->exists('localgov_election_boundary_data')
       ->accessCheck(FALSE)
@@ -119,8 +119,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
 
     // Should next 2 links should be displayed i.e. there are finalised votes.
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
-    $results = $query->condition('type', 'division_vote')
-      ->condition('type', 'division_vote')
+    $results = $query->condition('type', 'localgov_area_vote')
+      ->condition('type', 'localgov_area_vote')
       ->condition('localgov_election', $node->id())
       ->condition('localgov_election_votes_final', TRUE)
       ->accessCheck(FALSE)
@@ -138,8 +138,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
 
     // Work out if next link should be displayed i.e. there are PDFs uploaded.
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
-    $results = $query->condition('type', 'division_vote')
-      ->condition('type', 'division_vote')
+    $results = $query->condition('type', 'localgov_area_vote')
+      ->condition('type', 'localgov_area_vote')
       ->condition('localgov_election', $node->id())
       ->exists('localgov_election_cand_file')
       ->accessCheck(FALSE)
@@ -166,7 +166,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       }
     }
     if ($node instanceof NodeInterface) {
-      if ($node->bundle() == 'division_vote') {
+      if ($node->bundle() == 'localgov_area_vote') {
         $node_ref = $node->localgov_election?->first()->getValue()['target_id'];
         if ($node_ref) {
           $node = $this->entityTypeManager->getStorage('node')->load((intval($node_ref)));

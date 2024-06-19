@@ -34,7 +34,7 @@ class ElectionTurnout extends FieldPluginBase {
 
     // Find all 'Election Area' nodes referencing this election.
     $query = \Drupal::entityQuery('node')
-      ->condition('type', 'division_vote')
+      ->condition('type', 'localgov_area_vote')
       ->condition('localgov_election', $election);
     // OR ->condition('localgov_election', $node);
     // OR ->condition('localgov_election.entity:node.entity_id', $election);

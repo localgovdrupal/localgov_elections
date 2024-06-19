@@ -121,14 +121,14 @@ class AnalysisBlock extends BlockBase {
         $previous_winner_abbr = $previous_winning_party->localgov_election_abbreviation->value;
       }
 
-      // If previous year not manually set, look if previous 'division_vote'
+      // If previous year not manually set, look if previous 'localgov_area_vote'
       // been set.
       if (isset($previous_result)) {
         // phpcs:ignore
-        $previous_division_vote = Node::load($previous_result->id());
-        $previous_election = $previous_division_vote->localgov_election;
+        $previous_localgov_area_vote = Node::load($previous_result->id());
+        $previous_election = $previous_localgov_area_vote->localgov_election;
 
-        // Find year from 'division_vote' entity.
+        // Find year from 'localgov_area_vote' entity.
         if (!isset($previous_year)) {
           $previous_date = $previous_election->localgov_election_date;
           if (isset($previous_date)) {
@@ -136,7 +136,7 @@ class AnalysisBlock extends BlockBase {
           }
         }
 
-        // Find winning party from 'division_vote' entity
+        // Find winning party from 'localgov_area_vote' entity
         // Need to check all candidates and see who won!
         // @todo remove
         if (!isset($previous_winning_party)) {
