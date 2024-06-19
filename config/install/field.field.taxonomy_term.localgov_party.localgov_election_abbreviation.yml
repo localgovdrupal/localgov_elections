@@ -10,7 +10,7 @@ dependencies:
 id: taxonomy_term.localgov_party.localgov_election_abbreviation
 field_name: localgov_election_abbreviation
 entity_type: taxonomy_term
-bundle: party
+bundle: localgov_party
 label: Abbreviation
 description: 'Abbreviation of party name - typically 3 upper case letters.'
 required: true

@@ -12,7 +12,7 @@ dependencies:
 id: taxonomy_term.localgov_party.localgov_election_party_colour
 field_name: localgov_election_party_colour
 entity_type: taxonomy_term
-bundle: party
+bundle: localgov_party
 label: 'Party colour'
 description: ''
 required: false

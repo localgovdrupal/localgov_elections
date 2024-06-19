@@ -17,7 +17,7 @@ dependencies:
       - localgov_elections
 id: taxonomy_term.localgov_party.default
 targetEntityType: taxonomy_term
-bundle: party
+bundle: localgov_party
 mode: default
 content:
   description:

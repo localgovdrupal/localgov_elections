@@ -12,7 +12,7 @@ dependencies:
 id: taxonomy_term.localgov_party.localgov_election_party_uri
 field_name: localgov_election_party_uri
 entity_type: taxonomy_term
-bundle: party
+bundle: localgov_party
 label: 'Political party URI'
 description: 'URI as listed on <a href=''http://search.electoralcommission.org.uk/''>search.electoralcommission.org.uk/</a>'
 required: false

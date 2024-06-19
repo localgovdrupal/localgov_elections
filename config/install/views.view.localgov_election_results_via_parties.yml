@@ -190,7 +190,7 @@ display:
           entity_field: vid
           plugin_id: bundle
           value:
-            party: party
+            localgov_party: localgov_party
           expose:
             operator_limit_selection: false
             operator_list: {  }
