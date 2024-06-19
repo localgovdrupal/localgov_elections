@@ -22,7 +22,7 @@ settings:
   handler: 'default:node'
   handler_settings:
     target_bundles:
-      election: election
+      localgov_election: localgov_election
     sort:
       field: _none
       direction: ASC
