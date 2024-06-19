@@ -223,7 +223,7 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
     // You can get nid and anything else you need from the node object.
     $type = $node->getType();
     if ($type != 'localgov_election') {
-      unset($data['tabs'][0]['views_view:view.election_results_timeline.page_1']);
+      unset($data['tabs'][0]['views_view:view.localgov_election_results_timeline.page_1']);
       unset($data['tabs'][0]['views_view:view.election_results_vot.page_1']);
       unset($data['tabs'][0]['views_view:view.electoral_candidates.page_1']);
       unset($data['tabs'][0]['views_view:view.electoral_map.page_1']);
@@ -369,7 +369,7 @@ function localgov_elections_views_pre_render(ViewExecutable $view) {
     $view->element['#attached']['library'][] = 'localgov_elections/electoral_candidates_view';
   }
 
-  if ($view->id() == 'election_results_timeline') {
+  if ($view->id() == 'localgov_election_results_timeline') {
     $view->element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
     $view->element['#attached']['library'][] = 'localgov_elections/results_timeline';
     $view->element['#attached']['library'][] = 'localgov_elections/party_colours';

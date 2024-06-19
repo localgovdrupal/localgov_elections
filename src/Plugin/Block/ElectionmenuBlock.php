@@ -128,7 +128,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     if ($results) {
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.election_results_timeline.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.localgov_election_results_timeline.page_1', ['node' => $this->node->id()])),
       ];
       $urls[] = [
         'attributes' => new Attribute(),
