@@ -38,18 +38,18 @@ function localgov_elections_theme($existing, $type, $theme, $path) {
  * Implements hook_entity_presave().
  */
 function localgov_elections_entity_presave(EntityInterface $entity) {
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'division_vote') {
+  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_area_vote') {
 
     // Trigger when division vote saved to update the winning candidate only
     // if 'Hold or Gain' stated.
-    $candidates = $entity->get('field_candidates');
-    $finalised = $entity->field_votes_finalised?->value;
+    $candidates = $entity->get('localgov_election_candidates');
+    $finalised = $entity->localgov_election_votes_final?->value;
     if ($finalised == 1) {
       $results = [];
 
       // Iterate through candidates and store their votes.
       foreach ($candidates->referencedEntities() as $candidate) {
-        $votes = $candidate->get('field_votes')->value;
+        $votes = $candidate->get('localgov_election_votes')->value;
         $cand_id = $candidate->id();
         $results[] = ['cand' => $cand_id, 'votes' => $votes];
       }
@@ -59,17 +59,17 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
         $votes = array_column($results, 'votes');
         $sorted = array_multisort($votes, SORT_DESC, $results);
 
-        // If sort worked, pull 1st result and update field_winning_candidate.
+        // If sort worked, pull 1st result and update localgov_election_winner.
         if ($sorted) {
           if (isset($results[0])) {
             $winner = $results[0]['cand'];
           }
-          // Only update field_winning_candidate if there
+          // Only update localgov_election_winner if there
           // is a result (ie, one or
           // more candidates standing and Hold/Gain set.
           if (isset($winner)) {
             $candidate = Paragraph::load($winner);
-            $entity->field_winning_candidate = $candidate;
+            $entity->localgov_election_winner = $candidate;
           }
         }
       }
@@ -82,16 +82,16 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
  */
 function localgov_elections_entity_predelete(EntityInterface $entity) {
   // Triggered just before an Election node is deleted.
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'election') {
+  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_election') {
     $election_id = $entity->id();
     $election_title = $entity->getTitle();
     // Delete all Division Vote entities referencing this election.
     $deleted = 0;
 
     $areas_query = Drupal::entityTypeManager()->getStorage('node')->getQuery();
-    $areas_query->condition('type', 'division_vote');
+    $areas_query->condition('type', 'localgov_area_vote');
     $areas_query->condition('status', 1);
-    $areas_query->condition('field_election', $election_id);
+    $areas_query->condition('localgov_election', $election_id);
     $areas_query->accessCheck(FALSE);
     $areas = $areas_query->execute();
 
@@ -103,12 +103,12 @@ function localgov_elections_entity_predelete(EntityInterface $entity) {
           $deleted++;
         }
         catch (EntityStorageException $exception) {
-          \Drupal::logger('election')->error("Could not delete area with id " . $area->id());
+          \Drupal::logger('localgov_election')->error("Could not delete area with id " . $area->id());
         }
       }
     }
 
-    \Drupal::logger('election')
+    \Drupal::logger('localgov_election')
       ->notice("Election " . $election_title . " (ID " . $election_id . ") was deleted. " . $deleted . " Division Votes deleted");
     Drupal::messenger()
       ->addStatus($deleted . ' Division Votes deleted from system');
@@ -257,9 +257,9 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
 function localgov_elections_preprocess_node(&$variables) {
   $node = $variables['elements']['#node'];
 
-  if ($node->bundle() == 'division_vote') {
-    $finalised = $node->field_votes_finalised?->value;
-    $not_contested = $node->get('field_seat_not_contested')?->value;
+  if ($node->bundle() == 'localgov_area_vote') {
+    $finalised = $node->localgov_election_votes_final?->value;
+    $not_contested = $node->get('localgov_election_no_contest')?->value;
 
     if ($finalised == 1) {
       if ($not_contested) {
@@ -303,8 +303,8 @@ function localgov_elections_preprocess_node(&$variables) {
 
   }
   elseif ($node->bundle() == 'election') {
-    if ($node->hasField('field_display_majority_details')) {
-      $display_majority = $node->get("field_display_majority_details")?->value;
+    if ($node->hasField('localgov_election_majority')) {
+      $display_majority = $node->get("localgov_election_majority")?->value;
     }
     else {
       $display_majority = FALSE;
@@ -411,8 +411,8 @@ function localgov_elections_chart_definition_election_results_via_parties_block_
 
     // Allow hiding of plot line.
     if ($election = Drupal::request()->get('node')) {
-      if ($election->hasField("field_display_majority_details")) {
-        $display_majority_details = $election->get("field_display_majority_details")?->value;
+      if ($election->hasField("localgov_election_majority")) {
+        $display_majority_details = $election->get("localgov_election_majority")?->value;
       }
       else {
         $display_majority_details = FALSE;
@@ -443,7 +443,7 @@ function localgov_elections_page_attachments(array &$attachments) {
       if ($node->bundle() == 'election') {
         $attachments['#attached']['library'][] = 'localgov_elections/election';
       }
-      elseif ($node->bundle() == 'division_vote') {
+      elseif ($node->bundle() == 'localgov_area_vote') {
         $attachments['#attached']['library'][] = 'localgov_elections/division_results';
       }
     }
@@ -471,8 +471,8 @@ function _localgov_elections_calc_majority() {
 
       // Find all 'Election Area' nodes referencing this election.
       $query = \Drupal::entityQuery('node')
-        ->condition('type', 'division_vote')
-        ->condition('field_election', $election);
+        ->condition('type', 'localgov_area_vote')
+        ->condition('localgov_election', $election);
       $query->accessCheck(FALSE);
       $num_rows = $query->count()->execute();
       $majority = (floor($num_rows / 2)) + 1;
@@ -491,13 +491,13 @@ function _localgov_elections_party_colours() {
     ->loadByProperties(['vid' => 'party']);
   if ($terms && is_array($terms)) {
     foreach ($terms as $term) {
-      $colour = $term->field_party_colour?->first()?->color;
-      $abbr = $term->field_abbreviation?->value;
+      $colour = $term->localgov_election_party_colour?->first()?->color;
+      $abbr = $term->localgov_election_abbreviation?->value;
       if ($colour && $abbr) {
         $abbr = strtolower($abbr);
 
         $results[$abbr] = [
-          'text-colour' => $term->field_text_colour?->first()?->color,
+          'text-colour' => $term->localgov_election_text_colour?->first()?->color,
           'colour' => $colour,
           'full_name' => $term->name?->value,
           'abbr' => $abbr,
@@ -523,7 +523,7 @@ function localgov_elections_preprocess_election_menu(&$variables) {
     if ($url->getUrl()->getRouteName() == $current) {
       if ($node = Drupal::routeMatch()->getParameter('node')) {
         if ($node instanceof NodeInterface) {
-          if ($node->bundle() == 'division_vote') {
+          if ($node->bundle() == 'localgov_area_vote') {
             return;
           }
         }
@@ -545,7 +545,7 @@ function localgov_elections_preprocess_block(&$variables) {
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
  */
-function localgov_elections_form_node_division_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['#validate'][] = "localgov_elections_area_vote_form_validation";
 }
 
@@ -553,35 +553,35 @@ function localgov_elections_form_node_division_vote_edit_form_alter(&$form, Form
  * Validation function for area vote node forms.
  */
 function localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state) {
-  $contested = $form_state->getValue('field_seat_not_contested')['value'];
-  $candidates = $form_state->getValue('field_candidates');
+  $contested = $form_state->getValue('localgov_election_no_contest')['value'];
+  $candidates = $form_state->getValue('localgov_election_candidates');
   $candidate_keys = array_filter(array_keys($candidates), function ($key) {
     return is_int($key);
   });
 
   if ($contested && count($candidate_keys) > 1) {
-    $form_state->setErrorByName('field_candidates', t("If the seat is <b>not</b> contested there should only be one candidate."));
+    $form_state->setErrorByName('localgov_election_candidates', t("If the seat is <b>not</b> contested there should only be one candidate."));
   }
 
   if ($contested) {
     $storage = $form_state->get('field_storage');
-    if (isset($storage['#parents']['#fields']['field_candidates'])) {
-      $candidates = $storage['#parents']['#fields']['field_candidates'];
+    if (isset($storage['#parents']['#fields']['localgov_election_candidates'])) {
+      $candidates = $storage['#parents']['#fields']['localgov_election_candidates'];
     }
     foreach ($candidates['paragraphs'] as $entry) {
       /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
       if (isset($entry['entity'])) {
         $entry = $entry['entity'];
-        if (!$entry->get('field_votes')->isEmpty()) {
-          $form_state->setErrorByName('field_candidates', t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
+        if (!$entry->get('localgov_election_votes')->isEmpty()) {
+          $form_state->setErrorByName('localgov_election_candidates', t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
         }
       }
     }
   }
 
   // Should not be able to finalise votes without having at least one candidate.
-  $finalised = $form_state->getValue('field_votes_finalised')['value'];
+  $finalised = $form_state->getValue('localgov_election_votes_final')['value'];
   if ($finalised && count($candidate_keys) < 1) {
-    $form_state->setErrorByName('field_candidates', t("You cannot finalise the votes with no candidates"));
+    $form_state->setErrorByName('localgov_election_candidates', t("You cannot finalise the votes with no candidates"));
   }
 }
