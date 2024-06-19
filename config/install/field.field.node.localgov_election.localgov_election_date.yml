@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_date
+    - node.type.localgov_election
+  module:
+    - datetime
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_election.localgov_election_date
+field_name: localgov_election_date
+entity_type: node
+bundle: localgov_election
+label: 'Date of election'
+description: 'Date election due to be held'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

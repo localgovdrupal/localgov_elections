@@ -1,0 +1,54 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.localgov_election_candidates
+    - paragraphs.paragraphs_type.localgov_election_candidate
+    - paragraphs.paragraphs_type.localgov_area_vote
+  module:
+    - entity_reference_revisions
+  enforced:
+    module:
+      - localgov_elections
+id: paragraph.localgov_area_vote.localgov_election_candidates
+field_name: localgov_election_candidates
+entity_type: paragraph
+bundle: localgov_area_vote
+label: Candidates
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      candidate: candidate
+    negate: 0
+    target_bundles_drag_drop:
+      candidate:
+        weight: 9
+        enabled: true
+      localgov_area_vote:
+        weight: 10
+        enabled: false
+      from_library:
+        weight: 11
+        enabled: false
+      localgov_contact:
+        weight: 12
+        enabled: false
+      localgov_image:
+        weight: 13
+        enabled: false
+      localgov_link:
+        weight: 14
+        enabled: false
+      localgov_text:
+        weight: 15
+        enabled: false
+      topic_list_builder:
+        weight: 16
+        enabled: false
+field_type: entity_reference_revisions

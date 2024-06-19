@@ -1,0 +1,80 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.localgov_party.localgov_election_abbreviation
+    - field.field.taxonomy_term.localgov_party.localgov_election_party_colour
+    - field.field.taxonomy_term.localgov_party.localgov_election_political_party_uri
+    - field.field.taxonomy_term.localgov_party.localgov_election_text_colour
+    - taxonomy.vocabulary.localgov_party
+  module:
+    - color_field
+    - link
+    - path
+    - text
+  enforced:
+    module:
+      - localgov_elections
+id: taxonomy_term.localgov_party.default
+targetEntityType: taxonomy_term
+bundle: party
+mode: default
+content:
+  description:
+    type: text_textarea
+    weight: 1
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  localgov_election_abbreviation:
+    type: string_textfield
+    weight: 4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  localgov_election_party_colour:
+    type: color_field_widget_html5
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  localgov_election_political_party_uri:
+    type: link_default
+    weight: 7
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  localgov_election_text_colour:
+    type: color_field_widget_html5
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 3
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden: {  }

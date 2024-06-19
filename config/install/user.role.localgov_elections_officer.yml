@@ -3,8 +3,8 @@ status: true
 dependencies:
   config:
     - node.type.localgov_area_vote
-    - node.type.election
-    - taxonomy.vocabulary.party
+    - node.type.localgov_election
+    - taxonomy.vocabulary.localgov_party
   module:
     - node
     - system

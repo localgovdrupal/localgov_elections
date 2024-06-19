@@ -1,0 +1,83 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.localgov_election.body
+    - field.field.node.localgov_election.localgov_election_add_all_areas
+    - field.field.node.localgov_election.localgov_election_date
+    - field.field.node.localgov_election.localgov_election_organisation
+    - field.field.node.localgov_election.localgov_election_service_type
+    - field.field.node.localgov_election.localgov_election_type_of_election
+    - node.type.localgov_election
+  module:
+    - field_group
+    - user
+  enforced:
+    module:
+      - localgov_elections
+third_party_settings:
+  field_group:
+    group_summary_of_overall_results:
+      children: {  }
+      label: 'Summary of overall results'
+      parent_name: ''
+      region: content
+      weight: 0
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: false
+        open: true
+id: node.localgov_election.default
+targetEntityType: node
+bundle: localgov_election
+mode: default
+content:
+  election_overall_majority_required:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  electorate:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  overall_election_results:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  party_seats_results:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  results_by_party:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  results_by_ward:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  turnout:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden:
+  body: true
+  election_divisions: true
+  localgov_election_add_all_areas: true
+  localgov_election_date: true
+  localgov_election_organisation: true
+  localgov_election_service_type: true
+  localgov_election_type_of_election: true
+  links: true
+  search_api_excerpt: true

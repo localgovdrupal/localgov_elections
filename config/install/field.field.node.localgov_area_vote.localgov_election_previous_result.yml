@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_previous_result
+    - node.type.localgov_area_vote
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.localgov_election_previous_result
+field_name: localgov_election_previous_result
+entity_type: node
+bundle: localgov_area_vote
+label: 'Previous result'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      localgov_area_vote: localgov_area_vote
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

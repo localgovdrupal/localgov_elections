@@ -1,0 +1,196 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.localgov_election.body
+    - field.field.node.localgov_election.localgov_election_add_all_areas
+    - field.field.node.localgov_election.localgov_election_date
+    - field.field.node.localgov_election.localgov_election_display_majority_details
+    - field.field.node.localgov_election.localgov_election_display_map
+    - field.field.node.localgov_election.localgov_election_organisation
+    - field.field.node.localgov_election.localgov_election_service_type
+    - field.field.node.localgov_election.localgov_election_type_of_election
+    - node.type.localgov_election
+  module:
+    - datetime
+    - field_group
+    - link
+    - path
+    - text
+  enforced:
+    module:
+      - localgov_elections
+third_party_settings:
+  field_group:
+    group_election:
+      children:
+        - group_description
+        - group_additional_information
+      label: Election
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        direction: vertical
+        width_breakpoint: 640
+    group_description:
+      children:
+        - title
+        - localgov_election_date
+        - localgov_election_type_of_election
+        - localgov_election_display_map
+        - localgov_election_display_majority_details
+      label: Details
+      region: content
+      parent_name: group_election
+      weight: 15
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_additional_information:
+      children:
+        - body
+        - localgov_election_organisation
+        - localgov_election_service_type
+      label: 'Additional information'
+      region: content
+      parent_name: group_election
+      weight: 19
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+id: node.localgov_election.default
+targetEntityType: node
+bundle: localgov_election
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 1
+    region: content
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+  created:
+    type: datetime_timestamp
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  localgov_election_date:
+    type: datetime_default
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  localgov_election_display_majority_details:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  localgov_election_display_map:
+    type: boolean_checkbox
+    weight: 4
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  localgov_election_organisation:
+    type: link_default
+    weight: 2
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  localgov_election_service_type:
+    type: link_default
+    weight: 3
+    region: content
+    settings:
+      placeholder_url: ''
+      placeholder_title: ''
+    third_party_settings: {  }
+  localgov_election_type_of_election:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  moderation_state:
+    type: moderation_state_default
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    weight: 4
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  simple_sitemap:
+    weight: 8
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 7
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 2
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  localgov_election_add_all_areas: true

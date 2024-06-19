@@ -1,0 +1,47 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.localgov_area_vote.localgov_election_candidates
+    - field.field.paragraph.localgov_area_vote.localgov_election_electorate
+    - field.field.paragraph.localgov_area_vote.localgov_election_spoils
+    - paragraphs.paragraphs_type.localgov_area_vote
+  module:
+    - paragraphs
+  enforced:
+    module:
+      - localgov_elections
+id: paragraph.localgov_area_vote.default
+targetEntityType: paragraph
+bundle: localgov_area_vote
+mode: default
+content:
+  localgov_election_candidates:
+    type: entity_reference_paragraphs
+    weight: 3
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: open
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: ''
+    third_party_settings: {  }
+  localgov_election_electorate:
+    type: number
+    weight: 1
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  localgov_election_spoils:
+    type: number
+    weight: 0
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true

@@ -1,0 +1,55 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.summary
+    - field.field.paragraph.localgov_election_candidate.localgov_election_alternative_surname
+    - field.field.paragraph.localgov_election_candidate.localgov_election_candidate
+    - field.field.paragraph.localgov_election_candidate.localgov_election_candidate_forenames
+    - field.field.paragraph.localgov_election_candidate.localgov_election_common_forenames
+    - field.field.paragraph.localgov_election_candidate.localgov_election_elected
+    - field.field.paragraph.localgov_election_candidate.localgov_election_party
+    - field.field.paragraph.localgov_election_candidate.localgov_election_votes
+    - paragraphs.paragraphs_type.localgov_election_candidate
+  module:
+    - field_formatter_class
+  enforced:
+    module:
+      - localgov_elections
+id: paragraph.localgov_election_candidate.summary
+targetEntityType: paragraph
+bundle: localgov_election_candidate
+mode: summary
+content:
+  localgov_election_candidate:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  localgov_election_candidate_forenames:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  localgov_election_party:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings:
+      field_formatter_class:
+        class: ''
+    weight: 2
+    region: content
+hidden:
+  localgov_election_alternative_surname: true
+  localgov_election_common_forenames: true
+  localgov_election_elected: true
+  localgov_election_votes: true
+  search_api_excerpt: true

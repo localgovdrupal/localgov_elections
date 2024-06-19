@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_boundary_data
+    - node.type.localgov_area_vote
+  module:
+    - geofield
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.localgov_election_boundary_data
+field_name: localgov_election_boundary_data
+entity_type: node
+bundle: localgov_area_vote
+label: 'Boundary data'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: geofield

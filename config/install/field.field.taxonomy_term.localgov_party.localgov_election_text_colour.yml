@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.localgov_election_text_colour
+    - taxonomy.vocabulary.localgov_party
+  module:
+    - color_field
+  enforced:
+    module:
+      - localgov_elections
+id: taxonomy_term.localgov_party.localgov_election_text_colour
+field_name: localgov_election_text_colour
+entity_type: taxonomy_term
+bundle: party
+label: 'Text colour'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    color: '#000000'
+    opacity: !!float 1
+default_value_callback: ''
+settings:
+  opacity: 1
+field_type: color_field_type
