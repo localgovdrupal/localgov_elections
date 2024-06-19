@@ -3,14 +3,16 @@ status: true
 dependencies:
   module:
     - node
+    - taxonomy
   enforced:
     module:
       - localgov_elections
-id: node.localgov_election_seat_not_contested
-field_name: localgov_election_seat_not_contested
+id: node.localgov_election_prev_winner
+field_name: localgov_election_prev_winner
 entity_type: node
-type: boolean
-settings: {  }
+type: entity_reference
+settings:
+  target_type: taxonomy_term
 module: core
 locked: false
 cardinality: 1

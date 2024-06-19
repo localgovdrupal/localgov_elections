@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.localgov_election_winning_candidate
+    - field.storage.node.localgov_election_winner
     - node.type.localgov_area_vote
     - paragraphs.paragraphs_type.localgov_election_candidate
   module:
@@ -10,8 +10,8 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-id: node.localgov_area_vote.localgov_election_winning_candidate
-field_name: localgov_election_winning_candidate
+id: node.localgov_area_vote.localgov_election_winner
+field_name: localgov_election_winner
 entity_type: node
 bundle: localgov_area_vote
 label: 'Winning candidate'

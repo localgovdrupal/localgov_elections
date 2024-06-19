@@ -4,7 +4,7 @@ dependencies:
   config:
     - field.field.taxonomy_term.localgov_party.localgov_election_abbreviation
     - field.field.taxonomy_term.localgov_party.localgov_election_party_colour
-    - field.field.taxonomy_term.localgov_party.localgov_election_political_party_uri
+    - field.field.taxonomy_term.localgov_party.localgov_election_party_uri
     - field.field.taxonomy_term.localgov_party.localgov_election_text_colour
     - taxonomy.vocabulary.localgov_party
   module:
@@ -42,7 +42,7 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  localgov_election_political_party_uri:
+  localgov_election_party_uri:
     type: link_default
     weight: 7
     region: content

@@ -6,8 +6,8 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-id: paragraph.localgov_election_alternative_surname
-field_name: localgov_election_alternative_surname
+id: paragraph.localgov_election_forenames
+field_name: localgov_election_forenames
 entity_type: paragraph
 type: string
 settings:

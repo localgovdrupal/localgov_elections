@@ -6,7 +6,7 @@ dependencies:
     - field.storage.node.localgov_election
     - field.storage.node.localgov_election_hold_or_gain
     - field.storage.paragraph.localgov_election_candidate
-    - field.storage.paragraph.localgov_election_candidate_forenames
+    - field.storage.paragraph.localgov_election_forename
     - field.storage.paragraph.localgov_election_party
     - field.storage.paragraph.localgov_election_votes
     - field.storage.taxonomy_term.localgov_election_abbreviation
@@ -103,10 +103,10 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        localgov_election_candidate_forenames:
-          id: localgov_election_candidate_forenames
-          table: paragraph__localgov_election_candidate_forenames
-          field: localgov_election_candidate_forenames
+        localgov_election_forename:
+          id: localgov_election_forename
+          table: paragraph__localgov_election_forename
+          field: localgov_election_forename
           relationship: localgov_election_candidates
           group_type: group
           admin_label: ''
@@ -240,7 +240,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<div>{{ localgov_election_candidate_forenames }} {{ localgov_election_candidate }}</div><div> ({{ localgov_election_party }})</div>\r\n"
+            text: "<div>{{ localgov_election_forename }} {{ localgov_election_candidate }}</div><div> ({{ localgov_election_party }})</div>\r\n"
             make_link: false
             path: ''
             absolute: false
@@ -590,7 +590,7 @@ display:
                   enabled: false
                   color: '#000000'
                   weight: 5
-                localgov_election_candidate_forenames:
+                localgov_election_forename:
                   enabled: false
                   color: '#000000'
                   weight: 7
@@ -696,7 +696,7 @@ display:
         - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.node.localgov_election'
         - 'config:field.storage.paragraph.localgov_election_candidate'
-        - 'config:field.storage.paragraph.localgov_election_candidate_forenames'
+        - 'config:field.storage.paragraph.localgov_election_forename'
         - 'config:field.storage.paragraph.localgov_election_party'
         - 'config:field.storage.paragraph.localgov_election_votes'
         - 'config:field.storage.taxonomy_term.localgov_election_party_colour'
@@ -720,10 +720,10 @@ display:
             label: ''
             field_identifier: ''
           exposed: false
-        localgov_election_candidate_forenames_value:
-          id: localgov_election_candidate_forenames_value
-          table: paragraph__localgov_election_candidate_forenames
-          field: localgov_election_candidate_forenames_value
+        localgov_election_forename_value:
+          id: localgov_election_forename_value
+          table: paragraph__localgov_election_forename
+          field: localgov_election_forename_value
           relationship: localgov_election_candidates
           group_type: group
           admin_label: ''
@@ -750,7 +750,7 @@ display:
         - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.node.localgov_election'
         - 'config:field.storage.paragraph.localgov_election_candidate'
-        - 'config:field.storage.paragraph.localgov_election_candidate_forenames'
+        - 'config:field.storage.paragraph.localgov_election_forename'
         - 'config:field.storage.paragraph.localgov_election_party'
         - 'config:field.storage.paragraph.localgov_election_votes'
         - 'config:field.storage.taxonomy_term.localgov_election_party_colour'
@@ -1138,10 +1138,10 @@ display:
     display_options:
       title: ''
       fields:
-        localgov_election_candidate_forenames:
-          id: localgov_election_candidate_forenames
-          table: paragraph__localgov_election_candidate_forenames
-          field: localgov_election_candidate_forenames
+        localgov_election_forename:
+          id: localgov_election_forename
+          table: paragraph__localgov_election_forename
+          field: localgov_election_forename
           relationship: localgov_election_candidates
           group_type: group
           admin_label: ''
@@ -1150,7 +1150,7 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: ', {{ localgov_election_candidate_forenames }}'
+            text: ', {{ localgov_election_forename }}'
             make_link: false
             path: ''
             absolute: false
@@ -1212,7 +1212,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ localgov_election_candidate }}{{ localgov_election_candidate_forenames }}'
+            text: '{{ localgov_election_candidate }}{{ localgov_election_forename }}'
             make_link: false
             path: ''
             absolute: false
@@ -1311,7 +1311,7 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.paragraph.localgov_election_candidate'
-        - 'config:field.storage.paragraph.localgov_election_candidate_forenames'
+        - 'config:field.storage.paragraph.localgov_election_forename'
   block_4:
     id: block_4
     display_title: 'Winning party'

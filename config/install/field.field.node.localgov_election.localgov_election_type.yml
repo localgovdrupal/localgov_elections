@@ -2,15 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.localgov_election_type_of_election
+    - field.storage.node.localgov_election_type
     - node.type.localgov_election
   module:
     - options
   enforced:
     module:
       - localgov_elections
-id: node.localgov_election.localgov_election_type_of_election
-field_name: localgov_election_type_of_election
+id: node.localgov_election.localgov_election_type
+field_name: localgov_election_type
 entity_type: node
 bundle: localgov_election
 label: 'Type of election'

@@ -2,16 +2,18 @@ langcode: en
 status: true
 dependencies:
   module:
-    - node
+    - paragraphs
   enforced:
     module:
       - localgov_elections
-id: node.localgov_election_previous_result
-field_name: localgov_election_previous_result
-entity_type: node
-type: entity_reference
+id: paragraph.localgov_election_forename
+field_name: localgov_election_forename
+entity_type: paragraph
+type: string
 settings:
-  target_type: node
+  max_length: 255
+  case_sensitive: false
+  is_ascii: false
 module: core
 locked: false
 cardinality: 1

@@ -2,15 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.localgov_election_candidates_file
+    - field.storage.node.localgov_election_cand_file
     - node.type.localgov_area_vote
   module:
     - file
   enforced:
     module:
       - localgov_elections
-id: node.localgov_area_vote.localgov_election_candidates_file
-field_name: localgov_election_candidates_file
+id: node.localgov_area_vote.localgov_election_cand_file
+field_name: localgov_election_cand_file
 entity_type: node
 bundle: localgov_area_vote
 label: 'Candidates List (File)'

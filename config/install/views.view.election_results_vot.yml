@@ -392,10 +392,10 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-        localgov_election_votes_finalised_value:
-          id: localgov_election_votes_finalised_value
-          table: node__localgov_election_votes_finalised
-          field: localgov_election_votes_finalised_value
+        localgov_election_votes_final_value:
+          id: localgov_election_votes_final_value
+          table: node__localgov_election_votes_final
+          field: localgov_election_votes_final_value
           relationship: none
           group_type: group
           admin_label: ''
@@ -443,7 +443,7 @@ display:
           inline:
             changed: changed
             field_division: field_division
-            localgov_election_candidate_forenames: localgov_election_candidate_forenames
+            localgov_election_forename: localgov_election_forename
             localgov_election_candidate: localgov_election_candidate
             name: name
             localgov_election_hold_or_gain: localgov_election_hold_or_gain
@@ -884,7 +884,7 @@ display:
           inline:
             changed: changed
             field_division: field_division
-            localgov_election_candidate_forenames: localgov_election_candidate_forenames
+            localgov_election_forename: localgov_election_forename
             localgov_election_candidate: localgov_election_candidate
             name: name
             localgov_election_hold_or_gain: localgov_election_hold_or_gain

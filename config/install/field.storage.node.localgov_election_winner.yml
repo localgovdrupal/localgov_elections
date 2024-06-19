@@ -2,19 +2,19 @@ langcode: en
 status: true
 dependencies:
   module:
+    - entity_reference_revisions
+    - node
     - paragraphs
   enforced:
     module:
       - localgov_elections
-id: paragraph.localgov_election_candidate_forenames
-field_name: localgov_election_candidate_forenames
-entity_type: paragraph
-type: string
+id: node.localgov_election_winner
+field_name: localgov_election_winner
+entity_type: node
+type: entity_reference_revisions
 settings:
-  max_length: 255
-  case_sensitive: false
-  is_ascii: false
-module: core
+  target_type: paragraph
+module: entity_reference_revisions
 locked: false
 cardinality: 1
 translatable: true

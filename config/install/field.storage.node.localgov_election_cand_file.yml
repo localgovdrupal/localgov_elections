@@ -2,16 +2,21 @@ langcode: en
 status: true
 dependencies:
   module:
+    - file
     - node
   enforced:
     module:
       - localgov_elections
-id: node.localgov_election_display_majority_details
-field_name: localgov_election_display_majority_details
+id: node.localgov_election_cand_file
+field_name: localgov_election_cand_file
 entity_type: node
-type: boolean
-settings: {  }
-module: core
+type: file
+settings:
+  target_type: file
+  display_field: false
+  display_default: false
+  uri_scheme: public
+module: file
 locked: false
 cardinality: 1
 translatable: true

@@ -7,7 +7,7 @@ dependencies:
     - field.field.node.localgov_election.localgov_election_date
     - field.field.node.localgov_election.localgov_election_organisation
     - field.field.node.localgov_election.localgov_election_service_type
-    - field.field.node.localgov_election.localgov_election_type_of_election
+    - field.field.node.localgov_election.localgov_election_type
     - node.type.localgov_election
   module:
     - field_group
@@ -78,6 +78,6 @@ hidden:
   localgov_election_date: true
   localgov_election_organisation: true
   localgov_election_service_type: true
-  localgov_election_type_of_election: true
+  localgov_election_type: true
   links: true
   search_api_excerpt: true

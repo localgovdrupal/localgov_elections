@@ -604,10 +604,10 @@ display:
           expose:
             operator_limit_selection: false
             operator_list: {  }
-        localgov_election_seat_not_contested_value:
-          id: localgov_election_seat_not_contested_value
-          table: node__localgov_election_seat_not_contested
-          field: localgov_election_seat_not_contested_value
+        localgov_election_no_contest_value:
+          id: localgov_election_no_contest_value
+          table: node__localgov_election_no_contest
+          field: localgov_election_no_contest_value
           relationship: none
           group_type: group
           admin_label: ''
@@ -654,7 +654,7 @@ display:
             localgov_election_abbreviation: localgov_election_abbreviation
             changed: changed
             field_division: field_division
-            localgov_election_candidate_forenames: localgov_election_candidate_forenames
+            localgov_election_forename: localgov_election_forename
             localgov_election_candidate: localgov_election_candidate
             name: name
             localgov_election_hold_or_gain: localgov_election_hold_or_gain
@@ -697,7 +697,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            localgov_election_candidate_forenames:
+            localgov_election_forename:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -750,7 +750,7 @@ display:
           inline:
             changed: changed
             field_division: field_division
-            localgov_election_candidate_forenames: localgov_election_candidate_forenames
+            localgov_election_forename: localgov_election_forename
             localgov_election_candidate: localgov_election_candidate
             name: name
             localgov_election_hold_or_gain: localgov_election_hold_or_gain
@@ -766,20 +766,20 @@ display:
           replica: false
           query_tags: {  }
       relationships:
-        localgov_election_winning_candidate:
-          id: localgov_election_winning_candidate
-          table: node__localgov_election_winning_candidate
-          field: localgov_election_winning_candidate
+        localgov_election_winner:
+          id: localgov_election_winner
+          table: node__localgov_election_winner
+          field: localgov_election_winner
           relationship: none
           group_type: group
-          admin_label: 'localgov_election_winning_candidate: Paragraph'
+          admin_label: 'localgov_election_winner: Paragraph'
           plugin_id: standard
           required: true
         localgov_election_party:
           id: localgov_election_party
           table: paragraph__localgov_election_party
           field: localgov_election_party
-          relationship: localgov_election_winning_candidate
+          relationship: localgov_election_winner
           group_type: group
           admin_label: 'localgov_election_party: Taxonomy term'
           plugin_id: standard

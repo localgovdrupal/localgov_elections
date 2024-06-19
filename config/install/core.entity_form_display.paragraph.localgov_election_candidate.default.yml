@@ -2,10 +2,10 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.localgov_election_candidate.localgov_election_alternative_surname
+    - field.field.paragraph.localgov_election_candidate.localgov_election_alt_surname
     - field.field.paragraph.localgov_election_candidate.localgov_election_candidate
-    - field.field.paragraph.localgov_election_candidate.localgov_election_candidate_forenames
-    - field.field.paragraph.localgov_election_candidate.localgov_election_common_forenames
+    - field.field.paragraph.localgov_election_candidate.localgov_election_forename
+    - field.field.paragraph.localgov_election_candidate.localgov_election_forenames
     - field.field.paragraph.localgov_election_candidate.localgov_election_elected
     - field.field.paragraph.localgov_election_candidate.localgov_election_party
     - field.field.paragraph.localgov_election_candidate.localgov_election_votes
@@ -37,7 +37,7 @@ targetEntityType: paragraph
 bundle: localgov_election_candidate
 mode: default
 content:
-  localgov_election_alternative_surname:
+  localgov_election_alt_surname:
     type: string_textfield
     weight: 2
     region: content
@@ -53,7 +53,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  localgov_election_candidate_forenames:
+  localgov_election_forename:
     type: string_textfield
     weight: 1
     region: content
@@ -61,7 +61,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  localgov_election_common_forenames:
+  localgov_election_forenames:
     type: string_textfield
     weight: 3
     region: content

@@ -6,8 +6,8 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-id: node.localgov_election_votes_finalised
-field_name: localgov_election_votes_finalised
+id: node.localgov_election_no_contest
+field_name: localgov_election_no_contest
 entity_type: node
 type: boolean
 settings: {  }

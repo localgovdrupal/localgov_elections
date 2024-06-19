@@ -2,17 +2,17 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.paragraph.localgov_election_candidate_forenames
+    - field.storage.paragraph.localgov_election_alt_surname
     - paragraphs.paragraphs_type.localgov_election_candidate
   enforced:
     module:
       - localgov_elections
-id: paragraph.localgov_election_candidate.localgov_election_candidate_forenames
-field_name: localgov_election_candidate_forenames
+id: paragraph.localgov_election_candidate.localgov_election_alt_surname
+field_name: localgov_election_alt_surname
 entity_type: paragraph
 bundle: localgov_election_candidate
-label: 'Candidate forenames'
-description: 'Candidate forenames (given names) of the candidate separated by spaces'
+label: 'Alternative surname'
+description: 'Commonly used alternative surname of the candidate if one is provided'
 required: false
 translatable: false
 default_value: {  }

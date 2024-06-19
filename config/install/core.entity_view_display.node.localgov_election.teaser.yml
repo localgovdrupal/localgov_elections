@@ -6,11 +6,11 @@ dependencies:
     - field.field.node.localgov_election.body
     - field.field.node.localgov_election.localgov_election_add_all_areas
     - field.field.node.localgov_election.localgov_election_date
-    - field.field.node.localgov_election.localgov_election_display_majority_details
+    - field.field.node.localgov_election.localgov_election_majority
     - field.field.node.localgov_election.localgov_election_display_map
     - field.field.node.localgov_election.localgov_election_organisation
     - field.field.node.localgov_election.localgov_election_service_type
-    - field.field.node.localgov_election.localgov_election_type_of_election
+    - field.field.node.localgov_election.localgov_election_type
     - node.type.localgov_election
   module:
     - text
@@ -44,9 +44,9 @@ content:
 hidden:
   localgov_election_add_all_areas: true
   localgov_election_date: true
-  localgov_election_display_majority_details: true
+  localgov_election_majority: true
   localgov_election_display_map: true
   localgov_election_organisation: true
   localgov_election_service_type: true
-  localgov_election_type_of_election: true
+  localgov_election_type: true
   search_api_excerpt: true

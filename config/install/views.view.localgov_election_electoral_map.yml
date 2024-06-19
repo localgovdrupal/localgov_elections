@@ -487,20 +487,20 @@ display:
           replica: false
           query_tags: {  }
       relationships:
-        localgov_election_winning_candidate:
-          id: localgov_election_winning_candidate
-          table: node__localgov_election_winning_candidate
-          field: localgov_election_winning_candidate
+        localgov_election_winner:
+          id: localgov_election_winner
+          table: node__localgov_election_winner
+          field: localgov_election_winner
           relationship: none
           group_type: group
-          admin_label: 'localgov_election_winning_candidate: Paragraph'
+          admin_label: 'localgov_election_winner: Paragraph'
           plugin_id: standard
           required: false
         localgov_election_party:
           id: localgov_election_party
           table: paragraph__localgov_election_party
           field: localgov_election_party
-          relationship: localgov_election_winning_candidate
+          relationship: localgov_election_winner
           group_type: group
           admin_label: 'localgov_election_party: Taxonomy term'
           plugin_id: standard

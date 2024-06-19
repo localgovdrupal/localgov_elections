@@ -5,11 +5,11 @@ dependencies:
     - field.field.node.localgov_election.body
     - field.field.node.localgov_election.localgov_election_add_all_areas
     - field.field.node.localgov_election.localgov_election_date
-    - field.field.node.localgov_election.localgov_election_display_majority_details
+    - field.field.node.localgov_election.localgov_election_majority
     - field.field.node.localgov_election.localgov_election_display_map
     - field.field.node.localgov_election.localgov_election_organisation
     - field.field.node.localgov_election.localgov_election_service_type
-    - field.field.node.localgov_election.localgov_election_type_of_election
+    - field.field.node.localgov_election.localgov_election_type
     - node.type.localgov_election
   module:
     - datetime
@@ -41,9 +41,9 @@ third_party_settings:
       children:
         - title
         - localgov_election_date
-        - localgov_election_type_of_election
+        - localgov_election_type
         - localgov_election_display_map
-        - localgov_election_display_majority_details
+        - localgov_election_majority
       label: Details
       region: content
       parent_name: group_election
@@ -100,7 +100,7 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  localgov_election_display_majority_details:
+  localgov_election_majority:
     type: boolean_checkbox
     weight: 5
     region: content
@@ -130,7 +130,7 @@ content:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
-  localgov_election_type_of_election:
+  localgov_election_type:
     type: options_select
     weight: 3
     region: content

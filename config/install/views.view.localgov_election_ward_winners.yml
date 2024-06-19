@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.localgov_election_winning_candidate
+    - field.storage.node.localgov_election_winner
     - node.type.localgov_area_vote
     - system.menu.admin
   module:
@@ -213,10 +213,10 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-        localgov_election_winning_candidate:
-          id: localgov_election_winning_candidate
-          table: node__localgov_election_winning_candidate
-          field: localgov_election_winning_candidate
+        localgov_election_winner:
+          id: localgov_election_winner
+          table: node__localgov_election_winner
+          field: localgov_election_winner
           relationship: none
           group_type: group
           admin_label: ''
@@ -403,7 +403,7 @@ display:
           columns:
             node_bulk_form: node_bulk_form
             title: title
-            localgov_election_winning_candidate: localgov_election_winning_candidate
+            localgov_election_winner: localgov_election_winner
             localgov_election: localgov_election
           default: title
           info:
@@ -419,7 +419,7 @@ display:
               separator: ''
               empty_column: true
               responsive: ''
-            localgov_election_winning_candidate:
+            localgov_election_winner:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -477,7 +477,7 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.localgov_election_winning_candidate'
+        - 'config:field.storage.node.localgov_election_winner'
   page_1:
     id: page_1
     display_title: Page
@@ -505,4 +505,4 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.localgov_election_winning_candidate'
+        - 'config:field.storage.node.localgov_election_winner'

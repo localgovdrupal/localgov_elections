@@ -2,15 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.taxonomy_term.localgov_election_political_party_uri
+    - field.storage.taxonomy_term.localgov_election_party_uri
     - taxonomy.vocabulary.localgov_party
   module:
     - link
   enforced:
     module:
       - localgov_elections
-id: taxonomy_term.localgov_party.localgov_election_political_party_uri
-field_name: localgov_election_political_party_uri
+id: taxonomy_term.localgov_party.localgov_election_party_uri
+field_name: localgov_election_party_uri
 entity_type: taxonomy_term
 bundle: party
 label: 'Political party URI'

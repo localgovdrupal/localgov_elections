@@ -7,8 +7,8 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-id: node.localgov_election_type_of_election
-field_name: localgov_election_type_of_election
+id: node.localgov_election_type
+field_name: localgov_election_type
 entity_type: node
 type: list_string
 settings:

@@ -2,13 +2,13 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.localgov_election_display_majority_details
+    - field.storage.node.localgov_election_majority
     - node.type.localgov_election
   enforced:
     module:
       - localgov_elections
-id: node.localgov_election.localgov_election_display_majority_details
-field_name: localgov_election_display_majority_details
+id: node.localgov_election.localgov_election_majority
+field_name: localgov_election_majority
 entity_type: node
 bundle: localgov_election
 label: 'Display majority details'
