@@ -12,7 +12,7 @@ use Drupal\taxonomy\Entity\Term;
  */
 function localgov_elections_uk_parties_install() {
 
-  $parties_vocabulary = 'party';
+  $parties_vocabulary = 'localgov_party';
 
   $parties = [
     'Conservative' => [
@@ -142,10 +142,10 @@ function localgov_elections_uk_parties_install() {
       'parent' => [],
       'name' => $party,
       'vid' => $parties_vocabulary,
-      'field_political_party_uri' => $details['link'],
-      'field_abbreviation' => $details['abbreviation'],
-      'field_party_colour' => $details['colour'],
-      'field_text_colour' => $details['text_colour'],
+      'localgov_election_party_uri' => $details['link'],
+      'localgov_election_abbreviation' => $details['abbreviation'],
+      'localgov_election_party_colour' => $details['colour'],
+      'localgov_election_text_colour' => $details['text_colour'],
     ])->save();
   }
 }
