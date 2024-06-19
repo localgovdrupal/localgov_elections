@@ -45,7 +45,7 @@ class PartyName extends FieldPluginBase {
     // Add all candidate votes + spoils for each ward.
     foreach ($wards as $ward_id) {
       $ward = Node::load($ward_id);
-      $candidates = $ward->get('field_candidates');
+      $candidates = $ward->get('localgov_election_candidates');
 
       foreach ($candidates->referencedEntities() as $candidate) {
         $party = Term::load($candidate->get('field_party')->target_id);

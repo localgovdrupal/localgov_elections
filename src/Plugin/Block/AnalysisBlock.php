@@ -52,7 +52,7 @@ class AnalysisBlock extends BlockBase {
       $second = 0;
       $results = [];
       $majority = NULL;
-      $candidates = $node->get('field_candidates');
+      $candidates = $node->get('localgov_election_candidates');
 
       foreach ($candidates->referencedEntities() as $candidate) {
         $votes = $candidate->get('field_votes')->value;

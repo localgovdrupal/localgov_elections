@@ -56,7 +56,7 @@ class ElectionSeatsParty extends FieldPluginBase {
           // Iterate through each candidate to see if party standing -
           // only if not already flagged.
           if ($party_standing == FALSE) {
-            $candidates = $ward->get('field_candidates');
+            $candidates = $ward->get('localgov_election_candidates');
 
             foreach ($candidates->referencedEntities() as $candidate) {
               $cand_party = $candidate->get('field_party')->target_id;

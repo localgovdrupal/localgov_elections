@@ -281,12 +281,12 @@ function localgov_elections_preprocess_node(&$variables) {
           '#theme' => 'ward_result',
           '#chart' => [
             '#type' => 'view',
-            '#name' => 'district_results',
+            '#name' => 'localgov_election_area_results',
             '#arguments' => [$node->id()],
           ],
           '#result' => [
             '#type' => 'view',
-            '#name' => 'district_results',
+            '#name' => 'localgov_election_area_results',
             '#display_id' => 'block_2',
             '#arguments' => [$node->id()],
           ],

@@ -66,7 +66,7 @@ class ElectionShare extends FieldPluginBase {
           $ward = Node::load($ward_id);
 
           // Iterate through each candidate and add votes to trunout.
-          $candidates = $ward->get('field_candidates');
+          $candidates = $ward->get('localgov_election_candidates');
 
           foreach ($candidates->referencedEntities() as $candidate) {
             $votes = $candidate->get('field_votes')->value;

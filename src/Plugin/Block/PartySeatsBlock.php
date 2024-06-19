@@ -43,7 +43,7 @@ class PartySeatsBlock extends BlockBase {
       foreach ($wards as $ward_id) {
         // phpcs:ignore
         $ward = Node::load($ward_id);
-        $candidates = $ward->get('field_candidates');
+        $candidates = $ward->get('localgov_election_candidates');
         $results = [];
 
         foreach ($candidates->referencedEntities() as $candidate) {

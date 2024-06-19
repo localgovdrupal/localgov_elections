@@ -58,7 +58,7 @@ class ElectionTurnout extends FieldPluginBase {
       $turnout += $spoils;
 
       // Iterate through each candidate and add votes to turnout.
-      $candidates = $ward->get('field_candidates');
+      $candidates = $ward->get('localgov_election_candidates');
 
       /** @var \Drupal\paragraphs\Entity\Paragraph $candidate */
       foreach ($candidates->referencedEntities() as $candidate) {
@@ -68,7 +68,7 @@ class ElectionTurnout extends FieldPluginBase {
 
       // Find electorate and add to running total.
       $eligible_electorate = $ward->get('field_electorate')->value;
-      if ($ward->field_votes_finalised?->value == 1) {
+      if ($ward->localgov_election_votes_final?->value == 1) {
         $electorate += $eligible_electorate;
       }
     }

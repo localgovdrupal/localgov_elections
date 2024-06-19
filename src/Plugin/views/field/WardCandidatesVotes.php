@@ -48,7 +48,7 @@ class WardCandidatesVotes extends FieldPluginBase {
 
     // Iterate through each candidate and store name, party and votes.
     $results = [];
-    $candidates = $area_vote->get('field_candidates');
+    $candidates = $area_vote->get('localgov_election_candidates');
 
     foreach ($candidates->referencedEntities() as $candidate) {
       $surname = $candidate->get('field_candidate')->value;

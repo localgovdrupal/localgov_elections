@@ -122,7 +122,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     $results = $query->condition('type', 'division_vote')
       ->condition('type', 'division_vote')
       ->condition('localgov_election', $node->id())
-      ->condition('field_votes_finalised', TRUE)
+      ->condition('localgov_election_votes_final', TRUE)
       ->accessCheck(FALSE)
       ->execute();
     if ($results) {
@@ -141,7 +141,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     $results = $query->condition('type', 'division_vote')
       ->condition('type', 'division_vote')
       ->condition('localgov_election', $node->id())
-      ->exists('field_candidates_file')
+      ->exists('localgov_election_cand_file')
       ->accessCheck(FALSE)
       ->execute();
     if ($results) {

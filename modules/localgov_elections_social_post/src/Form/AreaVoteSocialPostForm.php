@@ -155,7 +155,7 @@ class AreaVoteSocialPostForm extends FormBase {
       return $form;
     }
 
-    if ($node->get('field_votes_finalised')->value == "0") {
+    if ($node->get('localgov_election_votes_final')->value == "0") {
       $this->messenger()->addWarning($this->t("The votes have not been finalised for this vote yet."));
     }
     $form['#node'] = $node;
