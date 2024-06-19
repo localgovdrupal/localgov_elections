@@ -1,0 +1,11 @@
+name: LocalGov Election Reporting Social Post Integration
+description: Social API integration
+type: module
+package: Localgov Drupal
+core_version_requirement: ^9 || ^10
+
+dependencies:
+  - drupal:localgov_elections_reporting
+  - drupal:social_post
+  - drupal:social_post_twitter
+  - drupal:token

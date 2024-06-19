@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ * LocalGov Election Reporting Social Post module file.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function localgov_elections_reporting_social_post_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $node = $form_state->getFormObject()->getEntity();
+  if ($node->bundle() == "division_vote") {
+    $form['actions']['save_and_add_areas'] = $form['actions']['submit'];
+    $form['actions']['save_and_add_areas']['#value'] = t("Save and Tweet");
+    $form['actions']['save_and_add_areas']['#submit'][] = "localgov_elections_reporting_social_post_save_and_tweet";
+    $form['actions']['save_and_add_areas']['#weight'] = 100;
+  }
+}
+
+/**
+ * Save and tweet submit function callback.
+ */
+function localgov_elections_reporting_social_post_save_and_tweet($form, FormStateInterface $form_state) {
+  \Drupal::request()->query->remove('destination');
+  if ($node = $form_state->getFormObject()->getEntity()) {
+    if ($id = $node?->id()) {
+      $form_state->setRedirectUrl(Url::fromRoute('localgov_elections_reporting_social_post.area_vote_social_post',
+          ['node' => $id])
+      );
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * LocalGov Election Reporting Social Post install file.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function localgov_elections_reporting_social_post_install() {
+  // Check if localgov_election_reporting_social_post module is installed.
+  // If so, uninstall it, so we can use this module instead.
+  if (\Drupal::moduleHandler()->moduleExists('localgov_election_reporting_social_post')) {
+    \Drupal::service('module_installer')->uninstall(['localgov_election_reporting_social_post']);
+  }
+}

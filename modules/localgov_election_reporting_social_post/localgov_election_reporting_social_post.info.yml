@@ -1,8 +1,10 @@
-name: LocalGov Elections Reporting Social Post Integration
-description: Social API integration
+name: "DEPRECATED: LocalGov Elections Reporting Social"
+description: "Deprecated: Use LocalGov Elections Reporting Social Post Integration instead."
 type: module
 package: LocalGov Drupal
 core_version_requirement: ^9 || ^10
+lifecycle: deprecated
+lifecycle_link: 'https://github.com/localgovdrupal/localgov_elections_reporting/pull/63'
 
 dependencies:
   - localgov_elections_reporting:localgov_elections_reporting
