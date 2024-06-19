@@ -35,7 +35,7 @@ class PartySeatsBlock extends BlockBase {
       // phpcs:ignore
       $query = \Drupal::entityQuery('node')
         ->condition('type', 'division_vote')
-        ->condition('field_election', $nid);
+        ->condition('localgov_election', $nid);
       $query->accessCheck(FALSE);
       $wards = $query->execute();
 

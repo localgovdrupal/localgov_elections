@@ -34,7 +34,7 @@ class ElectionShare extends FieldPluginBase {
     // aggregate functions from Custom fields.
     $entity = $values->_entity;
     // Get ID of Election.
-    $election = $entity->get('field_election')->target_id;
+    $election = $entity->get('localgov_election')->target_id;
     $party = $values->_relationship_entities['field_party'];
     $party_id = $party->id();
     $total_votes = 0;
@@ -56,7 +56,7 @@ class ElectionShare extends FieldPluginBase {
         // Find all 'Area vote' (division_vote) nodes referencing this election
         $query = \Drupal::entityQuery('node')
           ->condition('type', 'division_vote')
-          ->condition('field_election', $election);
+          ->condition('localgov_election', $election);
         // Exclude not contested.
         $query->accessCheck(FALSE);
         $wards = $query->execute();

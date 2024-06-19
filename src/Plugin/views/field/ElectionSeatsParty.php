@@ -45,7 +45,7 @@ class ElectionSeatsParty extends FieldPluginBase {
         // Find all 'Area vote' (division_vote) nodes referencing this election.
         $query = \Drupal::entityQuery('node')
           ->condition('type', 'division_vote')
-          ->condition('field_election', $election);
+          ->condition('localgov_election', $election);
         $query->accessCheck(FALSE);
         $wards = $query->execute();
         // Go through each ward/area/division.

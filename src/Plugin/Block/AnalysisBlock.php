@@ -96,7 +96,7 @@ class AnalysisBlock extends BlockBase {
       // Get the parent election so we can figure out if
       // we can display the majority.
       $display_majority = FALSE;
-      if ($election_nodes = $node->get('field_election')->referencedEntities()) {
+      if ($election_nodes = $node->get('localgov_election')->referencedEntities()) {
         if (isset($election_nodes[0])) {
           $election_node = $election_nodes[0];
           if ($election_node->hasField('field_display_majority_details')) {
@@ -126,7 +126,7 @@ class AnalysisBlock extends BlockBase {
       if (isset($previous_result)) {
         // phpcs:ignore
         $previous_division_vote = Node::load($previous_result->id());
-        $previous_election = $previous_division_vote->field_election;
+        $previous_election = $previous_division_vote->localgov_election;
 
         // Find year from 'division_vote' entity.
         if (!isset($previous_year)) {

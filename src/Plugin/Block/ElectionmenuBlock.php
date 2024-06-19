@@ -105,8 +105,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
     $results = $query->condition('type', 'division_vote')
       ->condition('type', 'division_vote')
-      ->condition('field_election', $node->id())
-      ->exists('field_boundary_data')
+      ->condition('localgov_election', $node->id())
+      ->exists('localgov_election_boundary_data')
       ->accessCheck(FALSE)
       ->execute();
     // If map to be displayed and there is geo data show the link.
@@ -121,7 +121,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
     $results = $query->condition('type', 'division_vote')
       ->condition('type', 'division_vote')
-      ->condition('field_election', $node->id())
+      ->condition('localgov_election', $node->id())
       ->condition('field_votes_finalised', TRUE)
       ->accessCheck(FALSE)
       ->execute();
@@ -140,7 +140,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
     $results = $query->condition('type', 'division_vote')
       ->condition('type', 'division_vote')
-      ->condition('field_election', $node->id())
+      ->condition('localgov_election', $node->id())
       ->exists('field_candidates_file')
       ->accessCheck(FALSE)
       ->execute();
@@ -167,7 +167,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     }
     if ($node instanceof NodeInterface) {
       if ($node->bundle() == 'division_vote') {
-        $node_ref = $node->field_election?->first()->getValue()['target_id'];
+        $node_ref = $node->localgov_election?->first()->getValue()['target_id'];
         if ($node_ref) {
           $node = $this->entityTypeManager->getStorage('node')->load((intval($node_ref)));
         }
