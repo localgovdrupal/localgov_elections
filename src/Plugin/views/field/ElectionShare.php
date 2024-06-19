@@ -69,7 +69,7 @@ class ElectionShare extends FieldPluginBase {
           $candidates = $ward->get('localgov_election_candidates');
 
           foreach ($candidates->referencedEntities() as $candidate) {
-            $votes = $candidate->get('field_votes')->value;
+            $votes = $candidate->get('localgov_election_votes')->value;
             $cand_party = $candidate->get('field_party')->target_id;
             $total_votes += $votes;
             if ($cand_party == $party_id) {

@@ -62,7 +62,7 @@ class WardCandidatesCandidate extends FieldPluginBase {
       $forenames = $candidate->get('field_candidate_forenames')->value;
       $party_term = Term::load($candidate->get('field_party')->target_id);
       $party = $party_term->getName();
-      $votes = $candidate->get('field_votes')->value;
+      $votes = $candidate->get('localgov_election_votes')->value;
       $results[] = [
         'surname' => $surname,
         'forenames' => $forenames,

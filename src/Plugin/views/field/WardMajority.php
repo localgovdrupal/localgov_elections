@@ -38,7 +38,7 @@ class WardMajority extends FieldPluginBase {
     $candidates = $node->get('localgov_election_candidates');
 
     foreach ($candidates->referencedEntities() as $candidate) {
-      $votes = $candidate->get('field_votes')->value;
+      $votes = $candidate->get('localgov_election_votes')->value;
       $results[] = $votes;
     }
 

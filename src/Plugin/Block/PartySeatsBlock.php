@@ -49,9 +49,9 @@ class PartySeatsBlock extends BlockBase {
         foreach ($candidates->referencedEntities() as $candidate) {
           // phpcs:ignore
           $party = Term::load($candidate->get('field_party')->target_id);
-          $party_abbr = $party->get('field_abbreviation')->value;
+          $party_abbr = $party->get('localgov_election_abbreviation')->value;
 
-          $votes = $candidate->get('field_votes')->value;
+          $votes = $candidate->get('localgov_election_votes')->value;
           $results[] = ['abbr' => $party_abbr, 'votes' => $votes];
         }
         // Sort $results.

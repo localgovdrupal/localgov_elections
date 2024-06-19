@@ -31,14 +31,14 @@ class AnalysisBlock extends BlockBase {
       $markup .= '<div class="results-analysis-grid">';
 
       // Get Electorate.
-      $electorate = $node->field_electorate->value;
+      $electorate = $node->localgov_election_electorate->value;
       if (isset($electorate)) {
         $markup .= '<div class="label electorate">Electorate</div>';
         $markup .= '<div class="value electorate">' . $electorate . '</div>';
       }
 
       // Get spoils.
-      $spoils = $node->field_spoils->value;
+      $spoils = $node->localgov_election_spoils->value;
       if (isset($spoils)) {
         $markup .= '<div class="label spoils">Rejected ballot papers</div>';
         $markup .= '<div class="value spoils">' . $spoils . '</div>';
@@ -55,7 +55,7 @@ class AnalysisBlock extends BlockBase {
       $candidates = $node->get('localgov_election_candidates');
 
       foreach ($candidates->referencedEntities() as $candidate) {
-        $votes = $candidate->get('field_votes')->value;
+        $votes = $candidate->get('localgov_election_votes')->value;
         $valid_total_votes += $votes;
         $results[] = $votes;
       }
@@ -99,8 +99,8 @@ class AnalysisBlock extends BlockBase {
       if ($election_nodes = $node->get('localgov_election')->referencedEntities()) {
         if (isset($election_nodes[0])) {
           $election_node = $election_nodes[0];
-          if ($election_node->hasField('field_display_majority_details')) {
-            if ($election_node->get('field_display_majority_details')?->value == "1") {
+          if ($election_node->hasField('localgov_election_majority')) {
+            if ($election_node->get('localgov_election_majority')?->value == "1") {
               $display_majority = TRUE;
             }
           }
@@ -114,11 +114,11 @@ class AnalysisBlock extends BlockBase {
       }
 
       // Retrieve results of previous election.
-      $previous_year = $node->field_previous_year->value;
-      $previous_winning_party = $node->field_previous_winner->entity;
-      $previous_result = $node->field_previous_result->referencedEntity;
+      $previous_year = $node->localgov_election_previous_year->value;
+      $previous_winning_party = $node->localgov_election_prev_winner->entity;
+      $previous_result = $node->localgov_election_prev_result->referencedEntity;
       if (isset($previous_winning_party)) {
-        $previous_winner_abbr = $previous_winning_party->field_abbreviation->value;
+        $previous_winner_abbr = $previous_winning_party->localgov_election_abbreviation->value;
       }
 
       // If previous year not manually set, look if previous 'division_vote'
@@ -130,7 +130,7 @@ class AnalysisBlock extends BlockBase {
 
         // Find year from 'division_vote' entity.
         if (!isset($previous_year)) {
-          $previous_date = $previous_election->field_date;
+          $previous_date = $previous_election->localgov_election_date;
           if (isset($previous_date)) {
             $previous_year = date('Y', $previous_date);
           }
