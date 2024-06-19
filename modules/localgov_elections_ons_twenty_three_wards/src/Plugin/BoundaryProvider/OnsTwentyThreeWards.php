@@ -190,7 +190,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
     }));
 
     $boundaries = $this->fetchBoundaryInformation($lad, $vals);
-    $election = $form_values['election'];
+    $election = $form_values['localgov_election'];
     $election_node = $this->nodeStorage->load($election);
     $n_areas = 0;
     foreach ($boundaries as $boundary) {

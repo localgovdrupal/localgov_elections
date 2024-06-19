@@ -162,7 +162,7 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
    */
   public function createBoundaries(BoundarySourceInterface $entity, array $form_values) {
     $boundaries = $this->fetchBoundaryInformation($form_values["plugin"]["config"]["constituencies"]);
-    $election = $form_values['election'];
+    $election = $form_values['localgov_election'];
     $election_node = $this->nodeStorage->load($election);
     $n_areas = 0;
 

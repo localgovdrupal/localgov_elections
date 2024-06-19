@@ -40,7 +40,7 @@ class ElectionSeatsParty extends FieldPluginBase {
     $node = \Drupal::routeMatch()->getParameter('node');
     if ($node instanceof NodeInterface) {
       // Arg must be NID of an Election content type.
-      if ($node->getType() == 'election') {
+      if ($node->getType() == 'localgov_election') {
         $election = $node->id();
         // Find all 'Area vote' (division_vote) nodes referencing this election.
         $query = \Drupal::entityQuery('node')

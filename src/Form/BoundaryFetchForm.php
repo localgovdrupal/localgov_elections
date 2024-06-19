@@ -102,7 +102,7 @@ final class BoundaryFetchForm extends FormBase {
     // It doesn't make sense to allow non-elections
     // using this form so deny any of the form.
     // @todo would it make sense to redirect somewhere? Or throw an error?
-    if ($node->bundle() != 'election') {
+    if ($node->bundle() != 'localgov_election') {
       $this->messenger()->addError("Can only fetch boundary information for elections");
       return $form;
     }
@@ -246,9 +246,9 @@ final class BoundaryFetchForm extends FormBase {
 
     /** @var \Drupal\localgov_elections\BoundaryProviderInterface $plugin */
     $plugin = $this->entities[$id]->getPlugin();
-    $form_state->setValue('election', $election->id());
+    $form_state->setValue('localgov_election', $election->id());
     $plugin->createBoundaries($this->entities[$id], $form_state->getValues());
-    $form_state->setRedirect('entity.node.canonical', ['node' => $form_state->getValue('election')]);
+    $form_state->setRedirect('entity.node.canonical', ['node' => $form_state->getValue('localgov_election')]);
   }
 
 }
