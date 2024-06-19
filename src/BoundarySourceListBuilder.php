@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting;
+namespace Drupal\localgov_elections;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormBuilderInterface;
-use Drupal\localgov_elections_reporting\Form\BounaryProviderAddForm;
+use Drupal\localgov_elections\Form\BounaryProviderAddForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -65,7 +65,7 @@ final class BoundarySourceListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity): array {
-    /** @var \Drupal\localgov_elections_reporting\BoundarySourceInterface $entity */
+    /** @var \Drupal\localgov_elections\BoundarySourceInterface $entity */
     $row['label'] = $entity->label();
     $row['id'] = $entity->id();
     $row['status'] = $entity->status() ? $this->t('Enabled') : $this->t('Disabled');

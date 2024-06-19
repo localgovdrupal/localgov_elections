@@ -5,7 +5,7 @@ dependencies:
     - node
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: node.field_seat_not_contested
 field_name: field_seat_not_contested
 entity_type: node

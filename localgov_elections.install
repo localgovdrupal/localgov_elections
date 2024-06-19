@@ -15,10 +15,10 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Implements hook_install().
  */
-function localgov_elections_reporting_install($is_syncing) {
+function localgov_elections_install($is_syncing) {
   $module_path = \Drupal::getContainer()
     ->get('module_handler')
-    ->getModule('localgov_elections_reporting')
+    ->getModule('localgov_elections')
     ->getPath();
 
   $overrides = $module_path . '/config/override';
@@ -34,7 +34,7 @@ function localgov_elections_reporting_install($is_syncing) {
 /**
  * Implements hook_uninstall().
  */
-function localgov_elections_reporting_uninstall($is_syncing) {
+function localgov_elections_uninstall($is_syncing) {
   $storage_handler = \Drupal::entityTypeManager()
     ->getStorage('node');
   $nodes = $storage_handler->loadByProperties(['type' => 'election']);
@@ -54,10 +54,10 @@ function localgov_elections_reporting_uninstall($is_syncing) {
 /**
  * Adds options to hide and display majority details and map for elections.
  */
-function localgov_elections_reporting_update_9000() {
+function localgov_elections_update_9000() {
   $module_path = \Drupal::getContainer()
     ->get('module_handler')
-    ->getModule('localgov_elections_reporting')
+    ->getModule('localgov_elections')
     ->getPath();
 
   // https://drupal.stackexchange.com/questions/227753/how-to-create-a-field-with-hook-update
@@ -104,11 +104,11 @@ function localgov_elections_reporting_update_9000() {
       try {
         $election->save();
         $id = $election->id();
-        Drupal::logger('localgov_elections_reporting')
+        Drupal::logger('localgov_elections')
           ->notice("Set default values for new fields field_display_map and field_display_majority_details for election with id $id");
       }
       catch (EntityStorageException $exception) {
-        Drupal::logger('localgov_elections_reporting')->error($exception->getMessage());
+        Drupal::logger('localgov_elections')->error($exception->getMessage());
       }
     }
   }
@@ -118,14 +118,14 @@ function localgov_elections_reporting_update_9000() {
 /**
  * Sets area name field to required and stop adding empty candidates.
  */
-function localgov_elections_reporting_update_9001() {
+function localgov_elections_update_9001() {
 
   /** @var Drupal\field\Entity\FieldConfig $area_name_config */
   $area_name_config = FieldConfig::loadByName('node', 'division_vote', 'field_area_name');
   if ($area_name_config) {
     $area_name_config->setRequired(TRUE);
     $area_name_config->save();
-    Drupal::logger('localgov_elections_reporting')->notice("Set field_area_name to required");
+    Drupal::logger('localgov_elections')->notice("Set field_area_name to required");
 
   }
 
@@ -138,7 +138,7 @@ function localgov_elections_reporting_update_9001() {
     $new_config['settings']['features']['convert'] = '0';
     $area_vote_form_display->setComponent('field_candidates', $new_config);
     $area_vote_form_display->save();
-    Drupal::logger('localgov_elections_reporting')
+    Drupal::logger('localgov_elections')
       ->notice("Removed default candidate paragraph for field_candidates");
   }
   drupal_flush_all_caches();
@@ -147,10 +147,10 @@ function localgov_elections_reporting_update_9001() {
 /**
  * Update views that were missing validation.
  */
-function localgov_elections_reporting_update_9002() {
+function localgov_elections_update_9002() {
   $module_path = \Drupal::getContainer()
     ->get('module_handler')
-    ->getModule('localgov_elections_reporting')
+    ->getModule('localgov_elections')
     ->getPath();
 
   $config_to_update = [
@@ -168,7 +168,7 @@ function localgov_elections_reporting_update_9002() {
     $config_obj->save(TRUE);
   }
 
-  Drupal::logger('localgov_elections_reporting')->notice("Updated views with validation");
+  Drupal::logger('localgov_elections')->notice("Updated views with validation");
 
   drupal_flush_all_caches();
 }
@@ -176,7 +176,7 @@ function localgov_elections_reporting_update_9002() {
 /**
  * Implements Set Charts module to use CDN.
  */
-function localgov_elections_reporting_update_9003(&$sandbox) {
+function localgov_elections_update_9003(&$sandbox) {
   $charts_config = \Drupal::configFactory()->getEditable('charts.settings');
   $charts_config->set('advanced.requirements.cdn', TRUE);
   $charts_config->save();
@@ -185,12 +185,12 @@ function localgov_elections_reporting_update_9003(&$sandbox) {
 /**
  * Ensures map uses auto-boxing.
  */
-function localgov_elections_reporting_update_9004(&$sandbox) {
+function localgov_elections_update_9004(&$sandbox) {
 
   $config_obj = \Drupal::configFactory()->getEditable('views.view.electoral_map');
   $config_obj->set('display.default.display_options.style.options.map_position.force', FALSE);
   $config_obj->save();
 
-  Drupal::logger('localgov_elections_reporting')->notice("Updated map to use auto-boxing");
+  Drupal::logger('localgov_elections')->notice("Updated map to use auto-boxing");
 
 }

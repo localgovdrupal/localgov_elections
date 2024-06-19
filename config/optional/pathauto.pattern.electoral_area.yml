@@ -5,7 +5,7 @@ dependencies:
     - taxonomy
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: electoral_area
 label: 'Electoral area'
 type: 'canonical_entities:taxonomy_term'

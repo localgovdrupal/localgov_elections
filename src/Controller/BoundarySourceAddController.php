@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Controller;
+namespace Drupal\localgov_elections\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;

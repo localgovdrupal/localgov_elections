@@ -5,7 +5,7 @@ dependencies:
     - paragraphs
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: paragraph.field_votes
 field_name: field_votes
 entity_type: paragraph

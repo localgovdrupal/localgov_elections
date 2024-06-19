@@ -6,7 +6,7 @@ dependencies:
     - paragraphs.paragraphs_type.candidate
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: paragraph.candidate.field_elected_
 field_name: field_elected_
 entity_type: paragraph

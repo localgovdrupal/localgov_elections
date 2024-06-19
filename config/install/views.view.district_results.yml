@@ -11,7 +11,7 @@ dependencies:
     - field.storage.paragraph.field_votes
     - field.storage.taxonomy_term.field_abbreviation
     - field.storage.taxonomy_term.field_party_colour
-    - node.type.division_vote
+    - node.type.localgov_area_vote
   module:
     - charts
     - charts_highcharts
@@ -23,7 +23,7 @@ dependencies:
     - user
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: district_results
 label: 'Ward Results'
 module: views
@@ -563,7 +563,7 @@ display:
           entity_field: type
           plugin_id: bundle
           value:
-            division_vote: division_vote
+            localgov_area_vote: localgov_area_vote
           expose:
             operator_limit_selection: false
             operator_list: {  }

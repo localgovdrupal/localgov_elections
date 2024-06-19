@@ -6,7 +6,7 @@ dependencies:
     - node.type.election
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: node.election.field_add_all_areas
 field_name: field_add_all_areas
 entity_type: node

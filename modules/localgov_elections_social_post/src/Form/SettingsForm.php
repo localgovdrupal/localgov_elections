@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting_social_post\Form;
+namespace Drupal\localgov_elections_social_post\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -16,14 +16,14 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId(): string {
-    return 'localgov_elections_reporting_social_post_settings';
+    return 'localgov_elections_social_post_settings';
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames(): array {
-    return ['localgov_elections_reporting_social_post.settings'];
+    return ['localgov_elections_social_post.settings'];
   }
 
   /**
@@ -34,7 +34,7 @@ class SettingsForm extends ConfigFormBase {
       '#type' => 'textarea',
       '#title' => $this->t('Example'),
       '#description' => $this->t("This field supports tokens."),
-      '#default_value' => $this->config('localgov_elections_reporting_social_post.settings')->get('message_template'),
+      '#default_value' => $this->config('localgov_elections_social_post.settings')->get('message_template'),
     ];
 
     $form['token_tree'] = [
@@ -50,7 +50,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $this->config('localgov_elections_reporting_social_post.settings')
+    $this->config('localgov_elections_social_post.settings')
       ->set('message_template', $form_state->getValue('message_template'))
       ->save();
     parent::submitForm($form, $form_state);

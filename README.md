@@ -6,7 +6,7 @@ the LocalGov Drupal distribution.
 ## Features
 
 - First past the post single seat per electoral area elections
-- 'All-out' and not 'all-out' (e.g. halves or thirds) elections 
+- 'All-out' and not 'all-out' (e.g. halves or thirds) elections
 - Table, graph and map based views of the results
 - Extensible boundary source provider for electoral areas and geo data
 - Social media posting of results (currently Twitter / X)
@@ -22,12 +22,12 @@ See the [Documentation](docs/index.md) for more details
 You can install this module with the following composer command.
 
 ```
-composer require localgovdrupal/localgov_elections_reporting
+composer require localgovdrupal/localgov_elections
 ```
 
 #### Libraries
 
-The libraries required by Charts/Highcharts are included, by default via CDN. If you wish to have these locally follow the instructions at https://www.drupal.org/docs/contributed-modules/charts/50x-getting-started#s-using-composer-and-wikimediacomposer-merge-plugin which uses the `composer.json` provided by the Charts module to install. 
+The libraries required by Charts/Highcharts are included, by default via CDN. If you wish to have these locally follow the instructions at https://www.drupal.org/docs/contributed-modules/charts/50x-getting-started#s-using-composer-and-wikimediacomposer-merge-plugin which uses the `composer.json` provided by the Charts module to install.
 
 #### Submodules
 
@@ -42,7 +42,7 @@ Further details for these modules are in their own module READMEs and the [Docum
 ## Issues
 
 If you run into issues using this module, please report them
-at https://github.com/localgovdrupal/localgov_elections_reporting/issues
+at https://github.com/localgovdrupal/localgov_elections/issues
 
 ## Maintainers
 

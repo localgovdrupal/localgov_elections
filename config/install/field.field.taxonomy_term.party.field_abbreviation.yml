@@ -6,7 +6,7 @@ dependencies:
     - taxonomy.vocabulary.party
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: taxonomy_term.party.field_abbreviation
 field_name: field_abbreviation
 entity_type: taxonomy_term

@@ -5,7 +5,7 @@ dependencies:
     - geocoder_field
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 _core:
   default_config_hash: VWIMgsYPqwO5KxMh1FAGdjk-723plvq8YONcX0RONos
 id: file

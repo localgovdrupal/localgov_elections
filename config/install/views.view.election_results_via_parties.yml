@@ -5,12 +5,12 @@ dependencies:
     - taxonomy.vocabulary.party
   module:
     - charts
-    - localgov_elections_reporting
+    - localgov_elections
     - taxonomy
     - user
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: election_results_via_parties
 label: 'Election Results via Parties'
 module: views

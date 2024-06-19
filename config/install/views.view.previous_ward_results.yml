@@ -5,7 +5,7 @@ dependencies:
     - field.storage.node.field_date
     - field.storage.paragraph.field_party
     - field.storage.paragraph.field_votes
-    - node.type.division_vote
+    - node.type.localgov_area_vote
   module:
     - datetime
     - node
@@ -15,7 +15,7 @@ dependencies:
     - views_field_view
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: previous_ward_results
 label: 'Specific Ward Results'
 module: views
@@ -197,7 +197,7 @@ display:
           entity_field: type
           plugin_id: bundle
           value:
-            division_vote: division_vote
+            localgov_area_vote: localgov_area_vote
           expose:
             operator_limit_selection: false
             operator_list: {  }

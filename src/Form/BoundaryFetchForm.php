@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting\Form;
+namespace Drupal\localgov_elections\Form;
 
 use Drupal\Core\DependencyInjection\ClassResolver;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformState;
-use Drupal\localgov_elections_reporting\BoundaryProviderPluginManager;
+use Drupal\localgov_elections\BoundaryProviderPluginManager;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -21,7 +21,7 @@ final class BoundaryFetchForm extends FormBase {
   /**
    * Boundary source plugin manager.
    *
-   * @var \Drupal\localgov_elections_reporting\BoundaryProviderPluginManager
+   * @var \Drupal\localgov_elections\BoundaryProviderPluginManager
    */
   protected BoundaryProviderPluginManager $manager;
 
@@ -92,7 +92,7 @@ final class BoundaryFetchForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId(): string {
-    return 'localgov_elections_reporting_boundary_fetch';
+    return 'localgov_elections_boundary_fetch';
   }
 
   /**
@@ -108,7 +108,7 @@ final class BoundaryFetchForm extends FormBase {
     }
 
     $opts = [];
-    /** @var \Drupal\localgov_elections_reporting\Entity\BoundarySource $ent */
+    /** @var \Drupal\localgov_elections\Entity\BoundarySource $ent */
     foreach ($this->entities as $key => $ent) {
       $opts[$key] = $ent->label();
     }
@@ -244,7 +244,7 @@ final class BoundaryFetchForm extends FormBase {
 
     $election = $form['#election'];
 
-    /** @var \Drupal\localgov_elections_reporting\BoundaryProviderInterface $plugin */
+    /** @var \Drupal\localgov_elections\BoundaryProviderInterface $plugin */
     $plugin = $this->entities[$id]->getPlugin();
     $form_state->setValue('election', $election->id());
     $plugin->createBoundaries($this->entities[$id], $form_state->getValues());

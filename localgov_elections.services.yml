@@ -1,4 +1,4 @@
 services:
   plugin.manager.boundary_provider:
-    class: Drupal\localgov_elections_reporting\BoundaryProviderPluginManager
+    class: Drupal\localgov_elections\BoundaryProviderPluginManager
     parent: default_plugin_manager

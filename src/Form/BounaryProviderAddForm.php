@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting\Form;
+namespace Drupal\localgov_elections\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\localgov_elections_reporting\BoundaryProviderPluginManager;
+use Drupal\localgov_elections\BoundaryProviderPluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -17,14 +17,14 @@ class BounaryProviderAddForm extends FormBase {
   /**
    * The boundary provider plugin manager.
    *
-   * @var \Drupal\localgov_elections_reporting\BoundaryProviderPluginManager
+   * @var \Drupal\localgov_elections\BoundaryProviderPluginManager
    */
   protected $pluginManager;
 
   /**
    * Constructs a new GeocoderProviderCreationForm.
    *
-   * @param \Drupal\localgov_elections_reporting\BoundaryProviderPluginManager $plugin_manager
+   * @param \Drupal\localgov_elections\BoundaryProviderPluginManager $plugin_manager
    *   The boundary provider plugin manager.
    */
   public function __construct(BoundaryProviderPluginManager $plugin_manager) {
@@ -44,7 +44,7 @@ class BounaryProviderAddForm extends FormBase {
    * {@inheritDoc}
    */
   public function getFormId() {
-    return 'localgov_elections_reporting_boundary_provider_add';
+    return 'localgov_elections_boundary_provider_add';
   }
 
   /**

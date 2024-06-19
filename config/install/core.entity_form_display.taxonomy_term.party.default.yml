@@ -14,7 +14,7 @@ dependencies:
     - text
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: taxonomy_term.party.default
 targetEntityType: taxonomy_term
 bundle: party

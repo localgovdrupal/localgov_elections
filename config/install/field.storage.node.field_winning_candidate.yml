@@ -7,7 +7,7 @@ dependencies:
     - paragraphs
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: node.field_winning_candidate
 field_name: field_winning_candidate
 entity_type: node

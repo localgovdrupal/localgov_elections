@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\Block;
+namespace Drupal\localgov_elections\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides an electionmenu block.
  *
  * @Block(
- *   id = "localgov_elections_reporting_electionmenu",
+ *   id = "localgov_elections_electionmenu",
  *   admin_label = @Translation("Election Menu"),
  *   category = @Translation("Custom")
  * )
@@ -180,7 +180,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       $this->node = $node;
       $build['#theme'] = 'election_menu';
       $build['#cache']['max-age'] = 0;
-      $build['#attached']['library'][] = 'localgov_elections_reporting/election_menu';
+      $build['#attached']['library'][] = 'localgov_elections/election_menu';
       $build['#links'] = $this->getLinks($node);
     }
 

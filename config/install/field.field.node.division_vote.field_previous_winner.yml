@@ -3,15 +3,15 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_previous_winner
-    - node.type.division_vote
+    - node.type.localgov_area_vote
     - taxonomy.vocabulary.party
   enforced:
     module:
-      - localgov_elections_reporting
-id: node.division_vote.field_previous_winner
+      - localgov_elections
+id: node.localgov_area_vote.field_previous_winner
 field_name: field_previous_winner
 entity_type: node
-bundle: division_vote
+bundle: localgov_area_vote
 label: 'Previous winner'
 description: 'Party of previous election winner'
 required: false

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;

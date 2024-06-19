@@ -5,7 +5,7 @@ dependencies:
     - geocoder_geofield
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 _core:
   default_config_hash: hPsWn6WhIbkx1E0xAlZ5n_C8aBY2x67swLbXXl8kGrQ
 id: geojson_file

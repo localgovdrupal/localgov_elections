@@ -4,17 +4,17 @@ dependencies:
   config:
     - field.storage.paragraph.field_party
     - field.storage.taxonomy_term.field_abbreviation
-    - node.type.division_vote
+    - node.type.localgov_area_vote
     - node.type.election
   module:
-    - localgov_elections_reporting
+    - localgov_elections
     - node
     - paragraphs
     - taxonomy
     - user
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: election_results_vot
 label: 'Election Results Vote Share'
 module: views
@@ -317,7 +317,7 @@ display:
           plugin_id: bundle
           operator: in
           value:
-            division_vote: division_vote
+            localgov_area_vote: localgov_area_vote
             election: election
           group: 1
           exposed: false

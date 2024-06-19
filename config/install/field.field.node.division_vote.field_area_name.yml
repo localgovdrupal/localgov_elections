@@ -3,14 +3,14 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_area_name
-    - node.type.division_vote
+    - node.type.localgov_area_vote
   enforced:
     module:
-      - localgov_elections_reporting
-id: node.division_vote.field_area_name
+      - localgov_elections
+id: node.localgov_area_vote.field_area_name
 field_name: field_area_name
 entity_type: node
-bundle: division_vote
+bundle: localgov_area_vote
 label: 'Area name'
 description: ''
 required: true

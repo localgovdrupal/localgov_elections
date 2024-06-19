@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_winning_candidate
-    - node.type.division_vote
+    - node.type.localgov_area_vote
     - system.menu.admin
   module:
     - entity_reference_revisions
@@ -11,7 +11,7 @@ dependencies:
     - user
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: ward_winners
 label: 'Ward winners'
 module: views
@@ -339,7 +339,7 @@ display:
           entity_field: type
           plugin_id: bundle
           value:
-            division_vote: division_vote
+            localgov_area_vote: localgov_area_vote
           expose:
             operator_limit_selection: false
             operator_list: {  }

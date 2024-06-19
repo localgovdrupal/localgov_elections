@@ -19,7 +19,7 @@ dependencies:
     - text
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 third_party_settings:
   field_group:
     group_election:

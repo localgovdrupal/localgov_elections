@@ -5,7 +5,7 @@ dependencies:
     - paragraphs
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: paragraph.summary
 label: Summary
 targetEntityType: paragraph

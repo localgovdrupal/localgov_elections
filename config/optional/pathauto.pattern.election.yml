@@ -5,7 +5,7 @@ dependencies:
     - node
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: election
 label: Election
 type: 'canonical_entities:node'

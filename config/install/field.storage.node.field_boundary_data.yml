@@ -6,7 +6,7 @@ dependencies:
     - node
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: node.field_boundary_data
 field_name: field_boundary_data
 entity_type: node

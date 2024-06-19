@@ -5,7 +5,7 @@ dependencies:
     - menu_ui
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 third_party_settings:
   menu_ui:
     available_menus:

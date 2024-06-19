@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting\Annotation;
+namespace Drupal\localgov_elections\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 

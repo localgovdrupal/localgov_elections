@@ -2,11 +2,11 @@ langcode: en
 status: true
 dependencies:
   module:
-    - localgov_elections_reporting
+    - localgov_elections
     - system
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
   theme:
     - localgov_base
 id: localgov_base_electionmenu
@@ -14,12 +14,12 @@ theme: localgov_base
 region: sidebar_first
 weight: 0
 provider: null
-plugin: localgov_elections_reporting_electionmenu
+plugin: localgov_elections_electionmenu
 settings:
-  id: localgov_elections_reporting_electionmenu
+  id: localgov_elections_electionmenu
   label: 'Election Menu'
   label_display: '0'
-  provider: localgov_elections_reporting
+  provider: localgov_elections
 visibility:
   request_path:
     id: request_path

@@ -4,4 +4,4 @@ description: 'Provides a UK constituency boundary provider. Data source: https:/
 package: LocalGov Drupal
 core_version_requirement: ^9 || ^10
 dependencies:
-  - localgov_elections_reporting:localgov_elections_reporting
+  - localgov_elections:localgov_elections

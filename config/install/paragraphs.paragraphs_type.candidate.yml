@@ -3,7 +3,7 @@ status: true
 dependencies:
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: candidate
 label: Candidate
 icon_uuid: null

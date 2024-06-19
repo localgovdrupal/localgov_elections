@@ -6,7 +6,7 @@ dependencies:
     - options
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: node.field_hold_or_gain
 field_name: field_hold_or_gain
 entity_type: node

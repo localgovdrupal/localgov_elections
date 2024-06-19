@@ -15,7 +15,7 @@ dependencies:
     - field_formatter_class
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: paragraph.candidate.token
 targetEntityType: paragraph
 bundle: candidate

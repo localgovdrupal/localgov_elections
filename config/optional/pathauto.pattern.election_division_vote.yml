@@ -5,8 +5,8 @@ dependencies:
     - node
   enforced:
     module:
-      - localgov_elections_reporting
-id: election_division_vote
+      - localgov_elections
+id: election_localgov_area_vote
 label: 'Election division vote'
 type: 'canonical_entities:node'
 pattern: '/election/[node:field_election]/[node:field_area_name]'
@@ -18,7 +18,7 @@ selection_criteria:
     context_mapping:
       node: node
     bundles:
-      division_vote: division_vote
+      localgov_area_vote: localgov_area_vote
 selection_logic: and
 weight: -5
 relationships: {  }

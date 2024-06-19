@@ -3,16 +3,16 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_candidates_file
-    - node.type.division_vote
+    - node.type.localgov_area_vote
   module:
     - file
   enforced:
     module:
-      - localgov_elections_reporting
-id: node.division_vote.field_candidates_file
+      - localgov_elections
+id: node.localgov_area_vote.field_candidates_file
 field_name: field_candidates_file
 entity_type: node
-bundle: division_vote
+bundle: localgov_area_vote
 label: 'Candidates List (File)'
 description: 'Upload a PDF describing the candidates'
 required: false

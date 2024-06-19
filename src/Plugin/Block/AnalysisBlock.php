@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\Block;
+namespace Drupal\localgov_elections\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\node\Entity\Node;

@@ -6,7 +6,7 @@ dependencies:
     - taxonomy
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: node.field_previous_winner
 field_name: field_previous_winner
 entity_type: node

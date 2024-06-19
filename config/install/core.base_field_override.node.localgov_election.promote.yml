@@ -2,14 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - node.type.election
+    - node.type.localgov_election
   enforced:
     module:
-      - localgov_elections_reporting
-id: node.election.promote
+      - localgov_elections
+id: node.localgov_election.promote
 field_name: promote
 entity_type: node
-bundle: election
+bundle: localgov_election
 label: 'Promoted to front page'
 description: ''
 required: false

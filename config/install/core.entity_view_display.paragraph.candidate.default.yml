@@ -12,7 +12,7 @@ dependencies:
     - paragraphs.paragraphs_type.candidate
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: paragraph.candidate.default
 targetEntityType: paragraph
 bundle: candidate

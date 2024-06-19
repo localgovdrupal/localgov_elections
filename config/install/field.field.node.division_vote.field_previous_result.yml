@@ -3,14 +3,14 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_previous_result
-    - node.type.division_vote
+    - node.type.localgov_area_vote
   enforced:
     module:
-      - localgov_elections_reporting
-id: node.division_vote.field_previous_result
+      - localgov_elections
+id: node.localgov_area_vote.field_previous_result
 field_name: field_previous_result
 entity_type: node
-bundle: division_vote
+bundle: localgov_area_vote
 label: 'Previous result'
 description: ''
 required: false
@@ -21,7 +21,7 @@ settings:
   handler: 'default:node'
   handler_settings:
     target_bundles:
-      division_vote: division_vote
+      localgov_area_vote: localgov_area_vote
     sort:
       field: _none
       direction: ASC

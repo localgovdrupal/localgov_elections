@@ -17,7 +17,7 @@ dependencies:
     - user
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: node.election.teaser
 targetEntityType: node
 bundle: election

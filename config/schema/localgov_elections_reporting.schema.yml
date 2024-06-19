@@ -1,4 +1,4 @@
-localgov_elections_reporting.boundary_source.*:
+localgov_elections.boundary_source.*:
   type: config_entity
   label: Boundary Source
   mapping:

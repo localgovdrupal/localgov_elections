@@ -4,16 +4,16 @@ dependencies:
   config:
     - field.storage.paragraph.field_candidates
     - paragraphs.paragraphs_type.candidate
-    - paragraphs.paragraphs_type.division_vote
+    - paragraphs.paragraphs_type.localgov_area_vote
   module:
     - entity_reference_revisions
   enforced:
     module:
-      - localgov_elections_reporting
-id: paragraph.division_vote.field_candidates
+      - localgov_elections
+id: paragraph.localgov_area_vote.field_candidates
 field_name: field_candidates
 entity_type: paragraph
-bundle: division_vote
+bundle: localgov_area_vote
 label: Candidates
 description: ''
 required: false
@@ -30,7 +30,7 @@ settings:
       candidate:
         weight: 9
         enabled: true
-      division_vote:
+      localgov_area_vote:
         weight: 10
         enabled: false
       from_library:

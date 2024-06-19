@@ -8,7 +8,7 @@ dependencies:
     - link
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: taxonomy_term.party.field_political_party_uri
 field_name: field_political_party_uri
 entity_type: taxonomy_term

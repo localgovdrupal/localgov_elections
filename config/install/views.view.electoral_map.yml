@@ -6,7 +6,7 @@ dependencies:
     - field.storage.node.field_area_name
     - field.storage.node.field_boundary_data
     - field.storage.taxonomy_term.field_party_colour
-    - node.type.division_vote
+    - node.type.localgov_area_vote
     - node.type.election
   module:
     - color_field
@@ -18,7 +18,7 @@ dependencies:
     - user
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 id: electoral_map
 label: 'Electoral Map'
 module: views
@@ -372,7 +372,7 @@ display:
           entity_field: type
           plugin_id: bundle
           value:
-            division_vote: division_vote
+            localgov_area_vote: localgov_area_vote
       style:
         type: leaflet_map
         options:

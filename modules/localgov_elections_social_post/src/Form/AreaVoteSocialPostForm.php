@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting_social_post\Form;
+namespace Drupal\localgov_elections_social_post\Form;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -106,7 +106,7 @@ class AreaVoteSocialPostForm extends FormBase {
     EntityTypeManagerInterface $entityTypeManager,
     MessengerInterface $messenger,
   ) {
-    $this->config = $configFactory->get('localgov_elections_reporting_social_post.settings');
+    $this->config = $configFactory->get('localgov_elections_social_post.settings');
     $this->userManager = $userManager;
     $this->twitterPostManager = $twitterPostManager;
     $this->messenger = $messenger;
@@ -143,7 +143,7 @@ class AreaVoteSocialPostForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId(): string {
-    return 'localgov_elections_reporting_social_post_area_vote_social_post';
+    return 'localgov_elections_social_post_area_vote_social_post';
   }
 
   /**

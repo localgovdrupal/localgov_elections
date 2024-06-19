@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting;
+namespace Drupal\localgov_elections;
 
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Component\Plugin\PluginManagerInterface;

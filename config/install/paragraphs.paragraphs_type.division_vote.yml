@@ -3,8 +3,8 @@ status: true
 dependencies:
   enforced:
     module:
-      - localgov_elections_reporting
-id: division_vote
+      - localgov_elections
+id: localgov_area_vote
 label: 'Division vote'
 icon_uuid: null
 icon_default: null

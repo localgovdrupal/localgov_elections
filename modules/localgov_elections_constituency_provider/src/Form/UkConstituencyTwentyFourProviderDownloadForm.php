@@ -7,8 +7,8 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_elections_constituency_provider\CacheKey;
-use Drupal\localgov_elections_reporting\BoundaryProviderInterface;
-use Drupal\localgov_elections_reporting\Form\BoundaryProviderSubformInterface;
+use Drupal\localgov_elections\BoundaryProviderInterface;
+use Drupal\localgov_elections\Form\BoundaryProviderSubformInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -71,7 +71,7 @@ class UkConstituencyTwentyFourProviderDownloadForm implements BoundaryProviderSu
   /**
    * The plugin.
    *
-   * @var \Drupal\localgov_elections_reporting\BoundaryProviderInterface
+   * @var \Drupal\localgov_elections\BoundaryProviderInterface
    */
   protected $plugin;
 

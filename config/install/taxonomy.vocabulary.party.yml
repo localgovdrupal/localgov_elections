@@ -3,7 +3,7 @@ status: true
 dependencies:
   enforced:
     module:
-      - localgov_elections_reporting
+      - localgov_elections
 name: Party
 vid: party
 description: 'Registered political party and organisations'

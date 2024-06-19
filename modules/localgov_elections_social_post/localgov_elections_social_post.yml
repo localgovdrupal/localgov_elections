@@ -5,7 +5,7 @@ package: LocalGov Drupal
 core_version_requirement: ^9 || ^10
 
 dependencies:
-  - localgov_elections_reporting:localgov_elections_reporting
+  - localgov_elections:localgov_elections
   - social_post:social_post
   - social_post_twitter:social_post_twitter
   - drupal:token
