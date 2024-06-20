@@ -1,0 +1,27 @@
+name: 'LocalGov Elections Reporting Demo'
+type: module
+description: 'Demo content for the LocalGov Elections Reporting module'
+package: LocalGov Drupal
+core_version_requirement: ^10 || ^11
+
+dependencies:
+  - default_content:default_content
+  - localgov_elections:localgov_elections_constituency_provider
+  - localgov_elections:localgov_elections
+
+default_content:
+  node:
+    - 23ffd187-52df-4106-9c19-af542d51a738
+    - 03c28275-05bd-4082-a629-101064faa287
+    - 4d5aff55-8f5e-4195-acf0-a49cf259f84c
+    - 5f652852-df67-4d5e-9e23-fc96c90a0f43
+    - 7d910eb2-029f-4688-a060-0319dc888ca1
+    - 40b48ccc-4694-4718-96ae-a47cbdba8728
+    - 323fb108-c7e6-4ab8-89e1-8a2705ce6cfa
+    - dd93c0fa-53b1-49fa-8dc7-066b83ea3bcb
+  taxonomy_term:
+    - 8d045aee-e3b8-47c0-9273-054c6af9d417
+    - 8d58c7a0-9201-4826-872a-8115a3f55535
+    - 017b30a5-ec34-4aba-a12e-612a5c43e661
+    - 33c84934-7f19-47e7-a243-43f1a29e9d1f
+    - b642d283-9860-4ac2-a584-7fb96b03f070

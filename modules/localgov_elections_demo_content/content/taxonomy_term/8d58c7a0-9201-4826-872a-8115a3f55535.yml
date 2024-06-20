@@ -1,0 +1,43 @@
+_meta:
+  version: '1.0'
+  entity_type: taxonomy_term
+  uuid: 8d58c7a0-9201-4826-872a-8115a3f55535
+  bundle: localgov_party
+  default_langcode: en
+default:
+  status:
+    -
+      value: true
+  name:
+    -
+      value: 'Reform UK'
+  weight:
+    -
+      value: 0
+  parent:
+    -
+      target_id: 0
+  revision_translation_affected:
+    -
+      value: true
+  path:
+    -
+      alias: ''
+      langcode: en
+      pathauto: 1
+  localgov_election_abbreviation:
+    -
+      value: RU
+  localgov_election_party_colour:
+    -
+      color: '#12B6CF'
+      opacity: 0.0
+  localgov_electionl_party_uri:
+    -
+      uri: 'https://www.reform.uk/'
+      title: ''
+      options: {  }
+  localgov_election_text_colour:
+    -
+      color: '#FFFFFF'
+      opacity: 0.0

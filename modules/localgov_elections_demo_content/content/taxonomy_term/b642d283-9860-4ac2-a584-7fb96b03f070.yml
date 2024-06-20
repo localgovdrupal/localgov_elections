@@ -1,0 +1,43 @@
+_meta:
+  version: '1.0'
+  entity_type: taxonomy_term
+  uuid: b642d283-9860-4ac2-a584-7fb96b03f070
+  bundle: localgov_party
+  default_langcode: en
+default:
+  status:
+    -
+      value: true
+  name:
+    -
+      value: 'Green Party'
+  weight:
+    -
+      value: 0
+  parent:
+    -
+      target_id: 0
+  revision_translation_affected:
+    -
+      value: true
+  path:
+    -
+      alias: ''
+      langcode: en
+      pathauto: 1
+  localgov_election_abbreviation:
+    -
+      value: GP
+  localgov_election_party_colour:
+    -
+      color: '#00643B'
+      opacity: 0.0
+  localgov_election_party_uri:
+    -
+      uri: 'https://www.greenparty.org.uk/'
+      title: ''
+      options: {  }
+  localgov_election_text_colour:
+    -
+      color: '#FFFFFF'
+      opacity: 0.0
