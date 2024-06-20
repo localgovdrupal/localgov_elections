@@ -36,8 +36,6 @@ You may also wish to use the submodules provided as part of the Localgov Electio
 1. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 Wards
 2. Localgov Elections Parliamentary Constituency Provider - Boundary source provider for Office of National Statistics 2024 constituency boundaries
 3. LocalGov Elections Reporting Social Post Integration - Post results to social media (Twitter/X)
-4. LocalGov Elections Reporting Demo - Demo content to help with testing/evaluation
-5. LocalGov Elections Reporting - UK Parties - Adds the majority of UK political parties to the party taxonomy. 
 
 Further details for these modules are in their own module READMEs and the [Documentation](docs/index.md).
 

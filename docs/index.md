@@ -38,8 +38,6 @@ If you are interested in writing your own boundary provider plugin, you can read
 
 ### Add Parties
 
-> NOTE: You can use the "LocalGov Elections Reporting - UK Parties" sub-module to get a headstart on this.
-
 1. Go to ` Structure > Taxonomy > Party` or `/admin/structure/taxonomy/manage/party/overview`
 2. Click Add term
 3. Complete the form for each party represented in the Election. Examples are:
