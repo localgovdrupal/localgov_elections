@@ -22,7 +22,7 @@ mode: default
 content:
   description:
     type: text_textarea
-    weight: 1
+    weight: 5
     region: content
     settings:
       rows: 5
@@ -30,7 +30,7 @@ content:
     third_party_settings: {  }
   localgov_election_abbreviation:
     type: string_textfield
-    weight: 4
+    weight: 1
     region: content
     settings:
       size: 60
@@ -38,13 +38,14 @@ content:
     third_party_settings: {  }
   localgov_election_party_colour:
     type: color_field_widget_html5
-    weight: 5
+    weight: 3
     region: content
-    settings: {  }
+    settings:
+      show_extra: false
     third_party_settings: {  }
   localgov_election_party_uri:
     type: link_default
-    weight: 7
+    weight: 2
     region: content
     settings:
       placeholder_url: ''
@@ -52,9 +53,10 @@ content:
     third_party_settings: {  }
   localgov_election_text_colour:
     type: color_field_widget_html5
-    weight: 6
+    weight: 4
     region: content
-    settings: {  }
+    settings:
+      show_extra: false
     third_party_settings: {  }
   name:
     type: string_textfield
@@ -66,13 +68,18 @@ content:
     third_party_settings: {  }
   path:
     type: path
-    weight: 2
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  simple_sitemap:
+    weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 3
+    weight: 7
     region: content
     settings:
       display_label: true
