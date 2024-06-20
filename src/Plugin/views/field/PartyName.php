@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
@@ -35,20 +35,20 @@ class PartyName extends FieldPluginBase {
     $party_name = NULL;
     $results = [];
 
-    // Find all 'Areas vote' (division_vote) nodes referencing this election.
+    // Find all 'Areas vote' (localgov_area_vote) nodes referencing this election.
     $query = \Drupal::entityQuery('node')
-      ->condition('type', 'division_vote')
-      ->condition('field_election', $election);
+      ->condition('type', 'localgov_area_vote')
+      ->condition('localgov_election', $election);
     $query->accessCheck(FALSE);
     $wards = $query->execute();
 
     // Add all candidate votes + spoils for each ward.
     foreach ($wards as $ward_id) {
       $ward = Node::load($ward_id);
-      $candidates = $ward->get('field_candidates');
+      $candidates = $ward->get('localgov_election_candidates');
 
       foreach ($candidates->referencedEntities() as $candidate) {
-        $party = Term::load($candidate->get('field_party')->target_id);
+        $party = Term::load($candidate->get('localgov_election_party')->target_id);
         $party_name = $party->getTitle->value;
         $results[] = ['name' => $party_name];
       }

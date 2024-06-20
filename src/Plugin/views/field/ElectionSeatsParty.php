@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
@@ -40,12 +40,12 @@ class ElectionSeatsParty extends FieldPluginBase {
     $node = \Drupal::routeMatch()->getParameter('node');
     if ($node instanceof NodeInterface) {
       // Arg must be NID of an Election content type.
-      if ($node->getType() == 'election') {
+      if ($node->getType() == 'localgov_election') {
         $election = $node->id();
-        // Find all 'Area vote' (division_vote) nodes referencing this election.
+        // Find all 'Area vote' (localgov_area_vote) nodes referencing this election.
         $query = \Drupal::entityQuery('node')
-          ->condition('type', 'division_vote')
-          ->condition('field_election', $election);
+          ->condition('type', 'localgov_area_vote')
+          ->condition('localgov_election', $election);
         $query->accessCheck(FALSE);
         $wards = $query->execute();
         // Go through each ward/area/division.
@@ -56,10 +56,10 @@ class ElectionSeatsParty extends FieldPluginBase {
           // Iterate through each candidate to see if party standing -
           // only if not already flagged.
           if ($party_standing == FALSE) {
-            $candidates = $ward->get('field_candidates');
+            $candidates = $ward->get('localgov_election_candidates');
 
             foreach ($candidates->referencedEntities() as $candidate) {
-              $cand_party = $candidate->get('field_party')->target_id;
+              $cand_party = $candidate->get('localgov_election_party')->target_id;
               if ($party_tid == $cand_party) {
                 $party_standing = TRUE;
               }
@@ -67,11 +67,11 @@ class ElectionSeatsParty extends FieldPluginBase {
           }
 
           // Find party of Ward/Area/Division winning candidate.
-          $winning_cand_id = $ward->get('field_winning_candidate')->target_id;
+          $winning_cand_id = $ward->get('localgov_election_winner')->target_id;
           if (isset($winning_cand_id)) {
             $winning_cand = Paragraph::load($winning_cand_id);
             if (isset($winning_cand)) {
-              $winning_party = $winning_cand->get('field_party')->target_id;
+              $winning_party = $winning_cand->get('localgov_election_party')->target_id;
               if ($party_tid == $winning_party) {
                 $seats++;
               }

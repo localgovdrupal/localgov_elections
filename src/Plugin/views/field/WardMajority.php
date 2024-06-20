@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
@@ -35,10 +35,10 @@ class WardMajority extends FieldPluginBase {
     $second = 0;
     $results = [];
     $majority = NULL;
-    $candidates = $node->get('field_candidates');
+    $candidates = $node->get('localgov_election_candidates');
 
     foreach ($candidates->referencedEntities() as $candidate) {
-      $votes = $candidate->get('field_votes')->value;
+      $votes = $candidate->get('localgov_election_votes')->value;
       $results[] = $votes;
     }
 

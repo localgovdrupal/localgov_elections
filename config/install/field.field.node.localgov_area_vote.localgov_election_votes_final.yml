@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_votes_final
+    - node.type.localgov_area_vote
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.localgov_election_votes_final
+field_name: localgov_election_votes_final
+entity_type: node
+bundle: localgov_area_vote
+label: 'Votes finalised'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

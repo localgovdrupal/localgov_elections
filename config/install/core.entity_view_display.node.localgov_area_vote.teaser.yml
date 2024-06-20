@@ -1,0 +1,66 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.localgov_area_vote.localgov_election_area_name
+    - field.field.node.localgov_area_vote.localgov_election_boundary_data
+    - field.field.node.localgov_area_vote.localgov_election_candidates
+    - field.field.node.localgov_area_vote.localgov_election_cand_file
+    - field.field.node.localgov_area_vote.localgov_election
+    - field.field.node.localgov_area_vote.localgov_election_electorate
+    - field.field.node.localgov_area_vote.localgov_election_hold_or_gain
+    - field.field.node.localgov_area_vote.localgov_election_prev_result
+    - field.field.node.localgov_area_vote.localgov_election_prev_winner
+    - field.field.node.localgov_area_vote.localgov_election_previous_year
+    - field.field.node.localgov_area_vote.localgov_election_no_contest
+    - field.field.node.localgov_area_vote.localgov_election_spoils
+    - field.field.node.localgov_area_vote.localgov_election_votes_final
+    - field.field.node.localgov_area_vote.localgov_election_winner
+    - node.type.localgov_area_vote
+  module:
+    - user
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.teaser
+targetEntityType: node
+bundle: localgov_area_vote
+mode: teaser
+content:
+  analysis:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  hold_gain:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+  results:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  localgov_election_area_name: true
+  localgov_election_boundary_data: true
+  localgov_election_candidates: true
+  localgov_election_cand_file: true
+  localgov_election: true
+  localgov_election_electorate: true
+  localgov_election_hold_or_gain: true
+  localgov_election_prev_result: true
+  localgov_election_prev_winner: true
+  localgov_election_previous_year: true
+  localgov_election_no_contest: true
+  localgov_election_spoils: true
+  localgov_election_votes_final: true
+  localgov_election_winner: true
+  search_api_excerpt: true

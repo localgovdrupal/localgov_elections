@@ -8,8 +8,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\localgov_elections_reporting\BoundaryProviderPluginBase;
-use Drupal\localgov_elections_reporting\BoundarySourceInterface;
+use Drupal\localgov_elections\BoundaryProviderPluginBase;
+use Drupal\localgov_elections\BoundarySourceInterface;
 use Drupal\node\NodeStorageInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -162,7 +162,7 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
    */
   public function createBoundaries(BoundarySourceInterface $entity, array $form_values) {
     $boundaries = $this->fetchBoundaryInformation($form_values["plugin"]["config"]["constituencies"]);
-    $election = $form_values['election'];
+    $election = $form_values['localgov_election'];
     $election_node = $this->nodeStorage->load($election);
     $n_areas = 0;
 
@@ -170,10 +170,10 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
       /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
       $area = $this->nodeStorage->create(
           [
-            'type' => 'division_vote',
-            'field_area_name' => $boundary["properties"]["PCON24NM"],
-            'field_boundary_data' => json_encode($boundary),
-            'field_election' => ['target_id' => $election],
+            'type' => 'localgov_area_vote',
+            'localgov_election_area_name' => $boundary["properties"]["PCON24NM"],
+            'localgov_election_boundary_data' => json_encode($boundary),
+            'localgov_election' => ['target_id' => $election],
             'title' => $election_node->getTitle() . ' - ' . $boundary["properties"]["PCON24NM"],
           ]
       );

@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_no_contest
+    - node.type.localgov_area_vote
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.localgov_election_no_contest
+field_name: localgov_election_no_contest
+entity_type: node
+bundle: localgov_area_vote
+label: 'Seat not contested'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

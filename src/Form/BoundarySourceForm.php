@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting\Form;
+namespace Drupal\localgov_elections\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -10,8 +10,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformState;
 use Drupal\Core\Plugin\PluginFormFactoryInterface;
 use Drupal\Core\Plugin\PluginWithFormsInterface;
-use Drupal\localgov_elections_reporting\BoundaryProviderInterface;
-use Drupal\localgov_elections_reporting\BoundaryProviderPluginBase;
+use Drupal\localgov_elections\BoundaryProviderInterface;
+use Drupal\localgov_elections\BoundaryProviderPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -114,7 +114,7 @@ class BoundarySourceForm extends EntityForm {
   /**
    * Utility to get the form.
    *
-   * @param \Drupal\localgov_elections_reporting\BoundaryProviderInterface $item
+   * @param \Drupal\localgov_elections\BoundaryProviderInterface $item
    *   The boundary provider item.
    *
    * @return \Drupal\Core\Plugin\PluginFormInterface|BoundaryProviderInterface

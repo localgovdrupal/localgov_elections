@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\taxonomy\Entity\Term;
@@ -33,10 +33,10 @@ class WardCandidatesCandidate extends FieldPluginBase {
     $area_vote = $values->_entity;
     $markup = '<div class="ward-candidate-results">';
 
-    $winner = Paragraph::load($area_vote->get('field_winning_candidate')->target_id);
+    $winner = Paragraph::load($area_vote->get('localgov_election_winner')->target_id);
     if (isset($winner)) {
-      $surname = $winner->get('field_candidate')->value;
-      $forenames = $winner->get('field_candidate_forenames')->value;
+      $surname = $winner->get('localgov_election_candidate')->value;
+      $forenames = $winner->get('localgov_election_forenames')->value;
       $markup .= '<div class="winner result-row">';
       $markup .= '<div class="name">';
       $markup .= $surname;
@@ -55,14 +55,14 @@ class WardCandidatesCandidate extends FieldPluginBase {
 
     // Iterate through each candidate and store name, party and votes.
     $results = [];
-    $candidates = $area_vote->get('field_candidates');
+    $candidates = $area_vote->get('localgov_election_candidates');
 
     foreach ($candidates->referencedEntities() as $candidate) {
-      $surname = $candidate->get('field_candidate')->value;
-      $forenames = $candidate->get('field_candidate_forenames')->value;
-      $party_term = Term::load($candidate->get('field_party')->target_id);
+      $surname = $candidate->get('localgov_election_candidate')->value;
+      $forenames = $candidate->get('localgov_election_forenames')->value;
+      $party_term = Term::load($candidate->get('localgov_election_party')->target_id);
       $party = $party_term->getName();
-      $votes = $candidate->get('field_votes')->value;
+      $votes = $candidate->get('localgov_election_votes')->value;
       $results[] = [
         'surname' => $surname,
         'forenames' => $forenames,

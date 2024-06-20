@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\taxonomy\Entity\Term;
@@ -31,16 +31,16 @@ class WardCandidatesParty extends FieldPluginBase {
    */
   public function render(ResultRow $values) {
     $area_vote = $values->_entity;
-    $hold_gain = $area_vote->get('field_hold_or_gain')->value;
+    $hold_gain = $area_vote->get('localgov_election_hold_or_gain')->value;
     $markup = '<div class="ward-candidate-results">';
 
-    $winner = Paragraph::load($area_vote->get('field_winning_candidate')->target_id);
+    $winner = Paragraph::load($area_vote->get('localgov_election_winner')->target_id);
     if (isset($winner)) {
-      $party_term = Term::load($winner->get('field_party')->target_id);
+      $party_term = Term::load($winner->get('localgov_election_party')->target_id);
       $party = $party_term->getName();
-      $party_abbr = $party_term->get('field_abbreviation')?->value
-      ? strtolower($party_term->get('field_abbreviation')->value) : "";
-      $votes = $winner->get('field_votes')->value;
+      $party_abbr = $party_term->get('localgov_election_abbreviation')?->value
+      ? strtolower($party_term->get('localgov_election_abbreviation')->value) : "";
+      $votes = $winner->get('localgov_election_votes')->value;
       $markup .= '<div class="winner result-row">';
 
       $markup .= '<div class="key-result">';
@@ -56,14 +56,14 @@ class WardCandidatesParty extends FieldPluginBase {
 
     // Iterate through each candidate and store name, party and votes.
     $results = [];
-    $candidates = $area_vote->get('field_candidates');
+    $candidates = $area_vote->get('localgov_election_candidates');
 
     foreach ($candidates->referencedEntities() as $candidate) {
-      $surname = $candidate->get('field_candidate')->value;
-      $forenames = $candidate->get('field_candidate_forenames')->value;
-      $party_term = Term::load($candidate->get('field_party')->target_id);
+      $surname = $candidate->get('localgov_election_candidate')->value;
+      $forenames = $candidate->get('localgov_election_forenames')->value;
+      $party_term = Term::load($candidate->get('localgov_election_party')->target_id);
       $party = $party_term->getName();
-      $votes = $candidate->get('field_votes')->value;
+      $votes = $candidate->get('localgov_election_votes')->value;
       $results[] = [
         'surname' => $surname,
         'forenames' => $forenames,

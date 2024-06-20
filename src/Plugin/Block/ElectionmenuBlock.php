@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\Block;
+namespace Drupal\localgov_elections\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides an electionmenu block.
  *
  * @Block(
- *   id = "localgov_elections_reporting_electionmenu",
+ *   id = "localgov_elections_electionmenu",
  *   admin_label = @Translation("Election Menu"),
  *   category = @Translation("Custom")
  * )
@@ -95,59 +95,59 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
 
     // Allow editors to hide the map
     // It certainly won't work when we allow multiple winners / seats.
-    if ($node->hasField('field_display_map')) {
-      $display_map = $node->get('field_display_map')?->value;
+    if ($node->hasField('localgov_election_display_map')) {
+      $display_map = $node->get('localgov_election_display_map')?->value;
     }
     else {
       $display_map = FALSE;
     }
     // Check that there is geo data to display.
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
-    $results = $query->condition('type', 'division_vote')
-      ->condition('type', 'division_vote')
-      ->condition('field_election', $node->id())
-      ->exists('field_boundary_data')
+    $results = $query->condition('type', 'localgov_area_vote')
+      ->condition('type', 'localgov_area_vote')
+      ->condition('localgov_election', $node->id())
+      ->exists('localgov_election_boundary_data')
       ->accessCheck(FALSE)
       ->execute();
     // If map to be displayed and there is geo data show the link.
     if ($display_map == "1" && $results) {
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Electoral map'), Url::fromRoute('view.electoral_map.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Electoral map'), Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $this->node->id()])),
       ];
     }
 
     // Should next 2 links should be displayed i.e. there are finalised votes.
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
-    $results = $query->condition('type', 'division_vote')
-      ->condition('type', 'division_vote')
-      ->condition('field_election', $node->id())
-      ->condition('field_votes_finalised', TRUE)
+    $results = $query->condition('type', 'localgov_area_vote')
+      ->condition('type', 'localgov_area_vote')
+      ->condition('localgov_election', $node->id())
+      ->condition('localgov_election_votes_final', TRUE)
       ->accessCheck(FALSE)
       ->execute();
     if ($results) {
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.election_results_timeline.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.localgov_election_results_timeline.page_1', ['node' => $this->node->id()])),
       ];
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.election_results_vot.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.localgov_election_results_vote.page_1', ['node' => $this->node->id()])),
       ];
     }
 
     // Work out if next link should be displayed i.e. there are PDFs uploaded.
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
-    $results = $query->condition('type', 'division_vote')
-      ->condition('type', 'division_vote')
-      ->condition('field_election', $node->id())
-      ->exists('field_candidates_file')
+    $results = $query->condition('type', 'localgov_area_vote')
+      ->condition('type', 'localgov_area_vote')
+      ->condition('localgov_election', $node->id())
+      ->exists('localgov_election_cand_file')
       ->accessCheck(FALSE)
       ->execute();
     if ($results) {
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.electoral_candidates.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.localgov_electoral_candidates.page_1', ['node' => $this->node->id()])),
       ];
     }
     return $urls;
@@ -166,8 +166,8 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       }
     }
     if ($node instanceof NodeInterface) {
-      if ($node->bundle() == 'division_vote') {
-        $node_ref = $node->field_election?->first()->getValue()['target_id'];
+      if ($node->bundle() == 'localgov_area_vote') {
+        $node_ref = $node->localgov_election?->first()->getValue()['target_id'];
         if ($node_ref) {
           $node = $this->entityTypeManager->getStorage('node')->load((intval($node_ref)));
         }
@@ -180,7 +180,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       $this->node = $node;
       $build['#theme'] = 'election_menu';
       $build['#cache']['max-age'] = 0;
-      $build['#attached']['library'][] = 'localgov_elections_reporting/election_menu';
+      $build['#attached']['library'][] = 'localgov_elections/election_menu';
       $build['#links'] = $this->getLinks($node);
     }
 

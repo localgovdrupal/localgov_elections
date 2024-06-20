@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting;
+namespace Drupal\localgov_elections;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\localgov_elections_reporting\Annotation\BoundaryProvider;
+use Drupal\localgov_elections\Annotation\BoundaryProvider;
 
 /**
  * BoundaryProvider plugin manager.

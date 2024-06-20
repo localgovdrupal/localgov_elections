@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting\Entity;
+namespace Drupal\localgov_elections\Entity;
 
 use Drupal\Component\Plugin\LazyPluginCollection;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
-use Drupal\localgov_elections_reporting\BoundaryPluginCollection;
-use Drupal\localgov_elections_reporting\BoundarySourceInterface;
+use Drupal\localgov_elections\BoundaryPluginCollection;
+use Drupal\localgov_elections\BoundarySourceInterface;
 
 /**
  * Defines the boundary source entity type.
@@ -24,11 +24,11 @@ use Drupal\localgov_elections_reporting\BoundarySourceInterface;
  *     plural = "@count boundary sources",
  *   ),
  *   handlers = {
- *     "list_builder" = "Drupal\localgov_elections_reporting\BoundarySourceListBuilder",
+ *     "list_builder" = "Drupal\localgov_elections\BoundarySourceListBuilder",
  *     "form" = {
- *       "default" = "Drupal\localgov_elections_reporting\Form\BoundarySourceForm",
- *       "add" = "Drupal\localgov_elections_reporting\Form\BoundarySourceForm",
- *       "edit" = "Drupal\localgov_elections_reporting\Form\BoundarySourceForm",
+ *       "default" = "Drupal\localgov_elections\Form\BoundarySourceForm",
+ *       "add" = "Drupal\localgov_elections\Form\BoundarySourceForm",
+ *       "edit" = "Drupal\localgov_elections\Form\BoundarySourceForm",
  *       "delete" = "Drupal\Core\Entity\EntityDeleteForm",
  *     },
  *   },

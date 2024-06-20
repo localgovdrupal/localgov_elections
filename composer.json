@@ -1,8 +1,8 @@
 {
-    "name": "localgovdrupal/localgov_elections_reporting",
+    "name": "localgovdrupal/localgov_elections",
     "description": "Module to report on elections for LocalGovDrupal sites.",
     "type": "drupal-module",
-    "homepage": "https://gitlab.com/rohallion/localgov_elections_reporting",
+    "homepage": "https://gitlab.com/rohallion/localgov_elections",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
     "require": {

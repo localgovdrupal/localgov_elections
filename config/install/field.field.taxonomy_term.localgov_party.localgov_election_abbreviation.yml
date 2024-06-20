@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.localgov_election_abbreviation
+    - taxonomy.vocabulary.localgov_party
+  enforced:
+    module:
+      - localgov_elections
+id: taxonomy_term.localgov_party.localgov_election_abbreviation
+field_name: localgov_election_abbreviation
+entity_type: taxonomy_term
+bundle: localgov_party
+label: Abbreviation
+description: 'Abbreviation of party name - typically 3 upper case letters.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

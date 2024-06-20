@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\localgov_elections_reporting;
+namespace Drupal\localgov_elections;
 
 use Drupal\Component\Plugin\PluginBase;
 

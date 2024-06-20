@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.localgov_election_elected
+    - paragraphs.paragraphs_type.localgov_election_candidate
+  enforced:
+    module:
+      - localgov_elections
+id: paragraph.localgov_election_candidate.localgov_election_elected
+field_name: localgov_election_elected
+entity_type: paragraph
+bundle: localgov_election_candidate
+label: 'Elected?'
+description: 'Elected or not'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

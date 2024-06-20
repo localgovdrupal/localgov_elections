@@ -1,0 +1,12 @@
+llangcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - localgov_elections
+id: localgov_area_vote
+label: 'Division vote'
+icon_uuid: null
+icon_default: null
+description: ''
+behavior_plugins: {  }

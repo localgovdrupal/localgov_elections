@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Form;
+namespace Drupal\localgov_elections\Form;
 
 use Drupal\Core\Plugin\PluginFormInterface;
-use Drupal\localgov_elections_reporting\BoundaryProviderInterface;
+use Drupal\localgov_elections\BoundaryProviderInterface;
 
 /**
  * Provides an interface for Boundary Provider subforms.
@@ -15,7 +15,7 @@ interface BoundaryProviderSubformInterface extends PluginFormInterface {
   /**
    * Set the plugin.
    *
-   * @param \Drupal\localgov_elections_reporting\BoundaryProviderInterface $plugin
+   * @param \Drupal\localgov_elections\BoundaryProviderInterface $plugin
    *   The boundary provider plugin.
    *
    * @return void
@@ -26,7 +26,7 @@ interface BoundaryProviderSubformInterface extends PluginFormInterface {
   /**
    * Get the plugin.
    *
-   * @return \Drupal\localgov_elections_reporting\BoundaryProviderInterface
+   * @return \Drupal\localgov_elections\BoundaryProviderInterface
    *   The plugin instance.
    */
   public function getPlugin():BoundaryProviderInterface;

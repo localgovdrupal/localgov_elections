@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
@@ -29,13 +29,13 @@ class ElectionShare extends FieldPluginBase {
    * @{inheritdoc}
    */
   public function render(ResultRow $values) {
-    // Get value of Area/Division vote (division_vote) from View -
+    // Get value of Area/Division vote (localgov_area_vote) from View -
     // unfortunately cannot use this Node directly due to way Views handles
     // aggregate functions from Custom fields.
     $entity = $values->_entity;
     // Get ID of Election.
-    $election = $entity->get('field_election')->target_id;
-    $party = $values->_relationship_entities['field_party'];
+    $election = $entity->get('localgov_election')->target_id;
+    $party = $values->_relationship_entities['localgov_election_party'];
     $party_id = $party->id();
     $total_votes = 0;
     $party_votes = 0;
@@ -51,12 +51,12 @@ class ElectionShare extends FieldPluginBase {
     $node = Node::load($election);
     if ($node instanceof NodeInterface) {
       // Arg must be NID of an Election content type.
-      if ($node->getType() == 'election') {
+      if ($node->getType() == 'localgov_election') {
         // $election = $node->id();
-        // Find all 'Area vote' (division_vote) nodes referencing this election
+        // Find all 'Area vote' (localgov_area_vote) nodes referencing this election
         $query = \Drupal::entityQuery('node')
-          ->condition('type', 'division_vote')
-          ->condition('field_election', $election);
+          ->condition('type', 'localgov_area_vote')
+          ->condition('localgov_election', $election);
         // Exclude not contested.
         $query->accessCheck(FALSE);
         $wards = $query->execute();
@@ -66,11 +66,11 @@ class ElectionShare extends FieldPluginBase {
           $ward = Node::load($ward_id);
 
           // Iterate through each candidate and add votes to trunout.
-          $candidates = $ward->get('field_candidates');
+          $candidates = $ward->get('localgov_election_candidates');
 
           foreach ($candidates->referencedEntities() as $candidate) {
-            $votes = $candidate->get('field_votes')->value;
-            $cand_party = $candidate->get('field_party')->target_id;
+            $votes = $candidate->get('localgov_election_votes')->value;
+            $cand_party = $candidate->get('localgov_election_party')->target_id;
             $total_votes += $votes;
             if ($cand_party == $party_id) {
               $party_votes += $votes;

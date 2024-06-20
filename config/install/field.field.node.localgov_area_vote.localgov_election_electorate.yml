@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_electorate
+    - node.type.localgov_area_vote
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.localgov_election_electorate
+field_name: localgov_election_electorate
+entity_type: node
+bundle: localgov_area_vote
+label: 'Eligible Electorate'
+description: 'Size of the eligible electorate in the electoral unit'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 1
+  max: null
+  prefix: ''
+  suffix: ' eligible voters'
+field_type: integer

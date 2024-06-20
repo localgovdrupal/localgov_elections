@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\Core\Render\Markup;
 use Drupal\taxonomy\Entity\Term;
@@ -35,13 +35,13 @@ class WardParty extends FieldPluginBase {
     $party_name = NULL;
     $abbr = NULL;
     $results = [];
-    $candidates = $node->get('field_candidates');
+    $candidates = $node->get('localgov_election_candidates');
 
     foreach ($candidates->referencedEntities() as $candidate) {
-      $votes = $candidate->get('field_votes')->value;
-      $party = Term::load($candidate->get('field_party')->target_id);
+      $votes = $candidate->get('localgov_election_votes')->value;
+      $party = Term::load($candidate->get('localgov_election_party')->target_id);
 
-      $party_abbr = $party->get('field_abbreviation')->value;
+      $party_abbr = $party->get('localgov_election_abbreviation')->value;
 
       $results[] = ['abbr' => $party_abbr, 'votes' => $votes, 'name' => $party->name?->value];
     }

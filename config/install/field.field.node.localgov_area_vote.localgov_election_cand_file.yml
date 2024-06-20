@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_cand_file
+    - node.type.localgov_area_vote
+  module:
+    - file
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.localgov_election_cand_file
+field_name: localgov_election_cand_file
+entity_type: node
+bundle: localgov_area_vote
+label: 'Candidates List (File)'
+description: 'Upload a PDF describing the candidates'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-candidates'
+  file_extensions: pdf
+  max_filesize: ''
+  description_field: false
+field_type: file

@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.localgov_election_candidate
+    - paragraphs.paragraphs_type.localgov_election_candidate
+  enforced:
+    module:
+      - localgov_elections
+id: paragraph.localgov_election_candidate.localgov_election_candidate
+field_name: localgov_election_candidate
+entity_type: paragraph
+bundle: localgov_election_candidate
+label: 'Candidate surname'
+description: 'Candidate surname in the same format that is adopted by the returning officer on the published elections results notice.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - geofield
+    - node
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_election_boundary_data
+field_name: localgov_election_boundary_data
+entity_type: node
+type: geofield
+settings:
+  backend: geofield_backend_default
+module: geofield
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

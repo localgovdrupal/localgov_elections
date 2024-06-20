@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_previous_year
+    - node.type.localgov_area_vote
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.localgov_election_previous_year
+field_name: localgov_election_previous_year
+entity_type: node
+bundle: localgov_area_vote
+label: 'Previous year'
+description: 'Year of last election'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 1900
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

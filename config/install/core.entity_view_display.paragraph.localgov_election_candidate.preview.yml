@@ -1,0 +1,82 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.preview
+    - field.field.paragraph.localgov_election_candidate.localgov_election_alt_surname
+    - field.field.paragraph.localgov_election_candidate.localgov_election_candidate
+    - field.field.paragraph.localgov_election_candidate.localgov_election_forename
+    - field.field.paragraph.localgov_election_candidate.localgov_election_forenames
+    - field.field.paragraph.localgov_election_candidate.localgov_election_elected
+    - field.field.paragraph.localgov_election_candidate.localgov_election_party
+    - field.field.paragraph.localgov_election_candidate.localgov_election_votes
+    - paragraphs.paragraphs_type.localgov_election_candidate
+  enforced:
+    module:
+      - localgov_elections
+id: paragraph.localgov_election_candidate.preview
+targetEntityType: paragraph
+bundle: localgov_election_candidate
+mode: preview
+content:
+  localgov_election_alt_surname:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  localgov_election_candidate:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  localgov_election_forename:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  localgov_election_forenames:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  localgov_election_elected:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 6
+    region: content
+  localgov_election_party:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 4
+    region: content
+  localgov_election_votes:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 5
+    region: content
+hidden:
+  search_api_excerpt: true

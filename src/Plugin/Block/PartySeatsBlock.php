@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\Block;
+namespace Drupal\localgov_elections\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\node\Entity\Node;
@@ -31,11 +31,11 @@ class PartySeatsBlock extends BlockBase {
       $nid = $election->id();
       $election_parties = [];
 
-      // Find all 'Areas vote' (division_vote) nodes referencing this election.
+      // Find all 'Areas vote' (localgov_area_vote) nodes referencing this election.
       // phpcs:ignore
       $query = \Drupal::entityQuery('node')
-        ->condition('type', 'division_vote')
-        ->condition('field_election', $nid);
+        ->condition('type', 'localgov_area_vote')
+        ->condition('localgov_election', $nid);
       $query->accessCheck(FALSE);
       $wards = $query->execute();
 
@@ -43,15 +43,15 @@ class PartySeatsBlock extends BlockBase {
       foreach ($wards as $ward_id) {
         // phpcs:ignore
         $ward = Node::load($ward_id);
-        $candidates = $ward->get('field_candidates');
+        $candidates = $ward->get('localgov_election_candidates');
         $results = [];
 
         foreach ($candidates->referencedEntities() as $candidate) {
           // phpcs:ignore
-          $party = Term::load($candidate->get('field_party')->target_id);
-          $party_abbr = $party->get('field_abbreviation')->value;
+          $party = Term::load($candidate->get('localgov_election_party')->target_id);
+          $party_abbr = $party->get('localgov_election_abbreviation')->value;
 
-          $votes = $candidate->get('field_votes')->value;
+          $votes = $candidate->get('localgov_election_votes')->value;
           $results[] = ['abbr' => $party_abbr, 'votes' => $votes];
         }
         // Sort $results.

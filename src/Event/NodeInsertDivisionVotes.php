@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Event;
+namespace Drupal\localgov_elections\Event;
 
 use Drupal\Component\EventDispatcher\Event;
 use Drupal\Core\Entity\EntityInterface;
@@ -12,7 +12,7 @@ use Drupal\Core\Entity\EntityInterface;
  */
 class NodeInsertDivisionVotes extends Event {
 
-  const LOCALGOV_ELECTIONS_REPORTING_NODE_INSERT = 'localgov_elections_reporting.node.insert';
+  const localgov_elections_NODE_INSERT = 'localgov_elections.node.insert';
 
   /**
    * Node entity.

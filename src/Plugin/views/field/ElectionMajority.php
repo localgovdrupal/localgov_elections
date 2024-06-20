@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\localgov_elections_reporting\Plugin\views\field;
+namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\node\NodeInterface;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
@@ -34,13 +34,13 @@ class ElectionMajority extends FieldPluginBase {
     $majority = NULL;
     if ($node instanceof NodeInterface) {
       // Arg must be NID of an Election content type.
-      if ($node->getType() == 'election') {
+      if ($node->getType() == 'localgov_election') {
         $election = $node->id();
 
         // Find all 'Election Area' nodes referencing this election.
         $query = \Drupal::entityQuery('node')
-          ->condition('type', 'division_vote')
-          ->condition('field_election', $election);
+          ->condition('type', 'localgov_area_vote')
+          ->condition('localgov_election', $election);
         // Has to include the not contesed.
         $query->accessCheck(FALSE);
         $num_rows = $query->count()->execute();

@@ -1,0 +1,36 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_winner
+    - node.type.localgov_area_vote
+    - paragraphs.paragraphs_type.localgov_election_candidate
+  module:
+    - entity_reference_revisions
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_area_vote.localgov_election_winner
+field_name: localgov_election_winner
+entity_type: node
+bundle: localgov_area_vote
+label: 'Winning candidate'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      localgov_election_candidate: localgov_election_candidate
+    negate: 0
+    target_bundles_drag_drop:
+      localgov_election_candidate:
+        weight: 14
+        enabled: true
+      localgov_area_vote:
+        weight: 15
+        enabled: false
+field_type: entity_reference_revisions

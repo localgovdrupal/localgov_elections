@@ -10,8 +10,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\localgov_elections_reporting\BoundaryProviderPluginBase;
-use Drupal\localgov_elections_reporting\BoundarySourceInterface;
+use Drupal\localgov_elections\BoundaryProviderPluginBase;
+use Drupal\localgov_elections\BoundarySourceInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -190,17 +190,17 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
     }));
 
     $boundaries = $this->fetchBoundaryInformation($lad, $vals);
-    $election = $form_values['election'];
+    $election = $form_values['localgov_election'];
     $election_node = $this->nodeStorage->load($election);
     $n_areas = 0;
     foreach ($boundaries as $boundary) {
       /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
       $area = $this->nodeStorage->create(
           [
-            'type' => 'division_vote',
-            'field_area_name' => $boundary['properties']['WD23NM'],
-            'field_boundary_data' => json_encode($boundary),
-            'field_election' => ['target_id' => $election],
+            'type' => 'localgov_area_vote',
+            'localgov_election_area_name' => $boundary['properties']['WD23NM'],
+            'localgov_election_boundary_data' => json_encode($boundary),
+            'localgov_election' => ['target_id' => $election],
             'title' => $election_node->getTitle() . ' - ' . $boundary['properties']['WD23NM'],
           ]
       );

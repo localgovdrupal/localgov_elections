@@ -1,0 +1,31 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.localgov_election_party
+    - paragraphs.paragraphs_type.localgov_election_candidate
+    - taxonomy.vocabulary.localgov_party
+  enforced:
+    module:
+      - localgov_elections
+id: paragraph.localgov_election_candidate.localgov_election_party
+field_name: localgov_election_party
+entity_type: paragraph
+bundle: localgov_election_candidate
+label: Party
+description: 'Registered political party name (or leave as <em>Independent</em> for candidates with no political affiliation)'
+required: true
+translatable: false
+default_value: ''
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      localgov_party: localgov_party
+    sort:
+      field: name
+      direction: asc
+    auto_create: true
+    auto_create_bundle: ''
+field_type: entity_reference

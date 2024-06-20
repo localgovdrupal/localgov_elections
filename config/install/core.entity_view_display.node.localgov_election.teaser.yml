@@ -1,0 +1,52 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.localgov_election.body
+    - field.field.node.localgov_election.localgov_election_add_all_areas
+    - field.field.node.localgov_election.localgov_election_date
+    - field.field.node.localgov_election.localgov_election_majority
+    - field.field.node.localgov_election.localgov_election_display_map
+    - field.field.node.localgov_election.localgov_election_organisation
+    - field.field.node.localgov_election.localgov_election_service_type
+    - field.field.node.localgov_election.localgov_election_type
+    - node.type.localgov_election
+  module:
+    - text
+    - user
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_election.teaser
+targetEntityType: node
+bundle: localgov_election
+mode: teaser
+content:
+  body:
+    type: text_summary_or_trimmed
+    label: hidden
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  election_divisions:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  localgov_election_add_all_areas: true
+  localgov_election_date: true
+  localgov_election_majority: true
+  localgov_election_display_map: true
+  localgov_election_organisation: true
+  localgov_election_service_type: true
+  localgov_election_type: true
+  search_api_excerpt: true

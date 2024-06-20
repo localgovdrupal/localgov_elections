@@ -5,8 +5,8 @@ namespace Drupal\localgov_elections_ons_twenty_three_wards\Form;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\localgov_elections_reporting\BoundaryProviderInterface;
-use Drupal\localgov_elections_reporting\Form\BoundaryProviderSubformInterface;
+use Drupal\localgov_elections\BoundaryProviderInterface;
+use Drupal\localgov_elections\Form\BoundaryProviderSubformInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -55,7 +55,7 @@ class OnsTwentyThreeWardsDownloadForm implements BoundaryProviderSubformInterfac
   /**
    * The plugin.
    *
-   * @var \Drupal\localgov_elections_reporting\BoundaryProviderInterface
+   * @var \Drupal\localgov_elections\BoundaryProviderInterface
    */
   protected $plugin;
 

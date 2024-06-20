@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_add_all_areas
+    - node.type.localgov_election
+  enforced:
+    module:
+      - localgov_elections
+id: node.localgov_election.localgov_election_add_all_areas
+field_name: localgov_election_add_all_areas
+entity_type: node
+bundle: localgov_election
+label: 'Add all levels'
+description: 'Do you wish to add all election areas selected (including the parent groups) or just the lowest levels (Wards - end of the hierarchical tree branches) of selected items.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'Yes'
+  off_label: 'No'
+field_type: boolean
