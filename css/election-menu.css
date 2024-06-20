@@ -1,32 +1,31 @@
 .election-menu-block {
-  background-color: var(--color-bg) !important;
   border-right: var(--table-border);
 }
 
-.election-menu-list {
+.election-menu__list {
   list-style-type: none;
   padding: 0;
 }
 
-.election-menu-list li {
+.election-menu__list-item {
   margin-bottom: 0.5rem;
   display: flex;
   width: 100%;
   padding: 1rem;
 }
 
-.election-menu-list li a {
+.election-menu__list-item a {
   width: 100%;
   display: block;
   text-decoration: underline;
 }
 
-.election-menu-link.active {
+.election-menu__list-item.active {
   background-color: var(--color-accent);
   color: white;
 }
 
-.election-menu-link.active a {
+.election-menu__list-item.active a {
   color: white;
 }
 

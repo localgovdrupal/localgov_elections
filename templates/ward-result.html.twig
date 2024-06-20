@@ -1,23 +1,23 @@
-<div class="ward-results-wrapper">
+<div class="ward-result">
   {% if chart %}
-    <div class="ward-chart">
+    <div class="ward-result__chart">
       {{ chart }}
     </div>
   {% endif %}
 
   {% if result %}
-    <div class="ward-result">
-      <div class="result-header">
+    <div class="ward-result__content">
+      <div class="ward-result__result-header">
         <h2>{{ "Result"|t }}</h2>
       </div>
-      <div class="ward-results">
+      <div class="ward-result__result">
         {{ result }}
       </div>
     </div>
   {% endif %}
   {% if analysis %}
-    <div class="ward-analysis">
-      <div class="analysis-header">
+    <div class="ward-result__analysis">
+      <div class="ward-result__analysis-header">
         <h2>{{ "Analysis"|t }}</h2>
       </div>
       {{ analysis }}
