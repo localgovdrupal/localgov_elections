@@ -77,7 +77,7 @@ final class AutocompleteTest extends WebDriverTestBase {
     $this->election = $storage->create([
       'title' => "UK Election 2024",
       'status' => TRUE,
-      'type' => "election",
+      'type' => "localgov_election",
     ]);
 
     $this->election->save();
