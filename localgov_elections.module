@@ -302,7 +302,7 @@ function localgov_elections_preprocess_node(&$variables) {
     }
 
   }
-  elseif ($node->bundle() == 'election') {
+  elseif ($node->bundle() == 'localgov_election') {
     if ($node->hasField('localgov_election_majority')) {
       $display_majority = $node->get("localgov_election_majority")?->value;
     }
@@ -323,21 +323,21 @@ function localgov_elections_preprocess_node(&$variables) {
 
     $variables['content']['results_fieldset']['sub_heading']['election_results_electorate'] = [
       '#type' => 'view',
-      '#name' => 'election_results',
+      '#name' => 'localgov_election_results',
       '#display_id' => 'block_1',
       '#arguments' => [$node->id()],
     ];
 
     $variables['content']['results_fieldset']['sub_heading']['election_results_turnout'] = [
       '#type' => 'view',
-      '#name' => 'election_results',
+      '#name' => 'localgov_election_results',
       '#display_id' => 'block_2',
       '#arguments' => [$node->id()],
     ];
 
     $variables['content']['results_fieldset']['election_results_by_party'] = [
       '#type' => 'view',
-      '#name' => 'election_results_via_parties',
+      '#name' => 'localgov_election_results_via_parties',
       '#display_id' => 'block_1',
       '#arguments' => [$node->id()],
     ];
@@ -345,7 +345,7 @@ function localgov_elections_preprocess_node(&$variables) {
     if ($display_majority) {
       $variables['content']['results_fieldset']['election_results_majority'] = [
         '#type' => 'view',
-        '#name' => 'election_results',
+        '#name' => 'localgov_election_results',
         '#display_id' => 'block_5',
         '#arguments' => [$node->id()],
       ];
@@ -353,7 +353,7 @@ function localgov_elections_preprocess_node(&$variables) {
 
     $variables['content']['election_results_summary_table'] = [
       '#type' => 'view',
-      '#name' => 'election_results',
+      '#name' => 'localgov_election_results',
       '#display_id' => 'block_3',
       '#arguments' => [$node->id()],
     ];
@@ -379,7 +379,7 @@ function localgov_elections_views_pre_render(ViewExecutable $view) {
     $view->element['#attached']['library'][] = 'localgov_elections/results_share';
   }
 
-  if ($view->id() == 'election_results') {
+  if ($view->id() == 'localgov_election_results') {
     if ($view->getDisplay()->display['id'] == 'block_3') {
       $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
     }
@@ -389,7 +389,7 @@ function localgov_elections_views_pre_render(ViewExecutable $view) {
 /**
  * Implements hook_chart_definition_CHART_ID_alter().
  */
-function localgov_elections_chart_definition_election_results_via_parties_block_1_alter(array &$definition, array $element, $chart_id) {
+function localgov_elections_chart_definition_localgov_election_results_via_parties_block_1_alter(array &$definition, array $element, $chart_id) {
   $definition['yAxis'][0]['allowDecimals'] = FALSE;
   if (!empty($definition['series'][0]['data'])) {
     foreach ($definition['series'][0]['data'] as &$entry) {
@@ -440,7 +440,7 @@ function localgov_elections_page_attachments(array &$attachments) {
 
   if ($node = $route->getParameter('node')) {
     if ($node != NULL && $node instanceof NodeInterface) {
-      if ($node->bundle() == 'election') {
+      if ($node->bundle() == 'localgov_election') {
         $attachments['#attached']['library'][] = 'localgov_elections/election';
       }
       elseif ($node->bundle() == 'localgov_area_vote') {
@@ -466,7 +466,7 @@ function _localgov_elections_calc_majority() {
   $majority = NULL;
   if ($node instanceof NodeInterface) {
     // Arg must be NID of an Election content type.
-    if ($node->getType() == 'election') {
+    if ($node->getType() == 'localgov_election') {
       $election = $node->id();
 
       // Find all 'Election Area' nodes referencing this election.

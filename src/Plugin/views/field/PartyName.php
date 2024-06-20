@@ -48,7 +48,7 @@ class PartyName extends FieldPluginBase {
       $candidates = $ward->get('localgov_election_candidates');
 
       foreach ($candidates->referencedEntities() as $candidate) {
-        $party = Term::load($candidate->get('field_party')->target_id);
+        $party = Term::load($candidate->get('localgov_election_party')->target_id);
         $party_name = $party->getTitle->value;
         $results[] = ['name' => $party_name];
       }
