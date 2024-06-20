@@ -38,10 +38,9 @@ third_party_settings:
         classes: ''
         show_empty_fields: false
         id: ''
-        open: false
+        open: true
         description: 'These are generated automatically and displayed for testing purposes only. These fields will be hidden on Production'
-        required_fields: false
-        formatter: closed
+        required_fields: true
     group_results:
       children:
         - localgov_election_spoils
