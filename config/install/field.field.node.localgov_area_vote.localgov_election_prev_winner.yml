@@ -22,7 +22,7 @@ settings:
   handler: 'default:taxonomy_term'
   handler_settings:
     target_bundles:
-      party: party
+      localgov_party: localgov_party
     sort:
       field: name
       direction: asc
