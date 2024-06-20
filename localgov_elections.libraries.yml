@@ -3,8 +3,8 @@ selectall:
   js:
     js/selectall.js: { }
   dependencies:
-    - core/jquery
     - core/drupal
+    - core/once
 
 election:
   version: 1.x
@@ -47,17 +47,17 @@ charts_overrides:
     js/charts-override.js: { weight: -5 }
   dependencies:
     - charts/global
-    - core/jquery
     - core/drupal
     - core/drupalSettings
+    - core/once
 
 party_colours:
   js:
     js/election-party-colours.js: { }
   dependencies:
     - core/drupal
-    - core/jquery
     - core/drupalSettings
+    - core/once
 
 election_menu:
   version: 1.x
