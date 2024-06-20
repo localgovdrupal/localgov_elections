@@ -568,12 +568,15 @@ function localgov_elections_area_vote_form_validation($form, FormStateInterface 
     if (isset($storage['#parents']['#fields']['localgov_election_candidates'])) {
       $candidates = $storage['#parents']['#fields']['localgov_election_candidates'];
     }
-    foreach ($candidates['paragraphs'] as $entry) {
-      /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
-      if (isset($entry['entity'])) {
-        $entry = $entry['entity'];
-        if (!$entry->get('localgov_election_votes')->isEmpty()) {
-          $form_state->setErrorByName('localgov_election_candidates', t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
+    if (count($candidate_keys) > 0) {
+      $candidates = $candidates['paragraphs'];
+      foreach ($candidates['paragraphs'] as $entry) {
+        /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
+        if (isset($entry['entity'])) {
+          $entry = $entry['entity'];
+          if (!$entry->get('localgov_election_votes')->isEmpty()) {
+            $form_state->setErrorByName('localgov_election_candidates', t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
+          }
         }
       }
     }
