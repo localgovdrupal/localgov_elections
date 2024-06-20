@@ -35,7 +35,8 @@ class PartyName extends FieldPluginBase {
     $party_name = NULL;
     $results = [];
 
-    // Find all 'Areas vote' (localgov_area_vote) nodes referencing this election.
+    // Find all 'Areas vote' (localgov_area_vote) nodes referencing this
+    // election.
     $query = \Drupal::entityQuery('node')
       ->condition('type', 'localgov_area_vote')
       ->condition('localgov_election', $election);

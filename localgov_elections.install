@@ -6,11 +6,7 @@
  */
 
 use Drupal\Core\Config\FileStorage;
-use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\EntityStorageException;
-use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Implements hook_install().
