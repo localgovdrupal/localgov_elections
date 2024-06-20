@@ -14,7 +14,7 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-id: electoral_candidates
+id: localgov_electoral_candidates
 label: 'Electoral Candidates'
 module: views
 description: ''

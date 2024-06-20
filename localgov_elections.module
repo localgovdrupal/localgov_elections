@@ -224,8 +224,8 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
     $type = $node->getType();
     if ($type != 'localgov_election') {
       unset($data['tabs'][0]['views_view:view.localgov_election_results_timeline.page_1']);
-      unset($data['tabs'][0]['views_view:view.election_results_vot.page_1']);
-      unset($data['tabs'][0]['views_view:view.electoral_candidates.page_1']);
+      unset($data['tabs'][0]['views_view:view.localgov_election_results_vote.page_1']);
+      unset($data['tabs'][0]['views_view:view.localgov_electoral_candidates.page_1']);
       unset($data['tabs'][0]['views_view:view.localgov_election_electoral_map.page_1']);
     }
     else {
@@ -365,7 +365,7 @@ function localgov_elections_preprocess_node(&$variables) {
  */
 function localgov_elections_views_pre_render(ViewExecutable $view) {
 
-  if ($view->id() == 'electoral_candidates') {
+  if ($view->id() == 'localgov_electoral_candidates') {
     $view->element['#attached']['library'][] = 'localgov_elections/electoral_candidates_view';
   }
 
@@ -375,7 +375,7 @@ function localgov_elections_views_pre_render(ViewExecutable $view) {
     $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
   }
 
-  if ($view->id() == 'election_results_vot') {
+  if ($view->id() == 'localgov_election_results_vote') {
     $view->element['#attached']['library'][] = 'localgov_elections/results_share';
   }
 

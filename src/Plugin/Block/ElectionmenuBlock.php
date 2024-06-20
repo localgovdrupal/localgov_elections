@@ -132,7 +132,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       ];
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.election_results_vot.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.localgov_election_results_vote.page_1', ['node' => $this->node->id()])),
       ];
     }
 
@@ -147,7 +147,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     if ($results) {
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.electoral_candidates.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.localgov_electoral_candidates.page_1', ['node' => $this->node->id()])),
       ];
     }
     return $urls;
