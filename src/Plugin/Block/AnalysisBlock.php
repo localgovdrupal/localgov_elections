@@ -121,8 +121,8 @@ class AnalysisBlock extends BlockBase {
         $previous_winner_abbr = $previous_winning_party->localgov_election_abbreviation->value;
       }
 
-      // If previous year not manually set, look if previous 'localgov_area_vote'
-      // been set.
+      // If previous year not manually set, look if previous
+      // 'localgov_area_vote' has been set.
       if (isset($previous_result)) {
         // phpcs:ignore
         $previous_localgov_area_vote = Node::load($previous_result->id());

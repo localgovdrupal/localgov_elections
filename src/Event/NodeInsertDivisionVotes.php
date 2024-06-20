@@ -12,7 +12,7 @@ use Drupal\Core\Entity\EntityInterface;
  */
 class NodeInsertDivisionVotes extends Event {
 
-  const localgov_elections_NODE_INSERT = 'localgov_elections.node.insert';
+  const LOCALGOV_ELECTIONS_NODE_INSERT = 'localgov_elections.node.insert';
 
   /**
    * Node entity.
