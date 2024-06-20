@@ -415,7 +415,7 @@ display:
             fail: 'not found'
           validate_options:
             bundles:
-              election: election
+              localgov_election: localgov_election
             access: true
             operation: view
             multiple: 0

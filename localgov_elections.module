@@ -226,7 +226,7 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
       unset($data['tabs'][0]['views_view:view.localgov_election_results_timeline.page_1']);
       unset($data['tabs'][0]['views_view:view.election_results_vot.page_1']);
       unset($data['tabs'][0]['views_view:view.electoral_candidates.page_1']);
-      unset($data['tabs'][0]['views_view:view.electoral_map.page_1']);
+      unset($data['tabs'][0]['views_view:view.localgov_election_electoral_map.page_1']);
     }
     else {
       $appropriate_fetch_routes = [

@@ -49,7 +49,7 @@ class ElectionTurnout extends FieldPluginBase {
     foreach ($wards as $ward_id) {
       $ward = Node::load($ward_id);
 
-      if ($ward->get("field_seat_not_contested")?->value == "1") {
+      if ($ward->get("localgov_election_no_contest")?->value == "1") {
         continue;
       }
 
