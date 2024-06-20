@@ -8,6 +8,7 @@ dependencies:
   - autocomplete_deluxe:autocomplete_deluxe
   - charts:charts
   - charts:charts_highcharts
+  - charts:charts_chartjs
   - color_field:color_field
   - drupal:node
   - drupal:field_group
