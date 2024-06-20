@@ -1,17 +1,33 @@
-(function ($, Drupal) {
+/**
+ * @file Check/Uncheck all checkboxes.
+ **/
 
-  /**
-   * Check/Uncheck all checkboxes.
-   */
+(function (Drupal, once) {
   Drupal.behaviors.selectAll = {
     attach: function (context, settings) {
-      $(".form-checkboxes").prepend($('<input type="checkbox" class="form-checkbox shield-select-all"/><label class="option shield-select-all-label"> Select / Deselect all </label>'));
-      $(".shield-select-all").on('click', function () {
-        let $isChecked = (!$(this).attr('checked'));
-        $(this).parent().find('.form-type-checkbox input[type=checkbox]').attr('checked', $isChecked);
-        $(this).attr('checked', $isChecked)
-      })
+
+      const checkboxes = once('allCheckboxes', '.form-checkboxes', context);
+      const selectAll = once('allSelectAlls', '.shield-select-all', context);
+
+      if (checkboxes) {
+        checkboxes.forEach(checkbox => {
+         checkbox.insertAdjacentHTML('afterbegin', `<input type="checkbox" class="form-checkbox shield-select-all"/><label class="option shield-select-all-label"> ${Drupal.t('Select / Deselect all')} </label>`);
+        });
+      }
+
+      if (selectAll) {
+        selectAll.forEach(select => {
+          select.addEventListener('click', function () {
+            let isChecked = (!select.getAttribute('checked'));
+            select.closest('.form-checkboxes').querySelectorAll('input[type=checkbox]').forEach(checkbox => {
+              checkbox.checked = isChecked;
+            });
+            select.setAttribute('checked', isChecked);
+          });
+        });
+      }
+
     }
   };
 
-})(jQuery, Drupal);
+})(Drupal, once);
