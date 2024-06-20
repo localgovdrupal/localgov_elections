@@ -12,6 +12,7 @@ use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\views\Plugin\views\cache\CachePluginBase;
 use Drupal\views\ViewExecutable;
 
 /**
@@ -382,6 +383,30 @@ function localgov_elections_views_pre_render(ViewExecutable $view) {
   if ($view->id() == 'localgov_election_results') {
     if ($view->getDisplay()->display['id'] == 'block_3') {
       $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
+    }
+  }
+}
+
+/**
+ * Implements hook_views_post_render().
+ */
+function localgov_elections_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache) {
+  if ($view->id() == 'localgov_election_results_via_parties') {
+    // Remove rows from rendered output where party is not standing in election
+    // (these rows will be NULL)
+    $rows = $output["#rows"]["block_1__election_seats_party_0"]["#data"];
+    $idx = 0;
+    $removed = 0;
+    foreach ($rows as $row) {
+      if (!isset($row)) {
+        array_splice($output["#rows"]["block_1__election_seats_party_0"]["#data"], $idx - $removed, 1);
+        array_splice($output["#rows"]["xaxis"]["#labels"], $idx - $removed, 1);
+        if (isset($output["#rows"]["block_1__election_seats_party_0"]["#mapped_data"])) {
+          array_splice($output["#rows"]["block_1__election_seats_party_0"]["#mapped_data"], $idx - $removed, 1);
+        }
+        $removed++;
+      }
+      $idx++;
     }
   }
 }
