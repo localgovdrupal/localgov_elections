@@ -5,6 +5,7 @@ dependencies:
     - taxonomy.vocabulary.localgov_party
   module:
     - charts
+    - charts_chartjs
     - localgov_elections
     - taxonomy
     - user
@@ -14,7 +15,7 @@ dependencies:
 id: localgov_election_results_via_parties
 label: 'Election Results via Parties'
 module: views
-description: 'Shows seats won in election. Contextual filter provided by NID of ''Election'' content type - only works when embedded on page'
+description: "Shows seats won in election. Contextual filter provided by NID of 'Election' content type - only works when embedded on page"
 tag: ''
 base_table: taxonomy_term_field_data
 base_field: tid
@@ -199,16 +200,12 @@ display:
         options:
           grouping: {  }
           chart_settings:
-            library: highcharts
+            library: chartjs
             type: bar
             fields:
               label: name
               stacking: false
               data_providers:
-                localgov_election_abbreviation:
-                  enabled: false
-                  color: '#000000'
-                  weight: 2
                 election_seats_party:
                   enabled: true
                   color: '#000000'
@@ -220,6 +217,7 @@ display:
             display:
               title: ''
               title_position: out
+              subtitle: ''
               data_labels: true
               data_markers: false
               legend_position: ''
@@ -241,6 +239,7 @@ display:
                 yellow_to: '85'
                 red_from: '0'
                 red_to: '50'
+              color_changer: false
             xaxis:
               title: ''
               labels_rotation: '0'

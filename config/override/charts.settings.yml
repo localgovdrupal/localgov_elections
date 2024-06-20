@@ -1,9 +1,10 @@
 charts_default_settings:
-  library: highcharts
+  library: chartjs
   type: bar
   display:
     title: ''
     title_position: out
+    subtitle: ''
     data_labels: false
     data_markers: false
     legend_position: right
@@ -36,6 +37,7 @@ charts_default_settings:
       yellow_to: '85'
       red_from: '0'
       red_to: '50'
+    color_changer: false
   xaxis:
     title: ''
     labels_rotation: '0'
@@ -47,17 +49,16 @@ charts_default_settings:
     suffix: ''
     decimal_count: ''
     labels_rotation: '0'
-  highcharts_settings:
-    legend:
-      layout: vertical
-      background_color: ''
-      border_width: '0'
-      item_style:
-        color: ''
-        overflow: ''
-      shadow: 0
-    exporting_library: 0
+  library_config:
+    xaxis:
+      autoskip: false
+      horizontal_axis_title_align: start
+    yaxis:
+      vertical_axis_title_align: start
 advanced:
   debug: false
   requirements:
     cdn: true
+dependencies:
+  module:
+    - charts_chartjs
