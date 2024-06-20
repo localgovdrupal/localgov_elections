@@ -171,7 +171,7 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
       $area = $this->nodeStorage->create(
           [
             'type' => 'localgov_area_vote',
-            'field_area_name' => $boundary["properties"]["PCON24NM"],
+            'localgov_election_area_name' => $boundary["properties"]["PCON24NM"],
             'localgov_election_boundary_data' => json_encode($boundary),
             'localgov_election' => ['target_id' => $election],
             'title' => $election_node->getTitle() . ' - ' . $boundary["properties"]["PCON24NM"],
