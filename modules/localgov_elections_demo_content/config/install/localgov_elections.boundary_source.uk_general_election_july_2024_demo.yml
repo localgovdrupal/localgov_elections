@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - localgov_elections_constituency_provider
+id: uk_general_election_july_2024_demo
+label: 'UK General Election July 2024 Demo'
+description: ''
+plugin: uk_constituency_provider_2024
+settings: {  }

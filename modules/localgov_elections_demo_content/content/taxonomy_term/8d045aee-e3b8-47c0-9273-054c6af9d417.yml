@@ -1,0 +1,43 @@
+_meta:
+  version: '1.0'
+  entity_type: taxonomy_term
+  uuid: 8d045aee-e3b8-47c0-9273-054c6af9d417
+  bundle: localgov_party
+  default_langcode: en
+default:
+  status:
+    -
+      value: true
+  name:
+    -
+      value: 'Liberal Democrats (demo content)'
+  weight:
+    -
+      value: 0
+  parent:
+    -
+      target_id: 0
+  revision_translation_affected:
+    -
+      value: true
+  path:
+    -
+      alias: ''
+      langcode: en
+      pathauto: 1
+  localgov_election_abbreviation:
+    -
+      value: LD
+  localgov_election_party_colour:
+    -
+      color: '#FAA61A'
+      opacity: 0.0
+  localgov_election_party_uri:
+    -
+      uri: 'https://www.libdems.org.uk'
+      title: ''
+      options: {  }
+  localgov_election_text_colour:
+    -
+      color: '#000000'
+      opacity: 0.0
