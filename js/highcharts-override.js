@@ -1,4 +1,8 @@
-(function ($, Drupal) {
+/**
+ * @file Override charts libraries.
+ */
+
+(function (Drupal, once) {
   Drupal.localgov_elections = Drupal.localgov_elections || {};
   Drupal.localgov_elections.categoryFormatter = function () {
     let val = this.value.trim();
@@ -43,38 +47,39 @@
 
   Drupal.behaviors.charts_override = {
     attach: function (context, settings) {
-      document.querySelectorAll('.charts-highchart').forEach(function (el) {
-        el.addEventListener('drupalChartsConfigsInitialization', function (e) {
-          let data = e.detail;
-          const id = data.drupalChartDivId;
+      const highCharts = once('allHighCharts', '.charts-highchart', context);
+      if (highCharts) {
+        highCharts.forEach(chart => {
+          chart.addEventListener('drupalChartsConfigsInitialization', function (e) {
+            let data = e.detail;
+            const id = data.drupalChartDivId;
 
-          Drupal.localgov_elections.setChartColours(data, settings)
+            Drupal.localgov_elections.setChartColours(data, settings)
 
-          if (id === 'chart-election-results-via-parties-block-1') {
-            data.xAxis[0].labels.useHTML = true;
-            data.xAxis[0].labels.formatter = Drupal.localgov_elections.categoryFormatter;
-            data.xAxis[0].labels.align = 'left';
-            data.xAxis[0].labels.reserveSpace = true;
-            Drupal.Charts.Contents.update(id, data);
-          }
-
-          if (id === 'chart-district-results-default') {
-            data.yAxis[0].labels = {
-              enabled: false
+            if (id === 'chart-election-results-via-parties-block-1') {
+              data.xAxis[0].labels.useHTML = true;
+              data.xAxis[0].labels.formatter = Drupal.localgov_elections.categoryFormatter;
+              data.xAxis[0].labels.align = 'left';
+              data.xAxis[0].labels.reserveSpace = true;
+              Drupal.Charts.Contents.update(id, data);
             }
-            data.xAxis[0].gridLineWidth = 1;
-            data.yAxis[0].gridLineWidth = 0;
-            data.tooltip.enabled = false;
-            data.xAxis[0].labels.align = 'left';
-            data.xAxis[0].labels.reserveSpace = true;
-            data.xAxis[0].labels.useHTML = true;
-            data.xAxis[0].labels.formatter = Drupal.localgov_elections.categoryFormatter;
-            Drupal.Charts.Contents.update(id, data);
-          }
-        });
-      });
 
+            if (id === 'chart-district-results-default') {
+              data.yAxis[0].labels = {
+                enabled: false
+              }
+              data.xAxis[0].gridLineWidth = 1;
+              data.yAxis[0].gridLineWidth = 0;
+              data.tooltip.enabled = false;
+              data.xAxis[0].labels.align = 'left';
+              data.xAxis[0].labels.reserveSpace = true;
+              data.xAxis[0].labels.useHTML = true;
+              data.xAxis[0].labels.formatter = Drupal.localgov_elections.categoryFormatter;
+              Drupal.Charts.Contents.update(id, data);
+            }
+          });
+        });
+      }
     }
   };
-})(jQuery, Drupal);
-
+})(Drupal, once);

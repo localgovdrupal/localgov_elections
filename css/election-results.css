@@ -1,9 +1,9 @@
-.subheading {
+.county-summary__subheading {
   padding: 1rem;
   background-color: var(--color-grey);
 }
 
-.subheading > div {
+.county-summary__subheading > div {
   display: flex;
   column-gap: 2rem;
 }
@@ -13,11 +13,12 @@
   column-gap: 0.25rem;
 }
 
-.views-field-field-electorate .field-content, .views-field-election-turnout .field-content {
+.views-field-field-electorate .field-content,
+.views-field-election-turnout .field-content {
   font-weight: bold;
 }
 
-.dot {
+.county-summary .dot {
   height: 1rem;
   width: 1rem;
   border-radius: 50%;
@@ -26,61 +27,38 @@
   margin-right: 0.5rem;
 }
 
-.label-wrapper {
+.county-summary .label-wrapper {
   display: inline-flex;
 }
 
-
-.hold-or-gain {
+.county-summary .hold-or-gain {
   padding: 0.25rem;
   margin: 0 0.25rem;
 }
 
-.hold {
+.county-summary .hold {
   border: var(--table-border);
 }
 
-.hold-or-gain.gain {
+.county-summary .hold-or-gain.gain {
   color: white;
   background-color: black;
 }
 
-/*.party.grn {*/
-/*  background-color: var(--green-party);*/
-/*}*/
-
-/*.party.con {*/
-/*  background-color: var(--conservative);*/
-/*}*/
-
-/*.party.lab {*/
-/*  background-color: var(--labour);*/
-/*}*/
-
-/*.party.ldm {*/
-/*  background-color: var(--liberal-democrats);*/
-/*  color: black;*/
-/*}*/
-
-/*.party.ind {*/
-/*  background-color: var(--independent);*/
-/*}*/
-
-.party {
+.county-summary .party {
   text-transform: uppercase;
   padding: 0.25rem;
   color: white;
-  text-transform: uppercase;
   font-weight: bold;
   font-family: Sans-Serif;
   width: fit-content;
 }
 
-.views-field-election-majority {
+.county-summary .views-field-election-majority {
   padding: 1rem;
 }
 
-.seat-not-contested {
+.county-summary .seat-not-contested {
   display: inline-flex;
   border: 1px solid black;
   text-transform: uppercase;

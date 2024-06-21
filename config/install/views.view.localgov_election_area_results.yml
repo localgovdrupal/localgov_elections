@@ -2,8 +2,8 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.localgov_election_area_name
     - field.storage.node.localgov_election
+    - field.storage.node.localgov_election_area_name
     - field.storage.node.localgov_election_hold_or_gain
     - field.storage.paragraph.localgov_election_candidate
     - field.storage.paragraph.localgov_election_forename
@@ -14,7 +14,7 @@ dependencies:
     - node.type.localgov_area_vote
   module:
     - charts
-    - charts_highcharts
+    - charts_chartjs
     - color_field
     - node
     - options
@@ -572,21 +572,13 @@ display:
         options:
           grouping: {  }
           chart_settings:
-            library: highcharts
+            library: chartjs
             type: bar
             fields:
               label: localgov_election_candidate
               stacking: false
               data_providers:
-                field_division:
-                  enabled: false
-                  color: '#000000'
-                  weight: 5
                 localgov_election:
-                  enabled: false
-                  color: '#000000'
-                  weight: 5
-                localgov_election_party:
                   enabled: false
                   color: '#000000'
                   weight: 5
@@ -594,6 +586,10 @@ display:
                   enabled: false
                   color: '#000000'
                   weight: 7
+                localgov_election_party:
+                  enabled: false
+                  color: '#000000'
+                  weight: 5
                 localgov_election_candidate:
                   enabled: false
                   color: '#000000'
@@ -606,9 +602,14 @@ display:
                   enabled: false
                   color: '#000000'
                   weight: 6
+                localgov_election_area_name:
+                  enabled: false
+                  color: '#f28f43'
+                  weight: 7
             display:
               title: ''
               title_position: out
+              subtitle: ''
               data_labels: true
               data_markers: false
               legend_position: ''
@@ -630,6 +631,7 @@ display:
                 yellow_to: '85'
                 red_from: '0'
                 red_to: '50'
+              color_changer: false
             xaxis:
               title: ''
               labels_rotation: '0'
@@ -693,8 +695,8 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.node.localgov_election'
+        - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.paragraph.localgov_election_candidate'
         - 'config:field.storage.paragraph.localgov_election_forename'
         - 'config:field.storage.paragraph.localgov_election_party'
@@ -747,8 +749,8 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.node.localgov_election'
+        - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.paragraph.localgov_election_candidate'
         - 'config:field.storage.paragraph.localgov_election_forename'
         - 'config:field.storage.paragraph.localgov_election_party'
