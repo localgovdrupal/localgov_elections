@@ -11,9 +11,9 @@ dependencies:
     - field.storage.paragraph.localgov_election_votes
     - field.storage.taxonomy_term.localgov_election_abbreviation
     - node.type.localgov_area_vote
-    - node.type.localgov_election
   module:
     - charts
+    - charts_chartjs
     - charts_highcharts
     - entity_reference_revisions
     - localgov_elections
@@ -543,7 +543,7 @@ display:
           plugin_id: bundle
           operator: in
           value:
-            election: election
+            localgov_area_vote: localgov_area_vote
           group: 1
           exposed: false
           expose:
@@ -1564,16 +1564,12 @@ display:
         options:
           grouping: {  }
           chart_settings:
-            library: highcharts
+            library: chartjs
             type: bar
             fields:
               label: localgov_election_abbreviation_1
               stacking: false
               data_providers:
-                localgov_election_party:
-                  enabled: false
-                  color: '#000000'
-                  weight: 2
                 localgov_election_abbreviation:
                   enabled: true
                   color: '#080808'
@@ -1585,6 +1581,7 @@ display:
             display:
               title: ''
               title_position: out
+              subtitle: ''
               data_labels: true
               data_markers: false
               legend_position: ''
@@ -1606,6 +1603,7 @@ display:
                 yellow_to: '85'
                 red_from: '0'
                 red_to: '50'
+              color_changer: false
             xaxis:
               title: ''
               labels_rotation: '0'

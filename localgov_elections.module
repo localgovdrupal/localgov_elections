@@ -479,7 +479,14 @@ function localgov_elections_page_attachments(array &$attachments) {
  * Implements hook_chart_alter().
  */
 function localgov_elections_chart_alter(array &$element, $chart_id) {
-  $element['#attached']['library'][] = 'localgov_elections/charts_overrides';
+  $config_obj = \Drupal::configFactory()->getEditable('views.view.localgov_election_results_via_parties');
+  $chart_library = $config_obj->get('display.default.display_options.style.options.chart_settings.library');
+  if ($chart_library == 'highcharts') {
+    $element['#attached']['library'][] = 'localgov_elections/highcharts_overrides';
+  }
+  elseif ($chart_library == 'chartjs') {
+    $element['#attached']['library'][] = 'localgov_elections/chartjs_overrides';
+  }
   $element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
 }
 
@@ -513,7 +520,7 @@ function _localgov_elections_party_colours() {
   $results = [];
   $terms = Drupal::entityTypeManager()
     ->getStorage('taxonomy_term')
-    ->loadByProperties(['vid' => 'party']);
+    ->loadByProperties(['vid' => 'localgov_party']);
   if ($terms && is_array($terms)) {
     foreach ($terms as $term) {
       $colour = $term->localgov_election_party_colour?->first()?->color;
