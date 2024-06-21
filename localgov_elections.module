@@ -12,6 +12,7 @@ use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\views\Plugin\views\cache\CachePluginBase;
 use Drupal\views\ViewExecutable;
 
 /**
@@ -311,13 +312,13 @@ function localgov_elections_preprocess_node(&$variables) {
     }
     $variables['content']['results_fieldset'] = [
       '#type' => 'container',
-      '#prefix' => '<div class="county-summary"> <div class="county-header" ><h2>' . t("Election summary") . '</h2></div>',
+      '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Election summary") . '</h2></div>',
       '#suffix' => '</div>',
     ];
 
     $variables['content']['results_fieldset']['sub_heading'] = [
       '#type' => 'container',
-      '#prefix' => '<div class="subheading">',
+      '#prefix' => '<div class="county-summary__subheading">',
       '#suffix' => '</div>',
     ];
 
@@ -382,6 +383,30 @@ function localgov_elections_views_pre_render(ViewExecutable $view) {
   if ($view->id() == 'localgov_election_results') {
     if ($view->getDisplay()->display['id'] == 'block_3') {
       $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
+    }
+  }
+}
+
+/**
+ * Implements hook_views_post_render().
+ */
+function localgov_elections_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache) {
+  if ($view->id() == 'localgov_election_results_via_parties') {
+    // Remove rows from rendered output where party is not standing in election
+    // (these rows will be NULL)
+    $rows = $output["#rows"]["block_1__election_seats_party_0"]["#data"];
+    $idx = 0;
+    $removed = 0;
+    foreach ($rows as $row) {
+      if (!isset($row)) {
+        array_splice($output["#rows"]["block_1__election_seats_party_0"]["#data"], $idx - $removed, 1);
+        array_splice($output["#rows"]["xaxis"]["#labels"], $idx - $removed, 1);
+        if (isset($output["#rows"]["block_1__election_seats_party_0"]["#mapped_data"])) {
+          array_splice($output["#rows"]["block_1__election_seats_party_0"]["#mapped_data"], $idx - $removed, 1);
+        }
+        $removed++;
+      }
+      $idx++;
     }
   }
 }
@@ -454,7 +479,14 @@ function localgov_elections_page_attachments(array &$attachments) {
  * Implements hook_chart_alter().
  */
 function localgov_elections_chart_alter(array &$element, $chart_id) {
-  $element['#attached']['library'][] = 'localgov_elections/charts_overrides';
+  $config_obj = \Drupal::configFactory()->getEditable('views.view.localgov_election_results_via_parties');
+  $chart_library = $config_obj->get('display.default.display_options.style.options.chart_settings.library');
+  if ($chart_library == 'highcharts') {
+    $element['#attached']['library'][] = 'localgov_elections/highcharts_overrides';
+  }
+  elseif ($chart_library == 'chartjs') {
+    $element['#attached']['library'][] = 'localgov_elections/chartjs_overrides';
+  }
   $element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
 }
 
@@ -488,7 +520,7 @@ function _localgov_elections_party_colours() {
   $results = [];
   $terms = Drupal::entityTypeManager()
     ->getStorage('taxonomy_term')
-    ->loadByProperties(['vid' => 'party']);
+    ->loadByProperties(['vid' => 'localgov_party']);
   if ($terms && is_array($terms)) {
     foreach ($terms as $term) {
       $colour = $term->localgov_election_party_colour?->first()?->color;
