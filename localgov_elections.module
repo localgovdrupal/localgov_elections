@@ -78,19 +78,6 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
       }
     }
   }
-
-  // Generate aliases for map page etc.
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_election') {
-    // Get the alias manager service.
-    $alias_manager = \Drupal::service('path_alias.manager');
-
-    // Get the current alias for the node.
-    $path = '/node/' . $entity->id();
-    $alias = $alias_manager->getAliasByPath($path);
-
-    // Store the current alias in a static property for later comparison.
-    $entity->originalAlias = $alias;
-  }
 }
 
 /**
