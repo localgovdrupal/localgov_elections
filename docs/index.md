@@ -75,7 +75,7 @@ For each electoral area you need, do the following:
 
 2. You need to add the following details for each electoral area in the preparation stage
    1. Details tab - Eligible voters
-   2. Candidates and Votes - Candidates (see below) and PDF list of candidates (optional)
+   2. Candidates and Votes - Candidates (see below) and PDF list of candidates (optional).  When a PDF is added, it appears in the *Electoral candidates* page.
    3. Previous election details (optional)
 
 #### Adding a candidate
