@@ -10,9 +10,11 @@ dependencies:
   - charts:charts_highcharts
   - charts:charts_chartjs
   - color_field:color_field
+  - drupal:block
   - drupal:node
   - drupal:field_group
   - drupal:path
+  - drupal:pathauto
   - drupal:datetime
   - drupal:options
   - drupal:link
