@@ -14,7 +14,6 @@ dependencies:
   module:
     - charts
     - charts_chartjs
-    - charts_highcharts
     - entity_reference_revisions
     - localgov_elections
     - node
@@ -193,43 +192,24 @@ display:
         options:
           grouping: {  }
           chart_settings:
-            library: highcharts
+            library: chartjs
             type: bar
             fields:
-              label: localgov_election_candidate
+              label: localgov_election_abbreviation_1
               stacking: false
               data_providers:
-                field_division:
-                  enabled: false
-                  color: '#000000'
-                  weight: 5
-                localgov_election:
-                  enabled: false
-                  color: '#000000'
-                  weight: 5
-                localgov_election_party:
-                  enabled: false
-                  color: '#000000'
-                  weight: 5
-                localgov_election_forename:
-                  enabled: false
-                  color: '#000000'
-                  weight: 7
-                localgov_election_candidate:
-                  enabled: false
-                  color: '#000000'
-                  weight: 5
-                localgov_election_votes:
+                localgov_election_abbreviation:
                   enabled: true
-                  color: '#808080'
-                  weight: 5
-                localgov_election_party_colour:
+                  color: '#080808'
+                  weight: 2
+                localgov_election_abbreviation_1:
                   enabled: false
                   color: '#000000'
-                  weight: 6
+                  weight: 3
             display:
               title: ''
               title_position: out
+              subtitle: ''
               data_labels: true
               data_markers: false
               legend_position: ''
@@ -251,6 +231,7 @@ display:
                 yellow_to: '85'
                 red_from: '0'
                 red_to: '50'
+              color_changer: false
             xaxis:
               title: ''
               labels_rotation: '0'
@@ -260,7 +241,7 @@ display:
               max: ''
               prefix: ''
               suffix: ''
-              decimal_count: ''
+              decimal_count: '0'
               labels_rotation: '0'
       row:
         type: fields
