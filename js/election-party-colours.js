@@ -13,7 +13,7 @@
         let classList = box.className.split(/\s+/);
         classList.forEach(i => {
           if (i !== 'box') {
-            for (const [key, value] of Object.entries(settings.localgov_elections_reporting.parties)) {
+            for (const [key, value] of Object.entries(settings.localgov_elections.parties)) {
               if (i.includes(value.abbr) || i.includes(value.full_name)) {
                 box.style.backgroundColor = value.colour;
                 box.style.color = value["text-colour"];
@@ -30,7 +30,7 @@
           let classList = party.className.split(/\s+/);
           classList.forEach(i => {
             if (i !== 'party') {
-              for (const [key, value] of Object.entries(settings.localgov_elections_reporting.parties)) {
+              for (const [key, value] of Object.entries(settings.localgov_elections.parties)) {
                 if (i.includes(value.abbr) || i.includes(value.full_name)) {
                   party.style.backgroundColor = value.colour;
                   party.style.color = value["text-colour"];
