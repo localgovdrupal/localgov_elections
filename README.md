@@ -1,4 +1,4 @@
-# LocalGov Elections Reporting
+# LocalGov Elections
 
 This module provides submodules, content types, views and configuration that allow the reporting of election results for
 the LocalGov Drupal distribution.

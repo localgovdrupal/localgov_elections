@@ -27,8 +27,7 @@ dependencies:
 third_party_settings:
   field_group:
     group_references:
-      children:
-        - localgov_election
+      children: {  }
       label: References
       region: content
       parent_name: ''
@@ -77,6 +76,7 @@ third_party_settings:
     group_details:
       children:
         - title
+        - localgov_election
         - localgov_election_area_name
         - localgov_election_electorate
       label: Details

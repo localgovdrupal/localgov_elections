@@ -11,5 +11,5 @@ weight: 13
 parent_menu: admin
 parent_menu_link: 'admin_toolbar_tools.extra_links:node.add'
 child_menu_links:
-  - 'admin_toolbar_tools.extra_links:node.add.election'
+  - 'admin_toolbar_tools.extra_links:node.add.localgov_election'
   - 'admin_toolbar_tools.extra_links:node.add.localgov_area_vote'
