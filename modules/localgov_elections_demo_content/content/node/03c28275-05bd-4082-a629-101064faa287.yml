@@ -237,7 +237,7 @@ default:
           localgov_election_votes:
             -
               value: 3681
-  localgov_election_election:
+  localgov_election:
     -
       entity: 23ffd187-52df-4106-9c19-af542d51a738
   localgov_election_electorate:
