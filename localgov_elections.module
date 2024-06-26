@@ -90,7 +90,7 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
  *   Returns nothing.
  */
 function localgov_elections_generate_election_aliases(NodeInterface $entity) {
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_election') {
+  if ($entity->getType() == 'localgov_election') {
 
     // Check if the parent election node is aliased.
     if ($alias = localgov_elections_get_entity_alias('node', $entity->id())) {
@@ -199,16 +199,13 @@ function localgov_elections_path_alias_insert(EntityInterface $entity) {
  */
 function localgov_elections_delete_alias_by_alias($alias) {
   $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
-  $query = $storage->getQuery();
-  $query->condition('alias', $alias);
-  $query->accessCheck(FALSE);
-  $result = $query->execute();
+  $alias_entities = $storage->loadByProperties(['alias' => $alias]);
 
-  if ($result) {
-    $result = reset($result);
-    $result = $storage->load($result);
+  if ($alias_entities) {
     try {
-      $result->delete();
+      if ($alias = current($alias_entities)) {
+        $alias->delete();
+      }
     }
     catch (EntityStorageException $exception) {
       \Drupal::logger('localgov_elections')->error($exception->getMessage());
@@ -222,7 +219,7 @@ function localgov_elections_delete_alias_by_alias($alias) {
  * @return void
  *   Returns nothing.
  */
-function localgov_elections_delete_election_aliases($election) {
+function localgov_elections_delete_election_aliases(NodeInterface $election) {
 
   // Map page.
   $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $election->id()]);
@@ -293,7 +290,7 @@ function localgov_elections_get_entity_alias(string $entity_type, int|string $en
   // Load the entity.
   $entity = \Drupal::entityTypeManager()->getStorage($entity_type)->load($entity_id);
 
-  if ($entity) {
+  if ($entity instanceof NodeInterface) {
     // Get the URL of the entity.
     $url = $entity->toUrl('canonical', ['absolute' => TRUE])->toString();
 
