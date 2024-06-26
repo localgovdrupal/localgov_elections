@@ -10,10 +10,8 @@
  */
 #}
 
-<div>
-  {% if election_type %}
-  <h2 class="election-results-heading">{{ election_type }} results</h2>
-  {% else %}
-  <h2 class="election-results-heading">Results</h2>
-  {% endif %}
-</div>
+{% if election_type %}
+  <h2 class="election-results-heading">{{ "%s results"|format(election_type)|t }}</h2>
+{% else %}
+  <h2 class="election-results-heading">{{ "Results"|t }}</h2>
+{% endif %}

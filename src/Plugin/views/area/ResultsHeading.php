@@ -23,6 +23,10 @@ class ResultsHeading extends AreaPluginBase {
    */
   public function render($empty = FALSE) {
 
+    if ($empty && empty($this->options['empty'])) {
+      return [];
+    }
+
     $election_node_id = current($this->view->args);
     $election_node    = $this->entityTypeManager->getStorage('node')->load($election_node_id);
 
@@ -36,6 +40,10 @@ class ResultsHeading extends AreaPluginBase {
 
     $election_type = $election_node->localgov_election_type->first();
     $election_type_label = $election_type ? $election_type->view() : '';
+
+    // Covers special cases.
+    $election_type_value = $election_node->localgov_election_type->getString();
+    $election_type_label = self::LABEL_MAPPING[$election_type_value] ?? $election_type_label;
 
     return [
       '#theme'         => 'localgov_elections_results_heading',
@@ -61,5 +69,14 @@ class ResultsHeading extends AreaPluginBase {
       $container->get('entity_type.manager'),
     );
   }
+
+  /**
+   * Some labels are better when overwritten.
+   *
+   * Mapping between overridden Election type values and labels.
+   */
+  const LABEL_MAPPING = [
+    'NationalParliamentary' => 'Constituency',
+  ];
 
 }
