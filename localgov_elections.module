@@ -32,6 +32,11 @@ function localgov_elections_theme($existing, $type, $theme, $path) {
         'links' => NULL,
       ],
     ],
+    'localgov_elections_results_heading' => [
+      'variables' => [
+        'election_type' => '',
+      ],
+    ],
   ];
 }
 
@@ -209,6 +214,13 @@ function localgov_elections_views_data_alter(array &$data) {
     ],
     'filter' => [
       'id' => 'standard',
+    ],
+  ];
+  $data['views']['area_election_results_heading'] = [
+    'title' => t('Election results heading'),
+    'help' => t('Sets dynamic heading depending on election type.'),
+    'area' => [
+      'id' => 'localgov_elections_results_heading',
     ],
   ];
 }
