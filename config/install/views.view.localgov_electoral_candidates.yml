@@ -104,7 +104,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if localgov_election_cand_file %}\r\n<a href='{{ localgov_election_cand_file }}'><i class=\"fa-solid fa-file-pdf\"></i>{{localgov_election_area_name}}</a>\r\n{% else %}\r\n{{ localgov_election_area_name }}\r\n{% endif %}\r\n"
+            text: "{% if localgov_election_cand_file %}\r\n<a href='{{ localgov_election_cand_file }}'>{{localgov_election_area_name}}</a>\r\n{% else %}\r\n{{ localgov_election_area_name }}\r\n{% endif %}\r\n"
             make_link: false
             path: ''
             absolute: false

@@ -29,6 +29,13 @@
   color: white;
 }
 
+.election-menu__list-icon {
+  width: .75rem;
+}
+.election-menu__list-item.active .election-menu__list-icon path {
+  fill: white;
+}
+
 .election-menu-block__button-container {
   display: flex;
   justify-content: end;
