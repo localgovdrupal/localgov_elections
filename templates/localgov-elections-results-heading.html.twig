@@ -11,7 +11,8 @@
 #}
 
 {% if election_type %}
-  <h2 class="election-results-heading">{{ "%s results"|format(election_type)|t }}</h2>
+  {% set rendered_election_type = render_var(election_type) %}
+  <h2 class="election-results-heading">{{ "%s results"|format(rendered_election_type)|t }}</h2>
 {% else %}
   <h2 class="election-results-heading">{{ "Results"|t }}</h2>
 {% endif %}
