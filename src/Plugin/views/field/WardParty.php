@@ -41,7 +41,7 @@ class WardParty extends FieldPluginBase {
       $votes = $candidate->get('localgov_election_votes')->value;
       $party = Term::load($candidate->get('localgov_election_party')->target_id);
 
-      $party_abbr = $party->get('localgov_election_abbreviation')->value;
+      $party_abbr = $party?->get('localgov_election_abbreviation')->value;
 
       $results[] = ['abbr' => $party_abbr, 'votes' => $votes, 'name' => $party->name?->value];
     }

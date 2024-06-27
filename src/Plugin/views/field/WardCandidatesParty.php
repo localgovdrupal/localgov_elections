@@ -37,8 +37,8 @@ class WardCandidatesParty extends FieldPluginBase {
     $winner = Paragraph::load($area_vote->get('localgov_election_winner')->target_id);
     if (isset($winner)) {
       $party_term = Term::load($winner->get('localgov_election_party')->target_id);
-      $party = $party_term->getName();
-      $party_abbr = $party_term->get('localgov_election_abbreviation')?->value
+      $party = $party_term ? $party_term->getName() : '_';
+      $party_abbr = $party_term?->get('localgov_election_abbreviation')?->value
       ? strtolower($party_term->get('localgov_election_abbreviation')->value) : "";
       $votes = $winner->get('localgov_election_votes')->value;
       $markup .= '<div class="winner result-row">';
@@ -62,7 +62,7 @@ class WardCandidatesParty extends FieldPluginBase {
       $surname = $candidate->get('localgov_election_candidate')->value;
       $forenames = $candidate->get('localgov_election_forenames')->value;
       $party_term = Term::load($candidate->get('localgov_election_party')->target_id);
-      $party = $party_term->getName();
+      $party = $party_term ? $party_term->getName() : '_';
       $votes = $candidate->get('localgov_election_votes')->value;
       $results[] = [
         'surname' => $surname,
