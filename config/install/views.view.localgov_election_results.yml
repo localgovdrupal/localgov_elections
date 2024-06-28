@@ -1147,8 +1147,8 @@ display:
           label: Votes
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: "{% if localgov_election_votes_final  == \"1\" %}\r\n{{ localgov_election_votes }} \r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
