@@ -33,15 +33,15 @@ class AnalysisBlock extends BlockBase {
       // Get Electorate.
       $electorate = $node->localgov_election_electorate->value;
       if (isset($electorate)) {
-        $markup .= '<div class="label electorate">Electorate</div>';
-        $markup .= '<div class="value electorate">' . $electorate . '</div>';
+        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--electorate">Electorate</div>';
+        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--electorate">' . $electorate . '</div>';
       }
 
       // Get spoils.
       $spoils = $node->localgov_election_spoils->value;
       if (isset($spoils)) {
-        $markup .= '<div class="label spoils">Rejected ballot papers</div>';
-        $markup .= '<div class="value spoils">' . $spoils . '</div>';
+        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--spoils">Rejected ballot papers</div>';
+        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--spoils">' . $spoils . '</div>';
       }
 
       // Get results of each candidate and sum votes cast.
@@ -81,16 +81,16 @@ class AnalysisBlock extends BlockBase {
 
       // Total votes cast.
       if ($valid_total_votes > 0) {
-        $markup .= '<div class="label votes">Votes cast</div>';
-        $markup .= '<div class="value votes">' . $valid_total_votes . '</div>';
+        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--votes">Votes cast</div>';
+        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--votes">' . $valid_total_votes . '</div>';
       }
 
       // Calculate percentage turnout.
       if ($valid_total_votes > 0 && is_numeric($electorate)) {
         $turnout = round((($valid_total_votes + $spoils) / $electorate) * 100, 1);
 
-        $markup .= '<div class="label turnout">% turnout</div>';
-        $markup .= '<div class="value turnout">' . $turnout . '</div>';
+        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--turnout">% turnout</div>';
+        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--turnout">' . $turnout . '</div>';
       }
 
       // Get the parent election so we can figure out if
@@ -109,8 +109,8 @@ class AnalysisBlock extends BlockBase {
 
       // Display majority if we can.
       if ($display_majority && isset($majority)) {
-        $markup .= '<div class="label majority">Majority</div>';
-        $markup .= '<div class="value majority">' . $majority . '</div>';
+        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--majority">Majority</div>';
+        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--majority">' . $majority . '</div>';
       }
 
       // Retrieve results of previous election.
@@ -145,12 +145,12 @@ class AnalysisBlock extends BlockBase {
       }
 
       if (isset($previous_year)) {
-        $markup .= '<div class="label previous">' . $previous_year . ' Result</div>';
+        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--previous">' . $previous_year . ' Result</div>';
         if (isset($previous_winning_party)) {
-          $markup .= '<div class="value previous">' . $previous_winner_abbr . '</div>';
+          $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--previous">' . $previous_winner_abbr . '</div>';
         }
         else {
-          $markup .= '<div class="value previous"></div>';
+          $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--previous"></div>';
         }
       }
 

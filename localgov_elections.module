@@ -826,6 +826,16 @@ function localgov_elections_preprocess_block(&$variables) {
   if ($variables['base_plugin_id'] == 'localgov_elections_electionmenu') {
     $variables['attributes']['class'][] = 'election-menu-block';
   }
+
+  // We want to set the page title to be the name of the area,
+  // But still allow a title like "Election 2024 - Oxford East" in the node
+  // edit form, so it's easier to find on the /admin/content page.
+  $node = \Drupal::request()->attributes->get('node');
+  if ($node && $node->bundle() == 'localgov_area_vote') {
+    if ($variables['base_plugin_id'] == 'localgov_page_header_block') {
+      $variables['content'][0]['#title'] = $node->get('localgov_election_area_name')->value;
+    }
+  }
 }
 
 /**
