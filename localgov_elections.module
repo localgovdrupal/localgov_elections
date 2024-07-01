@@ -503,7 +503,10 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
         "entity.node.delete_form",
         "entity.node.preview_link_generate",
       ];
-      if (in_array($route_name, $appropriate_fetch_routes)) {
+
+      // Add the "add area" button to the local tasks if user has permission.
+      $can_add_areas = Drupal::currentUser()->hasPermission('can fetch boundaries');
+      if ($can_add_areas && in_array($route_name, $appropriate_fetch_routes)) {
         $data['tabs'][0]['boundary_fetch'] = [
           '#theme' => 'menu_local_task',
           '#weight' => 100,
