@@ -581,7 +581,7 @@ function localgov_elections_preprocess_node(&$variables) {
     }
     $variables['content']['results_fieldset'] = [
       '#type' => 'container',
-      '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Election summary") . '</h2></div>',
+      '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Seats won") . '</h2></div>',
       '#suffix' => '</div>',
     ];
 
