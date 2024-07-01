@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * Default template for the localgov_elections_results_heading theme.
+ *
+ * Sets dynamic heading depending on election type.
+ *
+ * Available variables:
+ * - election_type: National election or local election or something else?
+ */
+#}
+
+{% if election_type %}
+  {% set rendered_election_type = render_var(election_type) %}
+  <h2 class="election-results-heading">{{ "%s results"|format(rendered_election_type)|t }}</h2>
+{% else %}
+  <h2 class="election-results-heading">{{ "Results"|t }}</h2>
+{% endif %}
