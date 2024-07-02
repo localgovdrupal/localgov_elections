@@ -27,7 +27,6 @@ function localgov_elections_theme($existing, $type, $theme, $path) {
         'chart' => NULL,
         'result' => NULL,
         'analysis' => NULL,
-        'vote_share' => NULL,
       ],
     ],
     'election_menu' => [
@@ -547,7 +546,7 @@ function localgov_elections_preprocess_node(&$variables) {
         // Add the cache tags/contexts.
         \Drupal::service('renderer')
           ->addCacheableDependency($analysis, $plugin_block);
-        dump($node->localgov_election->entity->id());
+
         $variables['content']['results'] = [
           '#theme' => 'ward_result',
           '#chart' => [
@@ -560,12 +559,6 @@ function localgov_elections_preprocess_node(&$variables) {
             '#name' => 'localgov_election_area_results',
             '#display_id' => 'block_2',
             '#arguments' => [$node->id()],
-          ],
-          '#vote_share' => [
-            '#type' => 'view',
-            '#name' => 'localgov_election_results_vote',
-            '#display_id' => 'block_1',
-            '#arguments' => [$node->localgov_election->entity->id()],
           ],
           '#analysis' => $analysis,
           '#attached' => ['library' => ['localgov_elections/party_colours']],
