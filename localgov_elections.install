@@ -46,3 +46,13 @@ function localgov_elections_uninstall($is_syncing) {
   catch (EntityStorageException $e) {
   }
 }
+
+function localgov_elections_update_10001(&$sandbox) {
+
+  $config_obj = \Drupal::configFactory()->getEditable('views.view.localgov_election_results');
+  $config_obj->set('display.block_3.display_options.fields.localgov_election_votes.alter.alter_text', TRUE);
+  $config_obj->set('display.block_3.display_options.fields.localgov_election_votes.alter.text', '{% if localgov_election_votes_final  == \"1\" %}\r\n{{ localgov_election_votes }} \r\n{% endif %}');
+  $config_obj->save();
+
+  Drupal::logger('localgov_elections')->notice("Updated results view");
+}
