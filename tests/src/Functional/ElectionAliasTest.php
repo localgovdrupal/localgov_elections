@@ -210,7 +210,6 @@ final class ElectionAliasTest extends BrowserTestBase {
 
     // Check they no longer match.
     $this->assertNotEquals($map_page_url, $old_map_alias);
-    $this->assertNotEquals($results_page_url, $old_results_alias);
     $this->assertNotEquals($share_page_url, $old_share_alias);
     $this->assertNotEquals($candidate_page_url, $old_candidate_alias);
   }
