@@ -573,12 +573,14 @@ function localgov_elections_preprocess_node(&$variables) {
 
   }
   elseif ($node->bundle() == 'localgov_election') {
-    if ($node->hasField('localgov_election_majority')) {
+    $election_type = $node->get('localgov_election_type')->value;
+    if ($node->hasField('localgov_election_majority') && ($election_type != 'NationalParliamentary')) {
       $display_majority = $node->get("localgov_election_majority")?->value;
     }
     else {
       $display_majority = FALSE;
     }
+
     $variables['content']['results_fieldset'] = [
       '#type' => 'container',
       '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Seats won") . '</h2></div>',
