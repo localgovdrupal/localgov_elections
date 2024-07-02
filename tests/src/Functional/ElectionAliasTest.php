@@ -115,15 +115,6 @@ final class ElectionAliasTest extends BrowserTestBase {
     $map_path = $map_page_url->toString();
     $this->aliasPaths['map'] = ['internal' => $map_page_url->getInternalPath(), 'alias' => $map_path];
 
-    // Results timeline.
-    // $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
-    //     [
-    //       'node' => $this->election->id(),
-    //     ]
-    // );
-    // $results_path = $results_page_url->toString();
-    // $this->aliasPaths['results'] = ['internal' => $results_page_url->getInternalPath(), 'alias' => $results_path];
-
     // Vote share.
     $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
         [
@@ -205,12 +196,6 @@ final class ElectionAliasTest extends BrowserTestBase {
 
     // Get the newly generated aliases.
     $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1',
-        [
-          'node' => $this->election->id(),
-        ]
-    );
-
-    $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
         [
           'node' => $this->election->id(),
         ]

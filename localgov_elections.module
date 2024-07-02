@@ -109,19 +109,6 @@ function localgov_elections_generate_election_aliases(NodeInterface $entity) {
         localgov_elections_create_alias($map_path, $new_alias);
       }
 
-      // Results timeline.
-      // $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
-      //     [
-      //       'node' => $entity->id(),
-      //     ]
-      // );
-      // $results_path = $results_page_url->toString();
-
-      // if (!(localgov_elections_alias_exists($results_path))) {
-      //   $new_alias = $alias . '/results';
-      //   localgov_elections_create_alias($results_path, $new_alias);
-      // }
-
       // Vote share.
       $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
           [
@@ -230,15 +217,6 @@ function localgov_elections_delete_election_aliases(NodeInterface $election) {
   $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $election->id()]);
   $map_path = $map_page_url->toString();
   localgov_elections_delete_alias_by_alias($map_path);
-
-  // Results timeline.
-  $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
-      [
-        'node' => $election->id(),
-      ]
-  );
-  $results_path = $results_page_url->toString();
-  localgov_elections_delete_alias_by_alias($results_path);
 
   // Electoral candidates.
   $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_1',
@@ -490,7 +468,6 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
     // You can get nid and anything else you need from the node object.
     $type = $node->getType();
     if ($type != 'localgov_election') {
-      unset($data['tabs'][0]['views_view:view.localgov_election_results_timeline.page_1']);
       unset($data['tabs'][0]['views_view:view.localgov_election_results_vote.page_1']);
       unset($data['tabs'][0]['views_view:view.localgov_electoral_candidates.page_1']);
       unset($data['tabs'][0]['views_view:view.localgov_election_electoral_map.page_1']);
