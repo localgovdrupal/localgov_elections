@@ -24,10 +24,10 @@ settings:
   handler: 'default:paragraph'
   handler_settings:
     target_bundles:
-      candidate: candidate
+      localgov_election_candidate: localgov_election_candidate
     negate: 0
     target_bundles_drag_drop:
-      candidate:
+      localgov_election_candidate:
         weight: 9
         enabled: true
       localgov_area_vote:

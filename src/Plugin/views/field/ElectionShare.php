@@ -36,7 +36,7 @@ class ElectionShare extends FieldPluginBase {
     // Get ID of Election.
     $election = $entity->get('localgov_election')->target_id;
     $party = $values->_relationship_entities['localgov_election_party'];
-    $party_id = $party->id();
+    $party_id = $party?->id();
     $total_votes = 0;
     $party_votes = 0;
     $percentage = NULL;

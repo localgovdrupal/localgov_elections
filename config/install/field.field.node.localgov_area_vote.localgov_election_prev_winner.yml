@@ -12,8 +12,8 @@ id: node.localgov_area_vote.localgov_election_prev_winner
 field_name: localgov_election_prev_winner
 entity_type: node
 bundle: localgov_area_vote
-label: 'Previous winner'
-description: 'Party of previous election winner'
+label: 'Previous winning party'
+description: ''
 required: false
 translatable: false
 default_value: {  }

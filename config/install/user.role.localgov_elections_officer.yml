@@ -22,6 +22,7 @@ permissions:
   - 'access content overview'
   - 'access taxonomy overview'
   - 'access toolbar'
+  - 'can fetch boundaries'
   - 'create localgov_area_vote content'
   - 'create localgov_election content'
   - 'create terms in localgov_party'

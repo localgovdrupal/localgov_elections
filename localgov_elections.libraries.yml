@@ -19,7 +19,6 @@ electoral_candidates_view:
     theme:
       css/variables.css: { }
       css/electoral-candidates-view.css: { }
-      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css': { type: external,  minified: true }
 
 division_results:
   version: 1.x
@@ -68,11 +67,9 @@ party_colours:
     - core/once
 
 election_menu:
-  version: 1.x
   css:
     theme:
       css/election-menu.css: { }
-      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css': { type: external,  minified: true }
   js:
     js/election-menu.js: {}
   dependencies:

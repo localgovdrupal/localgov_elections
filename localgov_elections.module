@@ -8,8 +8,10 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\views\Plugin\views\cache\CachePluginBase;
@@ -30,6 +32,11 @@ function localgov_elections_theme($existing, $type, $theme, $path) {
     'election_menu' => [
       'variables' => [
         'links' => NULL,
+      ],
+    ],
+    'localgov_elections_results_heading' => [
+      'variables' => [
+        'election_type' => '',
       ],
     ],
   ];
@@ -75,6 +82,258 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
         }
       }
     }
+  }
+}
+
+/**
+ * Generate aliases for an election node.
+ *
+ * @param Drupal\node\NodeInterface $entity
+ *   The election node.
+ *
+ * @return void
+ *   Returns nothing.
+ */
+function localgov_elections_generate_election_aliases(NodeInterface $entity) {
+  if ($entity->getType() == 'localgov_election') {
+
+    // Check if the parent election node is aliased.
+    if ($alias = localgov_elections_get_entity_alias('node', $entity->id())) {
+
+      // Map page.
+      $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $entity->id()]);
+      $map_path = $map_page_url->toString();
+
+      if (!(localgov_elections_alias_exists($map_path))) {
+        $new_alias = $alias . '/electoral-map';
+        localgov_elections_create_alias($map_path, $new_alias);
+      }
+
+      // Results timeline.
+      $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
+          [
+            'node' => $entity->id(),
+          ]
+      );
+      $results_path = $results_page_url->toString();
+
+      if (!(localgov_elections_alias_exists($results_path))) {
+        $new_alias = $alias . '/results';
+        localgov_elections_create_alias($results_path, $new_alias);
+      }
+
+      // Vote share.
+      $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
+          [
+            'node' => $entity->id(),
+          ]
+      );
+      $share_path = $share_page_url->toString();
+
+      if (!(localgov_elections_alias_exists($share_path))) {
+        $new_alias = $alias . '/share';
+        localgov_elections_create_alias($share_path, $new_alias);
+      }
+
+      // Electoral candidates.
+      $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_1',
+          [
+            'node' => $entity->id(),
+          ]
+      );
+      $candidate_path = $candidate_page_url->toString();
+
+      if (!(localgov_elections_alias_exists($candidate_path))) {
+        $new_alias = $alias . '/candidates';
+        localgov_elections_create_alias($candidate_path, $new_alias);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function localgov_elections_path_alias_update(EntityInterface $entity) {
+  /** @var \Drupal\path_alias\Entity\PathAlias $original_entity */
+  $original_entity = $entity->original;
+
+  /** @var \Drupal\path_alias\Entity\PathAlias entity */
+  if ($entity->getAlias() !== $original_entity->getAlias()) {
+    $path = $entity->getPath();
+    $url = Url::fromUserInput($path);
+    $params = $url->getRouteParameters();
+    if (is_array($params) && array_key_exists('node', $params)) {
+      if ($node = Node::load($params['node'])) {
+        if ($node->bundle() == "localgov_election") {
+          $cannonical_route = '/' . $node->toUrl()->getInternalPath();
+          if ($path == $cannonical_route) {
+            localgov_elections_delete_election_aliases($node);
+            localgov_elections_generate_election_aliases($node);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function localgov_elections_path_alias_insert(EntityInterface $entity) {
+  $path = $entity->getPath();
+  $url = Url::fromUserInput($path);
+  $params = $url->getRouteParameters();
+  if (is_array($params) && array_key_exists('node', $params)) {
+    if ($node = Node::load($params['node'])) {
+      if ($node->bundle() == "localgov_election") {
+        $cannonical_route = '/' . $node->toUrl()->getInternalPath();
+        if ($path == $cannonical_route) {
+          localgov_elections_generate_election_aliases($node);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Function to delete an alias by the alias path.
+ *
+ * @param string $alias
+ *   The alias path (e.g., '/my-custom-alias').
+ */
+function localgov_elections_delete_alias_by_alias($alias) {
+  $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $alias_entities = $storage->loadByProperties(['alias' => $alias]);
+
+  if ($alias_entities) {
+    try {
+      if ($alias = current($alias_entities)) {
+        $alias->delete();
+      }
+    }
+    catch (EntityStorageException $exception) {
+      \Drupal::logger('localgov_elections')->error($exception->getMessage());
+    }
+  }
+}
+
+/**
+ * Delete all election sub-page alias.
+ *
+ * @return void
+ *   Returns nothing.
+ */
+function localgov_elections_delete_election_aliases(NodeInterface $election) {
+
+  // Map page.
+  $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $election->id()]);
+  $map_path = $map_page_url->toString();
+  localgov_elections_delete_alias_by_alias($map_path);
+
+  // Results timeline.
+  $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
+      [
+        'node' => $election->id(),
+      ]
+  );
+  $results_path = $results_page_url->toString();
+  localgov_elections_delete_alias_by_alias($results_path);
+
+  // Electoral candidates.
+  $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_1',
+      [
+        'node' => $election->id(),
+      ]
+  );
+  $candidate_path = $candidate_page_url->toString();
+  localgov_elections_delete_alias_by_alias($candidate_path);
+
+  // Vote share.
+  $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
+      [
+        'node' => $election->id(),
+      ]
+  );
+  $share_path = $share_page_url->toString();
+  localgov_elections_delete_alias_by_alias($share_path);
+}
+
+/**
+ * Check if an alias exists.
+ *
+ * @param string $alias
+ *   The alias.
+ *
+ * @return bool
+ *   True if alias exists else false.
+ */
+function localgov_elections_alias_exists(string $alias) {
+  // Get the alias manager service.
+  $alias_manager = \Drupal::service('path_alias.manager');
+
+  // Get the internal path for the given alias.
+  $internal_path = $alias_manager->getPathByAlias($alias);
+
+  // Check if the internal path is different from the alias.
+  // If different, it means the alias maps to an internal path.
+  return $internal_path !== $alias;
+}
+
+/**
+ * Gets the alias for an entity.
+ *
+ * @param string $entity_type
+ *   The entity bundle.
+ * @param int|string $entity_id
+ *   The entity id.
+ *
+ * @return string|null
+ *   Returns alias or null.
+ */
+function localgov_elections_get_entity_alias(string $entity_type, int|string $entity_id) {
+  // Load the entity.
+  $entity = \Drupal::entityTypeManager()->getStorage($entity_type)->load($entity_id);
+
+  if ($entity instanceof NodeInterface) {
+    // Get the URL of the entity.
+    $url = $entity->toUrl('canonical', ['absolute' => TRUE])->toString();
+
+    // Get the alias manager service.
+    $alias_manager = \Drupal::service('path_alias.manager');
+
+    // Get the alias for the entity URL.
+    return $alias_manager->getAliasByPath(parse_url($url, PHP_URL_PATH));
+  }
+  else {
+    return NULL;
+  }
+}
+
+/**
+ * Creates an alias.
+ *
+ * @param string $path
+ *   The internal path.
+ * @param string $alias
+ *   The new alias.
+ *
+ * @return bool
+ *   Returns true if operation was successful. Otherwise, returns false.
+ */
+function localgov_elections_create_alias(string $path, string $alias): bool {
+  $path_alias = \Drupal::entityTypeManager()->getStorage('path_alias')->create([
+    'path' => $path,
+    'alias' => $alias,
+    'langcode' => LanguageInterface::LANGCODE_NOT_SPECIFIED,
+  ]);
+  try {
+    $path_alias->save();
+    return TRUE;
+  }
+  catch (EntityStorageException $exception) {
+    \Drupal::logger('localgov_elections')->error($exception->getMessage());
+    return FALSE;
   }
 }
 
@@ -211,6 +470,13 @@ function localgov_elections_views_data_alter(array &$data) {
       'id' => 'standard',
     ],
   ];
+  $data['views']['area_election_results_heading'] = [
+    'title' => t('Election results heading'),
+    'help' => t('Sets dynamic heading depending on election type.'),
+    'area' => [
+      'id' => 'localgov_elections_results_heading',
+    ],
+  ];
 }
 
 /**
@@ -237,7 +503,10 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
         "entity.node.delete_form",
         "entity.node.preview_link_generate",
       ];
-      if (in_array($route_name, $appropriate_fetch_routes)) {
+
+      // Add the "add area" button to the local tasks if user has permission.
+      $can_add_areas = Drupal::currentUser()->hasPermission('can fetch boundaries');
+      if ($can_add_areas && in_array($route_name, $appropriate_fetch_routes)) {
         $data['tabs'][0]['boundary_fetch'] = [
           '#theme' => 'menu_local_task',
           '#weight' => 100,
@@ -312,7 +581,7 @@ function localgov_elections_preprocess_node(&$variables) {
     }
     $variables['content']['results_fieldset'] = [
       '#type' => 'container',
-      '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Election summary") . '</h2></div>',
+      '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Seats won") . '</h2></div>',
       '#suffix' => '</div>',
     ];
 
