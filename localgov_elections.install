@@ -47,7 +47,7 @@ function localgov_elections_uninstall($is_syncing) {
   }
 }
 
-/*
+/**
  * Update results view for already installed module
  */
 function localgov_elections_update_10001(&$sandbox) {
