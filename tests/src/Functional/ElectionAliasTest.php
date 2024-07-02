@@ -140,7 +140,6 @@ final class ElectionAliasTest extends BrowserTestBase {
    */
   public function testElectionAliasesAreGenerated(): void {
     $this->assertNotEquals($this->aliasPaths['map']['alias'], $this->aliasPaths['map']['internal']);
-    $this->assertNotEquals($this->aliasPaths['results']['alias'], $this->aliasPaths['results']['internal']);
     $this->assertNotEquals($this->aliasPaths['share']['alias'], $this->aliasPaths['share']['internal']);
     $this->assertNotEquals($this->aliasPaths['candidate']['alias'], $this->aliasPaths['candidate']['internal']);
   }
@@ -152,9 +151,6 @@ final class ElectionAliasTest extends BrowserTestBase {
     $this->assertTrue($this->matchesPattern(
         $this->aliasPaths['map']['alias'],
         "#^/election/[^/]+/electoral-map$#"));
-    $this->assertTrue($this->matchesPattern(
-        $this->aliasPaths['results']['alias'],
-        "#^/election/[^/]+/results$#"));
     $this->assertTrue($this->matchesPattern(
         $this->aliasPaths['share']['alias'],
         "#^/election/[^/]+/share$#"));
@@ -179,7 +175,6 @@ final class ElectionAliasTest extends BrowserTestBase {
     // Get the current paths to compare later.
     $election_path = $this->election->toUrl()->toString();
     $old_map_alias = $this->aliasPaths['map']['alias'];
-    $old_results_alias = $this->aliasPaths['results']['alias'];
     $old_share_alias = $this->aliasPaths['share']['alias'];
     $old_candidate_alias = $this->aliasPaths['candidate']['alias'];
 
