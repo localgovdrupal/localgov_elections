@@ -34,6 +34,11 @@ function localgov_elections_theme($existing, $type, $theme, $path) {
         'links' => NULL,
       ],
     ],
+    'localgov_elections_results_heading' => [
+      'variables' => [
+        'election_type' => '',
+      ],
+    ],
   ];
 }
 
@@ -465,6 +470,13 @@ function localgov_elections_views_data_alter(array &$data) {
       'id' => 'standard',
     ],
   ];
+  $data['views']['area_election_results_heading'] = [
+    'title' => t('Election results heading'),
+    'help' => t('Sets dynamic heading depending on election type.'),
+    'area' => [
+      'id' => 'localgov_elections_results_heading',
+    ],
+  ];
 }
 
 /**
@@ -491,7 +503,10 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
         "entity.node.delete_form",
         "entity.node.preview_link_generate",
       ];
-      if (in_array($route_name, $appropriate_fetch_routes)) {
+
+      // Add the "add area" button to the local tasks if user has permission.
+      $can_add_areas = Drupal::currentUser()->hasPermission('can fetch boundaries');
+      if ($can_add_areas && in_array($route_name, $appropriate_fetch_routes)) {
         $data['tabs'][0]['boundary_fetch'] = [
           '#theme' => 'menu_local_task',
           '#weight' => 100,
@@ -566,7 +581,7 @@ function localgov_elections_preprocess_node(&$variables) {
     }
     $variables['content']['results_fieldset'] = [
       '#type' => 'container',
-      '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Election summary") . '</h2></div>',
+      '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Seats won") . '</h2></div>',
       '#suffix' => '</div>',
     ];
 
