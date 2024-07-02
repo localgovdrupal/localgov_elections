@@ -110,17 +110,17 @@ function localgov_elections_generate_election_aliases(NodeInterface $entity) {
       }
 
       // Results timeline.
-      $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
-          [
-            'node' => $entity->id(),
-          ]
-      );
-      $results_path = $results_page_url->toString();
+      // $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
+      //     [
+      //       'node' => $entity->id(),
+      //     ]
+      // );
+      // $results_path = $results_page_url->toString();
 
-      if (!(localgov_elections_alias_exists($results_path))) {
-        $new_alias = $alias . '/results';
-        localgov_elections_create_alias($results_path, $new_alias);
-      }
+      // if (!(localgov_elections_alias_exists($results_path))) {
+      //   $new_alias = $alias . '/results';
+      //   localgov_elections_create_alias($results_path, $new_alias);
+      // }
 
       // Vote share.
       $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
