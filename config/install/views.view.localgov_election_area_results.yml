@@ -672,18 +672,7 @@ display:
           admin_label: 'localgov_election_party: Taxonomy term'
           plugin_id: standard
           required: false
-      header:
-        area_text_custom:
-          id: area_text_custom
-          table: views
-          field: area_text_custom
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: text_custom
-          empty: false
-          content: "<h2 class='ward-name result-block'>{{ localgov_election_area_name }}</h2>"
-          tokenize: true
+      header: {  }
       footer: {  }
       display_extenders: {  }
     cache_metadata:
@@ -738,7 +727,9 @@ display:
       defaults:
         fields: true
         sorts: false
+        header: false
       display_description: ''
+      header: {  }
       display_extenders: {  }
     cache_metadata:
       max-age: -1
