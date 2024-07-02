@@ -15,6 +15,18 @@
       </div>
     </div>
   {% endif %}
+
+  {% if vote_share %}
+    <div class="ward-result__content">
+      <div class="ward-result__result-header">
+        <h2>{{ "Vote Share"|t }}</h2>
+      </div>
+      <div class="ward-result__result">
+        {{ vote_share }}
+      </div>
+    </div>
+  {% endif %}
+
   {% if analysis %}
     <div class="ward-result__analysis">
       <div class="ward-result__analysis-header">
@@ -23,4 +35,5 @@
       {{ analysis }}
     </div>
   {% endif %}
+
 </div>
