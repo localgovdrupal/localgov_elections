@@ -130,10 +130,15 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
         'attributes' => new Attribute(),
         'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.localgov_election_results_timeline.page_1', ['node' => $this->node->id()])),
       ];
-      $urls[] = [
-        'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.localgov_election_results_vote.page_1', ['node' => $this->node->id()])),
-      ];
+
+      // Hide share of the vote for national parliamentary elections as per:
+      // https://github.com/localgovdrupal/localgov_elections/issues/57
+      if ($node->get('localgov_election_type')?->value != "NationalParliamentary") {
+        $urls[] = [
+          'attributes' => new Attribute(),
+          'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.localgov_election_results_vote.page_1', ['node' => $this->node->id()])),
+        ];
+      }
     }
 
     // Work out if next link should be displayed i.e. there are PDFs uploaded.
