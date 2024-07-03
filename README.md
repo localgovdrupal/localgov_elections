@@ -46,6 +46,19 @@ Further details for these modules are in their own module READMEs and the [Docum
 If you run into issues using this module, please report them
 at https://github.com/localgovdrupal/localgov_elections/issues
 
+### Known issues
+
+#### Node Revisions
+We know there is currently an issue with using node revisions with area votes. If you
+use revisions with area votes, the results might not appear correctly. We are tracking this in
+issue [#94](https://github.com/localgovdrupal/localgov_elections/issues/94). For the time being, we
+suggest not using revisions with area vote nodes or the election nodes. 
+If you have Localgov Workflows turned on, disable this functionality from the area vote nodes and the
+election nodes.
+
+If you are experiencing this already you can fix the issue by turning revisions off and saving
+the affected nodes manually. This should make the results appear normally again.
+
 ## Maintainers
 
 This project is currently maintained by:
