@@ -10,7 +10,7 @@ default:
       value: true
   name:
     -
-      value: 'Reform UK (demo content)'
+      value: 'Reform UK'
   weight:
     -
       value: 0

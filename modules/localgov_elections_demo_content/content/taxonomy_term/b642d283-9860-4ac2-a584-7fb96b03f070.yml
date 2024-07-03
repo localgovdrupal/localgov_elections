@@ -10,7 +10,7 @@ default:
       value: true
   name:
     -
-      value: 'Green Party (demo content)'
+      value: 'Green Party'
   weight:
     -
       value: 0
