@@ -17,6 +17,7 @@
     });
 
     chart_data.data.labels.forEach((entry, i) => {
+      let colour = null;
       // Find the background colour, so we can apply it to the row.
       for (const [key, value] of Object.entries(settings.localgov_elections.parties)) {
         if (entry.includes(value.full_name)) {
