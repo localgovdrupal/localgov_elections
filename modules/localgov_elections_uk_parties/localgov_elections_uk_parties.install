@@ -144,8 +144,8 @@ function localgov_elections_uk_parties_install() {
       'vid' => $parties_vocabulary,
       'localgov_election_party_uri' => $details['link'],
       'localgov_election_abbreviation' => $details['abbreviation'],
-      'localgov_election_party_colour' => $details['colour'],
-      'localgov_election_text_colour' => $details['text_colour'],
+      'localgov_election_party_colour' => ['color' => $details['colour'], 'opacity' => '1.0'],
+      'localgov_election_text_colour' => ['color' => $details['text_colour'], 'opacity' => '1.0'],
     ])->save();
   }
 }
