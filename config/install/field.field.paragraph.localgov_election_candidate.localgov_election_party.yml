@@ -13,7 +13,7 @@ field_name: localgov_election_party
 entity_type: paragraph
 bundle: localgov_election_candidate
 label: Party
-description: 'Registered political party name (or leave as <em>Independent</em> for candidates with no political affiliation)'
+description: 'Registered political party name. Do not enter brackets in the party name.'
 required: true
 translatable: false
 default_value: ''

@@ -29,6 +29,9 @@
             "drupal/social_post_twitter": {
                 "Fix API integration (see https://www.drupal.org/project/social_post_twitter/issues/3392216)": "https://www.drupal.org/files/issues/2023-10-13/twitter_fixes.patch",
                 "Fix WOD (see https://www.drupal.org/project/social_post_twitter/issues/3436436#comment-15522882)": "https://www.drupal.org/files/issues/2024-03-27/sdk-init-fix.patch"
+            },
+            "drupal/autocomplete_deluxe": {
+                "Fix Help text not displaying (see: https://www.drupal.org/project/autocomplete_deluxe/issues/3171362)": "https://www.drupal.org/files/issues/2021-12-01/3171362-fix-help-text-not-display-2_0.patch"
             }
         }
     }
