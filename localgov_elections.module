@@ -82,6 +82,13 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
         }
       }
     }
+    else {
+      if ($original_entity = $entity->original) {
+        if ($original_entity?->localgov_election_votes_final?->value == 1) {
+          $entity->localgov_election_winner = NULL;
+        }
+      }
+    }
   }
 }
 
