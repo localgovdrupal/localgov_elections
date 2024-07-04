@@ -83,6 +83,16 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
       }
     }
   }
+
+  if ($entity->getEntityTypeId() == 'paragraph' && $entity->getType() == 'localgov_election_candidate') {
+    // We are referencing two instances of the same paragraph, the winning
+    // localgov_election_candidate. When 'create new revision' is checked, this
+    // seems to attempt to create two new revisions and the original entity
+    // reference from the candidates field is broken.
+    // To mitifate this we can force the paragraph NOT to create a new revision.
+    $entity->setNewRevision(FALSE);
+  }
+
 }
 
 /**
