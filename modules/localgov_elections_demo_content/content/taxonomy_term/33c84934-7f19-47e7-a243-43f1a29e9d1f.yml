@@ -10,7 +10,7 @@ default:
       value: true
   name:
     -
-      value: 'Labour (demo content)'
+      value: 'Labour - demo content'
   weight:
     -
       value: 0

@@ -37,7 +37,7 @@ You may also wish to use the submodules provided as part of the Localgov Electio
 2. Localgov Elections Parliamentary Constituency Provider - Boundary source provider for Office of National Statistics 2024 constituency boundaries
 3. LocalGov Elections Reporting Social Post Integration - Post results to social media (Twitter/X)
 4. LocalGov Elections Reporting Demo - Demo content to help with testing/evaluation
-5. LocalGov Elections Reporting - UK Parties - Adds the majority of UK political parties to the party taxonomy. 
+5. LocalGov Elections Reporting - UK Parties - Adds the majority of UK political parties to the party taxonomy.
 
 Further details for these modules are in their own module READMEs and the [Documentation](docs/index.md).
 
@@ -46,11 +46,33 @@ Further details for these modules are in their own module READMEs and the [Docum
 If you run into issues using this module, please report them
 at https://github.com/localgovdrupal/localgov_elections/issues
 
+### Known issues
+
+#### Node Revisions
+
+Revisions do not currently work with the 'Areas vote' content type.
+We have implemented a work around to mitigate the situation by preventing
+the creation of revisions for the candidate paragraph entities.
+
+We are tracking this in issue
+[#94](https://github.com/localgovdrupal/localgov_elections/issues/94).
+
+For the time being, we suggest not using attempting to use revisions with
+'Areas vote' nodes.
+
+If you have Localgov Workflows turned on, it will enable 'Create new revision'
+by default. This should not be a cause for concern, as the problematic candidate
+paragraphs are being forced to ignore revisions.
+
+If you have any questions or problems, please ask in the #feature_elections
+channel in the LocalGov Drupal Slack channel.
+
 ## Maintainers
 
 This project is currently maintained by:
 
 - Chris Wales https://github.com/chriswales95
 - Duncan Davidson https://github.com/dedavidson
+- Finn Lewis: https://www.drupal.org/u/finn-lewis
 
 It is based on work originally done by Rob Carr https://github.com/rgcarr.

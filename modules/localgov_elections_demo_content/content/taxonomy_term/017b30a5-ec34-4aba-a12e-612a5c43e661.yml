@@ -10,7 +10,7 @@ default:
       value: true
   name:
     -
-      value: 'Conservative (demo content)'
+      value: 'Conservative - demo content'
   weight:
     -
       value: 0

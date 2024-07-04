@@ -10,7 +10,7 @@ default:
       value: true
   name:
     -
-      value: 'Liberal Democrats (demo content)'
+      value: 'Liberal Democrats - demo content'
   weight:
     -
       value: 0

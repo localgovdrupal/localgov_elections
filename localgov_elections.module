@@ -82,7 +82,24 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
         }
       }
     }
+    else {
+      if ($original_entity = $entity->original) {
+        if ($original_entity?->localgov_election_votes_final?->value == 1) {
+          $entity->localgov_election_winner = NULL;
+        }
+      }
+    }
   }
+
+  if ($entity->getEntityTypeId() == 'paragraph' && $entity->getType() == 'localgov_election_candidate') {
+    // We are referencing two instances of the same paragraph, the winning
+    // localgov_election_candidate. When 'create new revision' is checked, this
+    // seems to attempt to create two new revisions and the original entity
+    // reference from the candidates field is broken.
+    // To mitifate this we can force the paragraph NOT to create a new revision.
+    $entity->setNewRevision(FALSE);
+  }
+
 }
 
 /**
@@ -860,6 +877,15 @@ function localgov_elections_preprocess_block(&$variables) {
  */
 function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['#validate'][] = "localgov_elections_area_vote_form_validation";
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form["name"]["widget"][0]['value'])) {
+    $form["name"]["widget"][0]['value']["#description"] = t("The party name. Do not enter brackets in the party nameph.");
+  }
 }
 
 /**
