@@ -59,3 +59,23 @@ function localgov_elections_update_10001(&$sandbox) {
 
   Drupal::logger('localgov_elections')->notice("Updated results view");
 }
+
+/**
+ * Make election results area more robust for when candidates have no surname.
+ */
+function localgov_elections_update_10002() {
+  $module_path = \Drupal::getContainer()
+    ->get('module_handler')
+    ->getModule('localgov_elections')
+    ->getPath();
+
+  $install_dir = new FileStorage($module_path . '/config/install/');
+  $data = $install_dir->read('views.view.localgov_election_area_results');
+  $config_obj = \Drupal::configFactory()->getEditable('views.view.localgov_election_area_results');
+  $config_obj->setData($data);
+  $config_obj->save(TRUE);
+
+  Drupal::logger('localgov_elections')->notice("Updated election area results view");
+
+  drupal_flush_all_caches();
+}
