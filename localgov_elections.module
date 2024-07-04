@@ -870,6 +870,15 @@ function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form,
 }
 
 /**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form["name"]["widget"][0]['value'])) {
+    $form["name"]["widget"][0]['value']["#description"] = t("The party name. Do not enter brackets in the party nameph.");
+  }
+}
+
+/**
  * Validation function for area vote node forms.
  */
 function localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state) {
