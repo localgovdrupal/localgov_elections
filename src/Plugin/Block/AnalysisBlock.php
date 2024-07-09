@@ -81,8 +81,9 @@ class AnalysisBlock extends BlockBase {
 
       // Total votes cast.
       if ($valid_total_votes > 0) {
+        $total = $valid_total_votes + $spoils;
         $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--votes">Votes cast</div>';
-        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--votes">' . $valid_total_votes . '</div>';
+        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--votes">' . $total . '</div>';
       }
 
       // Calculate percentage turnout.
