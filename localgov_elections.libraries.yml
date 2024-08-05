@@ -10,7 +10,6 @@ election:
   version: 1.x
   css:
     theme:
-      css/variables.css: { }
       css/election-results.css: { }
 
 electoral_candidates_view:
