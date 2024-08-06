@@ -42,7 +42,7 @@
             let data = e.detail;
             const id = data.drupalChartDivId;
             Drupal.localgov_elections.setChartColours(data, settings);
-            if (id === 'chart-election-results-via-parties-block-1') {
+            if (id === 'chart-election-results-via-parties-block-1' || 'chart-localgov-election-results-via-parties-block-1') {
               data.options.scales.y.grid = { display: false};
               data.options.scales.y.ticks.autoSkip = false;
             }
