@@ -1188,7 +1188,7 @@ display:
           click_sort_column: value
           type: number_integer
           settings:
-            thousand_separator: ''
+            thousand_separator: ','
             prefix_suffix: true
           group_column: value
           group_columns: {  }
