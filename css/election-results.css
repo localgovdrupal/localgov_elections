@@ -1,3 +1,10 @@
+.localgov-election__content > * + * {
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: var(--table-border);
+}
+
+
 .county-summary__subheading {
   padding: 1rem;
   background-color: var(--color-grey);
