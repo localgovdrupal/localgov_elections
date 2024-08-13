@@ -33,6 +33,7 @@
       colour = null;
     });
     chart_data.data.datasets[0].backgroundColor = data;
+    chart_data.options.scales.x.ticks.precision = 0;
   };
 
   Drupal.behaviors.charts_override = {
