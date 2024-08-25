@@ -113,7 +113,7 @@ final class FormTest extends BrowserTestBase {
 
     $this->assertIsArray($response);
 
-    $this->assertTrue(in_array(['label' => 'Edinburgh South West', 'value' => 'Edinburgh South West'], $response));
+    $this->assertTrue(in_array(['label' => 'Edinburgh South West', 'value' => 'Edinburgh South West'], $response, TRUE));
   }
 
 }

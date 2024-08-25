@@ -330,7 +330,7 @@ class AreaVoteSocialPostForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $keys = array_keys($form_state->get('original_data')['account']);
     $accounts = array_filter($this->userManager->getAccounts('social_post_twitter'), function ($obj) use ($keys) {
-      return in_array($obj->id(), $keys);
+      return in_array($obj->id(), $keys, TRUE);
     });
 
     $message = $form_state->getValue('preview');

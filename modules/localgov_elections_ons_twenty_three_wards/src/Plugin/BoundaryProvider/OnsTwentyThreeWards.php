@@ -167,7 +167,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
     $matched_features = [];
     if ($response->getStatusCode() == 200) {
       foreach ($json_decoded['features'] as $feature) {
-        if (in_array($feature['properties']['WD23CD'], $ids)) {
+        if (in_array($feature['properties']['WD23CD'], $ids, TRUE)) {
           $matched_features[] = $feature;
           $num_matched++;
         }

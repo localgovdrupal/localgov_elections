@@ -14,32 +14,35 @@ use Drupal\Component\Annotation\Plugin;
 class BoundaryProvider extends Plugin {
 
   /**
-   * The plugin ID.
+   * Constructor.
    */
-  public readonly string $id;
-
-  /**
-   * The human-readable name of the plugin.
-   *
-   * @ingroup plugin_translatable
-   */
-  public readonly string $title;
-
-  /**
-   * The description of the plugin.
-   *
-   * @ingroup plugin_translatable
-   */
-  public readonly string $description;
-
-  /**
-   * An array of plugin provided forms.
-   *
-   * Returns an array of plugin provided forms. We only support the download
-   * form at the moment.
-   *
-   * @returns array
-   */
-  public array $form = [];
+  public function __construct(
+    /**
+     * The plugin ID.
+     */
+    public readonly string $id,
+    /**
+     * The human-readable name of the plugin.
+     *
+     * @ingroup plugin_translatable
+     */
+    public readonly string $title,
+    /**
+     * The description of the plugin.
+     *
+     * @ingroup plugin_translatable
+     */
+    public readonly string $description,
+    /**
+     * An array of plugin provided forms.
+     *
+     * Returns an array of plugin provided forms. We only support the download
+     * form at the moment.
+     *
+     * @returns array
+     */
+    public array $form = []
+  ) {
+  }
 
 }
