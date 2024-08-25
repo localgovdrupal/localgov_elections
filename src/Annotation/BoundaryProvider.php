@@ -41,7 +41,7 @@ class BoundaryProvider extends Plugin {
      *
      * @returns array
      */
-    public array $form = []
+    public array $form = [],
   ) {
   }
 
