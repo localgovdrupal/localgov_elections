@@ -24,4 +24,4 @@ visibility:
   request_path:
     id: request_path
     negate: false
-    pages: "/election/*\r\n/election/*/*\r\n/*/*/results\r\n/*/*/share\r\n/*/*/electoral-map\r\n/*/*/candidates"
+    pages: "/*/election/*\r\n/*/election/*/*\r\n/election/*\r\n/election/*/*\r\n/*/*/results\r\n/*/*/share\r\n/*/*/electoral-map\r\n/*/*/candidates"

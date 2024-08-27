@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+  enforced:
+    module:
+      - localgov_elections
+id: localgov_election
+label: Election
+type: 'canonical_entities:node'
+pattern: '/[node:localgov_election_parent:entity:url:relative]//election/[node:title]'
+selection_criteria:
+  ebb15730-7940-489d-a6dc-c455195eb8f5:
+    id: 'entity_bundle:node'
+    negate: false
+    uuid: ebb15730-7940-489d-a6dc-c455195eb8f5
+    context_mapping:
+      node: node
+    bundles:
+      localgov_election: localgov_election
+selection_logic: and
+weight: -5
+relationships: {  }
