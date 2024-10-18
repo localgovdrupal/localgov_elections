@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * LocalGovDrupal elections demo module file.
+ */
+
+/**
+ * Implements hook_modules_installed().
+ */
+function localgov_elections_demo_content_modules_installed($modules, $is_syncing) {
+  if (!$is_syncing && in_array('default_content', $modules, TRUE)) {
+    // Regenerate all path aliases.
+    $nids = \Drupal::entityQuery('node')
+      ->condition('type', ['localgov_area_vote', 'localgov_election'], 'IN')
+      ->accessCheck(FALSE)
+      ->execute();
+    $nodes = \Drupal::entityTypeManager()
+      ->getStorage('node')
+      ->loadMultiple($nids);
+    foreach ($nodes as $node) {
+      \Drupal::service('pathauto.generator')->updateEntityAlias($node, 'update');
+    }
+  }
+}
