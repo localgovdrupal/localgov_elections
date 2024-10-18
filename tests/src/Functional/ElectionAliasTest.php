@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Drupal\Tests\localgov_elections\Functional;
 
 use Drupal\Core\Url;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\file\Entity\File;
 use Drupal\node\NodeStorageInterface;
-use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests alias functionality for Election nodes.
