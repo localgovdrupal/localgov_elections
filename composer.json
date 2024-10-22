@@ -11,7 +11,7 @@
         "drupal/entity_extra_field": "^2.1@RC",
         "drupal/color_field": "^3.0",
         "drupal/field_formatter_class":" ^1.5",
-        "drupal/paragraphs_table": "^1.6",
+        "drupal/paragraphs_table": "^1.23 || ^2.0",
         "cweagans/composer-patches": "^1.6",
         "drupal/charts": "^5.0",
         "drupal/views_field_view": "^1.0@beta",
