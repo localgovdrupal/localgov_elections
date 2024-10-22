@@ -121,7 +121,7 @@ class UkConstituencyTwentyFourProviderDownloadForm implements BoundaryProviderSu
       // seen before. It needs to be in the dataset.
       $constituencies = $this->cacheBackend->get(CacheKey::CONSTITUENCY_NAMES_KEY)?->data;
       foreach ($values as $val) {
-        if (!in_array($val, $constituencies)) {
+        if (!in_array($val, $constituencies, TRUE)) {
           $form_state->setErrorByName('constituencies', "$val does not seem to be a valid choice.");
         }
       }

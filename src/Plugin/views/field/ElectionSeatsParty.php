@@ -69,7 +69,7 @@ class ElectionSeatsParty extends FieldPluginBase {
 
           // Find party of Ward/Area/Division winning candidate.
           $winning_cand_id = $ward->get('localgov_election_winner')->target_id;
-          if (isset($winning_cand_id)) {
+          if (!is_null($winning_cand_id)) {
             $winning_cand = Paragraph::load($winning_cand_id);
             if (isset($winning_cand)) {
               $winning_party = $winning_cand->get('localgov_election_party')->target_id;

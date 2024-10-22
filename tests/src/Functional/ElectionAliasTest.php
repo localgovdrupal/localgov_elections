@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Drupal\Tests\localgov_elections\Functional;
 
 use Drupal\Core\Url;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\file\Entity\File;
 use Drupal\node\NodeStorageInterface;
-use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests alias functionality for Election nodes.
@@ -92,7 +92,7 @@ final class ElectionAliasTest extends BrowserTestBase {
     ]);
     $file->save();
 
-    $this->area_vote = $this->nodeStorage->create([
+    $this->areaVote = $this->nodeStorage->create([
       'title' => "An area",
       'status' => TRUE,
       'type' => "localgov_area_vote",
@@ -104,7 +104,7 @@ final class ElectionAliasTest extends BrowserTestBase {
         'coordinates' => [1.234567, 2.345678],
       ]),
     ]);
-    $this->area_vote->save();
+    $this->areaVote->save();
 
     // Map page.
     $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1',
