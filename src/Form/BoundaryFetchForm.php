@@ -98,7 +98,7 @@ final class BoundaryFetchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL): array {
+  public function buildForm(array $form, FormStateInterface $form_state, ?NodeInterface $node = NULL): array {
     // It doesn't make sense to allow non-elections
     // using this form so deny any of the form.
     // @todo would it make sense to redirect somewhere? Or throw an error?
