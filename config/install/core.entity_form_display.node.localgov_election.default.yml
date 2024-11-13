@@ -5,10 +5,9 @@ dependencies:
     - field.field.node.localgov_election.body
     - field.field.node.localgov_election.localgov_election_add_all_areas
     - field.field.node.localgov_election.localgov_election_date
-    - field.field.node.localgov_election.localgov_election_display_map
     - field.field.node.localgov_election.localgov_election_majority
+    - field.field.node.localgov_election.localgov_election_display_map
     - field.field.node.localgov_election.localgov_election_organisation
-    - field.field.node.localgov_election.localgov_election_parent
     - field.field.node.localgov_election.localgov_election_service_type
     - field.field.node.localgov_election.localgov_election_type
     - node.type.localgov_election
@@ -40,7 +39,6 @@ third_party_settings:
         width_breakpoint: 640
     group_description:
       children:
-        - localgov_election_parent
         - title
         - localgov_election_date
         - localgov_election_type
@@ -98,20 +96,20 @@ content:
     third_party_settings: {  }
   localgov_election_date:
     type: datetime_default
-    weight: 4
+    weight: 2
     region: content
     settings: {  }
     third_party_settings: {  }
-  localgov_election_display_map:
+  localgov_election_majority:
     type: boolean_checkbox
-    weight: 6
+    weight: 5
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
-  localgov_election_majority:
+  localgov_election_display_map:
     type: boolean_checkbox
-    weight: 7
+    weight: 4
     region: content
     settings:
       display_label: true
@@ -124,16 +122,6 @@ content:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
-  localgov_election_parent:
-    type: entity_reference_autocomplete
-    weight: 2
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   localgov_election_service_type:
     type: link_default
     weight: 3
@@ -144,13 +132,13 @@ content:
     third_party_settings: {  }
   localgov_election_type:
     type: options_select
-    weight: 5
+    weight: 3
     region: content
     settings: {  }
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
-    weight: 8
+    weight: 7
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -168,7 +156,7 @@ content:
       display_label: true
     third_party_settings: {  }
   simple_sitemap:
-    weight: 9
+    weight: 8
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -188,7 +176,7 @@ content:
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: 3
+    weight: 1
     region: content
     settings:
       size: 60
@@ -196,18 +184,13 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 1
+    weight: 2
     region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
-    third_party_settings: {  }
-  url_redirects:
-    weight: 10
-    region: content
-    settings: {  }
     third_party_settings: {  }
 hidden:
   localgov_election_add_all_areas: true
