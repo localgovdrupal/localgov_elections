@@ -16,7 +16,7 @@ This dataset provides boundary data for UK Wards.
 
 We also link to a different dataset in the plugin form which is used to help the user find the correct Local Authority
 District Code for when specifying their electoral area. This dataset is
-titled "[Local Authority Districts (April 2023) Names and Codes in the United Kingdom](https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-united-kingdom/explore?showTable=true)".
+titled "[Local Authority Districts (April 2023) Names and Codes in the United Kingdom](https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore)".
 
 ## Boundary Fetching Process
 
