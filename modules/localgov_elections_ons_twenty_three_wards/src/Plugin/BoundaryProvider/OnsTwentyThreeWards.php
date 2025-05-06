@@ -123,7 +123,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
 
-    $url = "https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-united-kingdom/explore?showTable=true";
+    $url = "https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore";
 
     $form['lad'] = [
       '#type' => 'textfield',
