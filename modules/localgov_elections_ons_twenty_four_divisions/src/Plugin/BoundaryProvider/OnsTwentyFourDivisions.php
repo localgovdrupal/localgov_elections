@@ -132,7 +132,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
       '#title' => "Local Authority County Code (CTY24CD)",
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['cty'] ?? "",
-      '#description' => $this->t("County code. You can find this <a href='@url'>here</a>. Use the value from the CTY24CD column.", array('@url' => $cty_url)),
+      '#description' => $this->t("County code. You can find this <a href='@url'>here</a>. Use the value from the CTY24CD column.", ['@url' => $cty_url]),
       '#required' => TRUE,
     ];
 
@@ -141,7 +141,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
       '#title' => "Local Authority District Code (LAD23CD)",
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['lad'] ?? "",
-      '#description' => $this->t("Local Authority District code. You can find this <a href='@url'>here</a>. Use the value from the LAD23CD column.", array('@url' => $lad_url)),
+      '#description' => $this->t("Local Authority District code. You can find this <a href='@url'>here</a>. Use the value from the LAD23CD column.", ['@url' => $lad_url]),
       '#required' => FALSE,
     ];
 
