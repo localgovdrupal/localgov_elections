@@ -11,7 +11,6 @@ use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-
 /**
  * Download form for ONS 2024 plugin.
  */
@@ -20,8 +19,7 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
   use StringTranslationTrait;
 
   /**
-   * Value of the ARCGIS Services URL for the 
-   * Ward/Local Authoity Distrct/County/Divivions lookup.
+   * Value of the ARCGIS Services URL for the WD/LAD/CTY/CED lookup.
    */
   const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
 

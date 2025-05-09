@@ -32,14 +32,12 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
   use StringTranslationTrait;
 
   /**
-   * Value of the URL for the
-   * Local Authority Districts (LAD) lookup.
+   * Value of the URL for the LAD lookup.
    */
   const URL_LAD = 'https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore';
 
   /**
-   * Value of the ARCGIS Services URL for
-   * Parishes and Non Civil Parished Area Boundaries.
+   * Value of the ARCGIS Services URL for PAR & NC PAR Boundaries.
    */
   const URL_SERVICES_PARNCP = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Parishes_and_Non_Civil_Parished_Areas_December_2024_Boundaries_EW_BFC/FeatureServer/0/query?';
 

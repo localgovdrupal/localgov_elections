@@ -32,25 +32,22 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
   use StringTranslationTrait;
 
   /**
-   * Value of the ARCGIS Services URL for
-   * County Electoral Division Boundaries.
+   * Value of the ARCGIS Services URL for CED Boundaries.
    */
   const URL_SERVICES_CED = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/County_Electoral_Division_May_2023_Boundaries_EN_BFE/FeatureServer/0/query?';
 
   /**
-   * Value of the ARCGIS Services URL for the
-   * Ward/Local Authoity Distrct/County/Divivions lookup.
+   * Value of the ARCGIS Services URL for the WD/LAD/CTY/CED lookup.
    */
   const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
 
   /**
-   * Value of the URL for the
-   * Local Authority Districts (LAD) lookup.
+   * Value of the URL for the LAD lookup.
    */
   const URL_LAD = 'https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore';
 
   /**
-   * Value of the URL for the County (CTY) lookup.
+   * Value of the URL for the CTY lookup.
    */
   const URL_CTY = 'https://geoportal.statistics.gov.uk/datasets/ons::counties-december-2024-names-and-codes-in-en/explore';
 
