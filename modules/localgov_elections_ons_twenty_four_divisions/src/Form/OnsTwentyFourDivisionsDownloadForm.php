@@ -12,6 +12,26 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
+ * Value of the ARCGIS Services URL for the Ward/Local Authoity Distrct/County/Divivions lookup.  
+ */
+const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
+
+/**
+ * Value of the query parameter "where" for CTY.  
+ */
+const URL_WHERE_CTY = 'CTY24CD%20%3D%20%27';
+
+/**
+ * Value of the query parameter "where" for LAD.  
+ */
+const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
+
+/**
+ * The query parameter "outFields" no geometry format json.  
+ */
+const URL_FIELDS_CED = 'outFields=CTY24CD,CTY24NM,CED24NM,CED24CD&returnDistinctValues=true&returnGeometry=false&outSR=4326&f=json';
+
+/**
  * Download form for ONS 2024 plugin.
  */
 class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInterface, ContainerInjectionInterface {
@@ -79,33 +99,34 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $opts = [];
     $form['options'] =
-        [
-          '#title' => $this->t("Areas to download"),
-          '#type' => 'tableselect',
-          '#header' => ['area' => $this->t('Area')],
-          '#options' => &$opts,
-          '#required' => TRUE,
-        ];
+      [
+        '#title' => $this->t('Areas to download'),
+        '#type' => 'tableselect',
+        '#header' => ['area' => $this->t('Area')],
+        '#options' => &$opts,
+        '#required' => TRUE,
+      ];
 
     $lad = $this->plugin->getConfiguration()['lad'];
     $cty = $this->plugin->getConfiguration()['cty'];
-    $url = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?";
+    $url = URL_SERVICES_LU;
     if ($lad && $cty) {
-      $url = $url . "where=CTY24CD%20%3D%20%27$cty%27%20AND%20LAD24CD%20%3D%20%27$lad%27&outFields=CTY24CD,CTY24NM,CED24NM,CED24CD&returnDistinctValues=true&returnGeometry=false&outSR=4326&f=json";
+      $url = $url . 'where=' . URL_WHERE_CTY . $cty . '%27%20AND%20' . URL_WHERE_LAD . $lad . '%27&' . URL_FIELDS_CED;
     }
     elseif (!$lad && $cty) {
-      $url = $url . "where=CTY24CD%20%3D%20%27$cty%27&outFields=CTY24CD,CTY24NM,CED24NM,CED24CD&returnDistinctValues=true&returnGeometry=false&outSR=4326&f=json";
+      $url = $url . 'where=' . URL_WHERE_CTY . $cty . '%27&' . URL_FIELDS_CED;
     }
     else {
-      $url = $url . "where=LAD24CD%20%3D%20%27$lad%27&outFields=CTY24CD,CTY24NM,CED24NM,CED24CD&returnDistinctValues=true&returnGeometry=false&outSR=4326&f=json";
+      $url = $url . 'where=' . URL_WHERE_LAD . $lad . '%27&' . URL_FIELDS_CED;
     }
     $response = $this->httpClient->get($url);
-    $body = $response->getBody()->getContents();
-    $decoded = json_decode($body, TRUE);
-
-    foreach ($decoded['features'] as $item) {
-      $item = $item['attributes'];
-      $opts[$item['CED24CD']] = ['area' => $item['CED24NM']];
+    if ($response->getStatusCode() == 200) {
+      $body = $response->getBody()->getContents();
+      $decoded = json_decode($body, TRUE);
+      foreach ($decoded['features'] as $item) {
+        $item = $item['attributes'];
+        $opts[$item['CED24CD']] = ['area' => str_replace(' ED', '', $item['CED24NM'])];
+      }
     }
     return $form;
   }
