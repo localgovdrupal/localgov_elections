@@ -15,43 +15,6 @@ use Drupal\localgov_elections\BoundarySourceInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use const Drupal\localgov_elections_ons_twenty_four_divisions\Form\URL_FIELDS_CED;
-
-/**
- * Value of the URL for the Local Authority Districts (LAD) lookup.
- */
-const URL_LAD = 'https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore';
-
-/**
- * Value of the ARCGIS Services URL for Parishes and Non Civil Parished Area Boundaries.
- */
-const URL_SERVICES_PARNCP = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Parishes_and_Non_Civil_Parished_Areas_December_2024_Boundaries_EW_BFC/FeatureServer/0/query?';
-
-/**
- * Value of the ARCGIS Services URL for Parishes List.
- */
-const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query?';
-
-/**
- * Value of the query parameter "where" for PAR.
- */
-const URL_WHERE_PAR = 'PARNCP24CD%20IN%20';
-
-/**
- * Value of the query parameter "where" for LAD.
- */
-const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
-
-/**
- * The query parameter "outFields" with Geometry output as geojson.
- */
-const URL_FIELDS_GEOJSON = 'outFields=*&returnDistinctValues=true&returnGeometry=true&outSR=4326&f=geojson';
-
-/**
- * The query parameter "outFields" with no Geometry output as json.
- */
-const URL_FIELDS_JSON = 'outFields=PAR24CD,PAR24NM,LAD24CD,LAD24NM&f=json';
-
 /**
  * Plugin implementation of the boundary_provider.
  *
@@ -67,6 +30,43 @@ const URL_FIELDS_JSON = 'outFields=PAR24CD,PAR24NM,LAD24CD,LAD24NM&f=json';
 class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements ContainerFactoryPluginInterface {
 
   use StringTranslationTrait;
+
+  /**
+   * Value of the URL for the
+   * Local Authority Districts (LAD) lookup.
+   */
+  const URL_LAD = 'https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore';
+
+  /**
+   * Value of the ARCGIS Services URL for
+   * Parishes and Non Civil Parished Area Boundaries.
+   */
+  const URL_SERVICES_PARNCP = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Parishes_and_Non_Civil_Parished_Areas_December_2024_Boundaries_EW_BFC/FeatureServer/0/query?';
+
+  /**
+   * Value of the ARCGIS Services URL for Parishes List.
+   */
+  const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query?';
+
+  /**
+   * Value of the query parameter "where" for PAR.
+   */
+  const URL_WHERE_PAR = 'PARNCP24CD%20IN%20';
+
+  /**
+   * Value of the query parameter "where" for LAD.
+   */
+  const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
+
+  /**
+   * The query parameter "outFields" with Geometry output as geojson.
+   */
+  const URL_FIELDS_GEOJSON = 'outFields=*&returnDistinctValues=true&returnGeometry=true&outSR=4326&f=geojson';
+
+  /**
+   * The query parameter "outFields" with no Geometry output as json.
+   */
+  const URL_FIELDS_JSON = 'outFields=PAR24CD,PAR24NM,LAD24CD,LAD24NM&f=json';
 
   /**
    * Guzzle HTTP client.
@@ -160,11 +160,11 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
 
-    $lad_url = URL_LAD;
+    $lad_url = self::URL_LAD;
 
     $form['lad'] = [
       '#type' => 'textfield',
-      '#title' => t('Local Authority District Code (LAD23CD)'),
+      '#title' => $this->t('Local Authority District Code (LAD23CD)'),
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['lad'] ?? "",
       '#description' => $this->t('Local Authority District code. You can find this <a href="@url">here</a>. Use the value from the LAD23CD column.', ['@url' => $lad_url]),
@@ -188,7 +188,7 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
    */
   protected function fetchBoundaryInformation(array $ids): array {
     $list = "('" . implode("','", $ids) . "')";
-    $gis_url = URL_SERVICES_PARNCP . 'where=' . URL_WHERE_PAR . $list . '&' . URL_FIELDS_GEOJSON;
+    $gis_url = self::URL_SERVICES_PARNCP . 'where=' . self::URL_WHERE_PAR . $list . '&' . self::URL_FIELDS_GEOJSON;
     $matched_features = [];
     $response = $this->httpClient->get($gis_url);
     if ($response->getStatusCode() == 200) {
@@ -250,7 +250,7 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
     $lad = $form_state->getValue('lad');
-    $url = URL_SERVICES_PAR . 'where=' . URL_WHERE_LAD . $lad . '%27&' . URL_FIELDS_JSON;
+    $url = self::URL_SERVICES_PAR . 'where=' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_JSON;
 
     $response = $this->httpClient->get($url);
     if ($response->getStatusCode() == 200) {

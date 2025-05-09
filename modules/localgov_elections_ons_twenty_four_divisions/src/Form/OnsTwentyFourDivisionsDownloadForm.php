@@ -11,25 +11,6 @@ use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * Value of the ARCGIS Services URL for the Ward/Local Authoity Distrct/County/Divivions lookup.  
- */
-const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
-
-/**
- * Value of the query parameter "where" for CTY.  
- */
-const URL_WHERE_CTY = 'CTY24CD%20%3D%20%27';
-
-/**
- * Value of the query parameter "where" for LAD.  
- */
-const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
-
-/**
- * The query parameter "outFields" no geometry format json.  
- */
-const URL_FIELDS_CED = 'outFields=CTY24CD,CTY24NM,CED24NM,CED24CD&returnDistinctValues=true&returnGeometry=false&outSR=4326&f=json';
 
 /**
  * Download form for ONS 2024 plugin.
@@ -37,6 +18,27 @@ const URL_FIELDS_CED = 'outFields=CTY24CD,CTY24NM,CED24NM,CED24CD&returnDistinct
 class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInterface, ContainerInjectionInterface {
 
   use StringTranslationTrait;
+
+  /**
+   * Value of the ARCGIS Services URL for the 
+   * Ward/Local Authoity Distrct/County/Divivions lookup.
+   */
+  const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
+
+  /**
+   * Value of the query parameter "where" for CTY.
+   */
+  const URL_WHERE_CTY = 'CTY24CD%20%3D%20%27';
+
+  /**
+   * Value of the query parameter "where" for LAD.
+   */
+  const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
+
+  /**
+   * The query parameter "outFields" no geometry format json.
+   */
+  const URL_FIELDS_CED = 'outFields=CTY24CD,CTY24NM,CED24NM,CED24CD&returnDistinctValues=true&returnGeometry=false&outSR=4326&f=json';
 
   /**
    * Guzzle HTTP client.
@@ -109,15 +111,15 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
 
     $lad = $this->plugin->getConfiguration()['lad'];
     $cty = $this->plugin->getConfiguration()['cty'];
-    $url = URL_SERVICES_LU;
+    $url = self::URL_SERVICES_LU;
     if ($lad && $cty) {
-      $url = $url . 'where=' . URL_WHERE_CTY . $cty . '%27%20AND%20' . URL_WHERE_LAD . $lad . '%27&' . URL_FIELDS_CED;
+      $url = $url . 'where=' . self::URL_WHERE_CTY . $cty . '%27%20AND%20' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_CED;
     }
     elseif (!$lad && $cty) {
-      $url = $url . 'where=' . URL_WHERE_CTY . $cty . '%27&' . URL_FIELDS_CED;
+      $url = $url . 'where=' . self::URL_WHERE_CTY . $cty . '%27&' . self::URL_FIELDS_CED;
     }
     else {
-      $url = $url . 'where=' . URL_WHERE_LAD . $lad . '%27&' . URL_FIELDS_CED;
+      $url = $url . 'where=' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_CED;
     }
     $response = $this->httpClient->get($url);
     if ($response->getStatusCode() == 200) {

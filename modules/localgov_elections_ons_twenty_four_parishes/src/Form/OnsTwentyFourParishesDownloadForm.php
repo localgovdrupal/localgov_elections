@@ -12,26 +12,26 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Value of the ARCGIS Services URL for the Parish lookup.  
- */
-const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query?';
-
-/**
- * Value of the query parameter "where" for LAD.  
- */
-const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
-
-/**
- * The query parameter "outFields" no geometry format json.  
- */
-const URL_FIELDS_PAR = 'outFields=PAR24CD,PAR24NM,LAD24CD,LAD24NM&f=json';
-
-/**
  * Download form for ONS 2024 plugin.
  */
 class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterface, ContainerInjectionInterface {
 
   use StringTranslationTrait;
+
+  /**
+   * Value of the ARCGIS Services URL for the Parish lookup.
+   */
+  const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query?';
+
+  /**
+   * Value of the query parameter "where" for LAD.
+   */
+  const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
+
+  /**
+   * The query parameter "outFields" no geometry format json.
+   */
+  const URL_FIELDS_PAR = 'outFields=PAR24CD,PAR24NM,LAD24CD,LAD24NM&f=json';
 
   /**
    * Guzzle HTTP client.
@@ -103,7 +103,7 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
       ];
 
     $lad = $this->plugin->getConfiguration()['lad'];
-    $url = URL_SERVICES_PAR . 'where=' . URL_WHERE_LAD . $lad .'%27&' . URL_FIELDS_PAR;
+    $url = self::URL_SERVICES_PAR . 'where=' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_PAR;
     $response = $this->httpClient->get($url);
     if ($response->getStatusCode() == 200) {
       $body = $response->getBody()->getContents();

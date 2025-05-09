@@ -16,51 +16,6 @@ use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Value of the ARCGIS Services URL for County Electoral Division Boundaries.
- */
-const URL_SERVICES_CED = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/County_Electoral_Division_May_2023_Boundaries_EN_BFE/FeatureServer/0/query?';
-
-/**
- * Value of the ARCGIS Services URL for the Ward/Local Authoity Distrct/County/Divivions lookup.
- */
-const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
-
-/**
- * Value of the URL for the Local Authority Districts (LAD) lookup.
- */
-const URL_LAD = 'https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore';
-
-/**
- * Value of the URL for the County (CTY) lookup.
- */
-const URL_CTY = 'https://geoportal.statistics.gov.uk/datasets/ons::counties-december-2024-names-and-codes-in-en/explore';
-
-/**
- * Value of the query parameter "where" for CTY.
- */
-const URL_WHERE_CTY = 'CTY24CD%20%3D%20%27';
-
-/**
- * Value of the query parameter "where" for LAD.
- */
-const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
-
-/**
- * Value of the query parameter "where" for CED.
- */ 
-const URL_WHERE_CED = 'CED23CD%20IN%20';
-
-/**
- * The query parameter "outFields" with Geometry output as geojson.
- */
-const URL_FIELDS_GEOJSON = 'outFields=*&returnDistinctValues=true&returnGeometry=true&outSR=4326&f=geojson';
-
-/**
- * The query parameter "outFields" no Geomotry format as json.
- */
-const URL_FIELDS_JSON = 'outFields=*&returnDistinctValues=true&f=json';
-
-/**
  * Plugin implementation of the boundary_provider.
  *
  * @BoundaryProvider(
@@ -75,6 +30,54 @@ const URL_FIELDS_JSON = 'outFields=*&returnDistinctValues=true&f=json';
 class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements ContainerFactoryPluginInterface {
 
   use StringTranslationTrait;
+
+  /**
+   * Value of the ARCGIS Services URL for
+   * County Electoral Division Boundaries.
+   */
+  const URL_SERVICES_CED = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/County_Electoral_Division_May_2023_Boundaries_EN_BFE/FeatureServer/0/query?';
+
+  /**
+   * Value of the ARCGIS Services URL for the
+   * Ward/Local Authoity Distrct/County/Divivions lookup.
+   */
+  const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
+
+  /**
+   * Value of the URL for the
+   * Local Authority Districts (LAD) lookup.
+   */
+  const URL_LAD = 'https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore';
+
+  /**
+   * Value of the URL for the County (CTY) lookup.
+   */
+  const URL_CTY = 'https://geoportal.statistics.gov.uk/datasets/ons::counties-december-2024-names-and-codes-in-en/explore';
+
+  /**
+   * Value of the query parameter "where" for CTY.
+   */
+  const URL_WHERE_CTY = 'CTY24CD%20%3D%20%27';
+
+  /**
+   * Value of the query parameter "where" for LAD.
+   */
+  const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
+
+  /**
+   * Value of the query parameter "where" for CED.
+   */
+  const URL_WHERE_CED = 'CED23CD%20IN%20';
+
+  /**
+   * The query parameter "outFields" with Geometry output as geojson.
+   */
+  const URL_FIELDS_GEOJSON = 'outFields=*&returnDistinctValues=true&returnGeometry=true&outSR=4326&f=geojson';
+
+  /**
+   * The query parameter "outFields" no Geomotry format as json.
+   */
+  const URL_FIELDS_JSON = 'outFields=*&returnDistinctValues=true&f=json';
 
   /**
    * Guzzle HTTP client.
@@ -168,12 +171,12 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
 
-    $lad_url = URL_LAD;
-    $cty_url = URL_CTY;
+    $lad_url = self::URL_LAD;
+    $cty_url = self::URL_CTY;
 
     $form['cty'] = [
       '#type' => 'textfield',
-      '#title' => t('Local Authority County Code (CTY24CD)'),
+      '#title' => $this->t('Local Authority County Code (CTY24CD)'),
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['cty'] ?? "",
       '#description' => $this->t('County code. You can find this <a href="@url">here</a>. Use the value from the CTY24CD column.', ['@url' => $cty_url]),
@@ -182,7 +185,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
 
     $form['lad'] = [
       '#type' => 'textfield',
-      '#title' => t('Local Authority District Code (LAD23CD)'),
+      '#title' => $this->t('Local Authority District Code (LAD23CD)'),
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['lad'] ?? "",
       '#description' => $this->t('Local Authority District code. You can find this <a href="@url">here</a>. Use the value from the LAD23CD column.', ['@url' => $lad_url]),
@@ -206,7 +209,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    */
   protected function fetchBoundaryInformation(array $ids): array {
     $list = "('" . implode("','", $ids) . "')";
-    $gis_url = URL_SERVICES_CED . 'where='. URL_WHERE_CED . $list. '&' . URL_FIELDS_GEOJSON;
+    $gis_url = self::URL_SERVICES_CED . 'where=' . self::URL_WHERE_CED . $list . '&' . self::URL_FIELDS_GEOJSON;
     $matched_features = [];
     $response = $this->httpClient->get($gis_url);
     if ($response->getStatusCode() == 200) {
@@ -270,15 +273,15 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
     $lad = $form_state->getValue('lad');
     $cty = $form_state->getValue('cty');
-    $url = URL_SERVICES_LU;
+    $url = self::URL_SERVICES_LU;
     if ($lad && $cty) {
-      $url = $url . 'where=' . URL_WHERE_CTY . $cty . '%27%20AND%20' . URL_WHERE_LAD . $lad .'%27&' . URL_FIELDS_JSON;
+      $url = $url . 'where=' . self::URL_WHERE_CTY . $cty . '%27%20AND%20' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_JSON;
     }
     elseif (!$lad && $cty) {
-      $url = $url . 'where=' . URL_WHERE_CTY . $cty . '%27&' . URL_FIELDS_JSON;
+      $url = $url . 'where=' . self::URL_WHERE_CTY . $cty . '%27&' . self::URL_FIELDS_JSON;
     }
     else {
-      $url = $url . 'where=' . URL_WHERE_LAD . $lad . '%27&' . URL_FIELDS_JSON;
+      $url = $url . 'where=' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_JSON;
     }
 
     $response = $this->httpClient->get($url);
