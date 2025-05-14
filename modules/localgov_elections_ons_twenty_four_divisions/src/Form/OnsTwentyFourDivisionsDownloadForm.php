@@ -8,7 +8,6 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_elections\BoundaryProviderInterface;
 use Drupal\localgov_elections\Form\BoundaryProviderSubformInterface;
-use Exception;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -37,7 +36,7 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('http_client'), 
+      $container->get('http_client'),
       $container->get('request_stack'),
       $container->get('messenger')
     );
@@ -57,7 +56,7 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
     public Client $http_client,
     public RequestStack $request,
     public MessengerInterface $messenger,
-   ) {}
+  ) {}
 
   /**
    * {@inheritDoc}
@@ -101,13 +100,13 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
     $opts = [];
     if (!$lad && !$cty) return $opts;
     if ($lad && $cty) {
-      $where = "CTY24CD = '" . $cty . "' AND LAD24CD = '" . $lad . "'";
+      $where = "CTY24CD = '$cty' AND LAD24CD = '$lad'";
     }
     elseif (!$lad && $cty) {
-      $where = "CTY24CD = '" . $cty . "'";
+      $where = "CTY24CD = '$cty'";
     }
     else {
-      $where = "LAD24CD = '" . $lad . "'";
+      $where = "LAD24CD = '$lad'";
     }
     $params = [
       'query' => [
@@ -117,7 +116,7 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
         'returnGeometry' => 'false',
         'outSR' => '4326',
         'f' => 'json',
-      ]
+      ],
     ];
     try {
       $response = $this->http_client->get($url, $params);
@@ -131,11 +130,11 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
       }
       return $opts;
     }
-    catch(Exception $exception) {
+    catch (Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
     }
-  }  
+  }
 
   /**
    * {@inheritdoc}

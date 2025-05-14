@@ -13,7 +13,6 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_elections\BoundaryProviderPluginBase;
 use Drupal\localgov_elections\BoundarySourceInterface;
 use Drupal\node\NodeInterface;
-use Exception;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -36,12 +35,12 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
   /**
    * Value of the ARCGIS Services URL for CED Boundaries.
    */
-  const URL_SERVICES_CED = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/County_Electoral_Division_May_2023_Boundaries_EN_BFE/FeatureServer/0/query?';
+  const URL_SERVICES_CED = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/County_Electoral_Division_May_2023_Boundaries_EN_BFE/FeatureServer/0/query';
 
   /**
    * Value of the ARCGIS Services URL for the WD/LAD/CTY/CED lookup.
    */
-  const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
+  const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query';
 
   /**
    * Value of the URL for the LAD lookup.
@@ -52,38 +51,6 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    * Value of the URL for the CTY lookup.
    */
   const URL_CTY = 'https://geoportal.statistics.gov.uk/datasets/ons::counties-december-2024-names-and-codes-in-en/explore';
-
-  /**
-   * Value of the query parameter "where" for CTY.
-   */
-  const URL_WHERE_CTY = 'CTY24CD%20%3D%20%27';
-
-  /**
-   * Value of the query parameter "where" for LAD.
-   */
-  const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
-
-  /**
-   * Value of the query parameter "where" for CED.
-   */
-  const URL_WHERE_CED = 'CED23CD%20IN%20';
-
-  /**
-   * The query parameter "outFields" with Geometry output as geojson.
-   */
-  const URL_FIELDS_GEOJSON = 'outFields=*&returnDistinctValues=true&returnGeometry=true&outSR=4326&f=geojson';
-
-  /**
-   * The query parameter "outFields" no Geomotry format as json.
-   */
-  const URL_FIELDS_JSON = 'outFields=*&returnDistinctValues=true&f=json';
-
-  /**
-   * Guzzle HTTP client.
-   *
-   * @var \GuzzleHttp\Client
-   */
-  // protected Client $httpClient;
 
   /**
    * Node storage.
@@ -98,13 +65,6 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected EntityStorageInterface $paragraphStorage;
-
-  /**
-   * Messenger service.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  // private MessengerInterface $messenger;
 
   /**
    * {@inheritdoc}
@@ -212,7 +172,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
         'returnGeometry' => 'true',
         'outSR' => '4326',
         'f' => 'geojson',
-      ]
+      ],
     ];
     $matched_features = [];
     try {
@@ -235,7 +195,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
       }
       return $matched_features;
     }
-    catch(Exception $exception) {
+    catch (Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
       return $matched_features;
@@ -291,13 +251,13 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
     $where = '';
     if (!$lad && !$cty) $form_state->setErrorByName('cty', $this->t('The area codes are empty. Please try again.'));
     if ($lad && $cty) {
-      $where = "CTY24CD = '" . $cty . "' AND LAD24CD = '" . $lad . "'";
+      $where = "CTY24CD = '$cty' AND LAD24CD = '$lad'";
     }
     elseif (!$lad && $cty) {
-      $where = "CTY24CD = '" . $cty . "'";
+      $where = "CTY24CD = '$cty'";
     }
     else {
-      $where = "LAD24CD = '" . $lad . "'";
+      $where = "LAD24CD = '$lad'";
     }
     $params = [
       'query' => [
@@ -305,7 +265,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
         'outFields' => '*',
         'returnDistinctValues' => 'true',
         'f' => 'json',
-      ]
+      ],
     ];
     try {
       $response = $this->http_client->get($url, $params);
@@ -318,7 +278,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
         }
       }
     }
-    catch(Exception $exception) {
+    catch (Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
     }
