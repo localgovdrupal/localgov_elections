@@ -98,7 +98,9 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
     $where = '';
     $params = [];
     $opts = [];
-    if (!$lad && !$cty) return $opts;
+    if (!$lad && !$cty) {
+      return $opts;
+    }
     if ($lad && $cty) {
       $where = "CTY24CD = '$cty' AND LAD24CD = '$lad'";
     }

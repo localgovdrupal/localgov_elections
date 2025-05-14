@@ -87,7 +87,7 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
       ];
     return $form;
   }
-  
+
   /**
    * {@inheritdoc}
    */

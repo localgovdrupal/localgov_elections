@@ -249,7 +249,9 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
     $url = self::URL_SERVICES_LU;
     $params = [];
     $where = '';
-    if (!$lad && !$cty) $form_state->setErrorByName('cty', $this->t('The area codes are empty. Please try again.'));
+    if (!$lad && !$cty) {
+      $form_state->setErrorByName('cty', $this->t('The area codes are empty. Please try again.'));
+    }
     if ($lad && $cty) {
       $where = "CTY24CD = '$cty' AND LAD24CD = '$lad'";
     }
