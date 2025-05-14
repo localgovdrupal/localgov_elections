@@ -4,9 +4,11 @@ namespace Drupal\localgov_elections_ons_twenty_four_divisions\Form;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_elections\BoundaryProviderInterface;
 use Drupal\localgov_elections\Form\BoundaryProviderSubformInterface;
+use Exception;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -19,44 +21,26 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
   use StringTranslationTrait;
 
   /**
+   * The plugin.
+   *
+   * @var \Drupal\localgov_elections\BoundaryProviderInterface
+   */
+  protected $plugin;
+
+  /**
    * Value of the ARCGIS Services URL for the WD/LAD/CTY/CED lookup.
    */
-  const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query?';
-
-  /**
-   * Value of the query parameter "where" for CTY.
-   */
-  const URL_WHERE_CTY = 'CTY24CD%20%3D%20%27';
-
-  /**
-   * Value of the query parameter "where" for LAD.
-   */
-  const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
-
-  /**
-   * The query parameter "outFields" no geometry format json.
-   */
-  const URL_FIELDS_CED = 'outFields=CTY24CD,CTY24NM,CED24NM,CED24CD&returnDistinctValues=true&returnGeometry=false&outSR=4326&f=json';
-
-  /**
-   * Guzzle HTTP client.
-   *
-   * @var \GuzzleHttp\Client
-   */
-  private Client $httpClient;
-
-  /**
-   * The current request.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  private RequestStack $request;
+  const URL_SERVICES_LU = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD24_LAD24_CTY24_CED24_EN_LU/FeatureServer/0/query';
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('http_client'), $container->get('request_stack'));
+    return new static(
+      $container->get('http_client'), 
+      $container->get('request_stack'),
+      $container->get('messenger')
+    );
   }
 
   /**
@@ -66,18 +50,14 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
    *   Guzzle HTTP client.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request
    *   The current request.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   Messenger service.
    */
-  public function __construct(Client $http_client, RequestStack $request) {
-    $this->httpClient = $http_client;
-    $this->request = $request;
-  }
-
-  /**
-   * The plugin.
-   *
-   * @var \Drupal\localgov_elections\BoundaryProviderInterface
-   */
-  protected $plugin;
+  public function __construct(
+    public Client $http_client,
+    public RequestStack $request,
+    public MessengerInterface $messenger,
+   ) {}
 
   /**
    * {@inheritDoc}
@@ -97,7 +77,7 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $opts = [];
+    $opts = $this->getAreasToDownload();
     $form['options'] =
       [
         '#title' => $this->t('Areas to download'),
@@ -106,30 +86,56 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
         '#options' => &$opts,
         '#required' => TRUE,
       ];
+    return $form;
+  }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getAreasToDownload() {
     $lad = $this->plugin->getConfiguration()['lad'];
     $cty = $this->plugin->getConfiguration()['cty'];
     $url = self::URL_SERVICES_LU;
+    $where = '';
+    $params = [];
+    $opts = [];
+    if (!$lad && !$cty) return $opts;
     if ($lad && $cty) {
-      $url = $url . 'where=' . self::URL_WHERE_CTY . $cty . '%27%20AND%20' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_CED;
+      $where = "CTY24CD = '" . $cty . "' AND LAD24CD = '" . $lad . "'";
     }
     elseif (!$lad && $cty) {
-      $url = $url . 'where=' . self::URL_WHERE_CTY . $cty . '%27&' . self::URL_FIELDS_CED;
+      $where = "CTY24CD = '" . $cty . "'";
     }
     else {
-      $url = $url . 'where=' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_CED;
+      $where = "LAD24CD = '" . $lad . "'";
     }
-    $response = $this->httpClient->get($url);
-    if ($response->getStatusCode() == 200) {
-      $body = $response->getBody()->getContents();
-      $decoded = json_decode($body, TRUE);
-      foreach ($decoded['features'] as $item) {
-        $item = $item['attributes'];
-        $opts[$item['CED24CD']] = ['area' => str_replace(' ED', '', $item['CED24NM'])];
+    $params = [
+      'query' => [
+        'where' => $where,
+        'outFields' => 'CTY24CD,CTY24NM,CED24NM,CED24CD',
+        'returnDistinctValues' => 'true',
+        'returnGeometry' => 'false',
+        'outSR' => '4326',
+        'f' => 'json',
+      ]
+    ];
+    try {
+      $response = $this->http_client->get($url, $params);
+      if ($response->getStatusCode() == 200) {
+        $body = $response->getBody()->getContents();
+        $decoded = json_decode($body, TRUE);
+        foreach ($decoded['features'] as $item) {
+          $item = $item['attributes'];
+          $opts[$item['CED24CD']] = ['area' => str_replace(' ED', '', $item['CED24NM'])];
+        }
       }
+      return $opts;
     }
-    return $form;
-  }
+    catch(Exception $exception) {
+      $this->messenger->addError($this->t("Failed to get URL: @message",
+          ["@message" => $exception->getMessage()]));
+    }
+  }  
 
   /**
    * {@inheritdoc}

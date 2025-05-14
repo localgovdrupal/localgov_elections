@@ -12,6 +12,8 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_elections\BoundaryProviderPluginBase;
 use Drupal\localgov_elections\BoundarySourceInterface;
+use Drupal\node\NodeInterface;
+use Exception;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -81,7 +83,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    *
    * @var \GuzzleHttp\Client
    */
-  protected Client $httpClient;
+  // protected Client $httpClient;
 
   /**
    * Node storage.
@@ -102,7 +104,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    *
    * @var \Drupal\Core\Messenger\MessengerInterface
    */
-  private MessengerInterface $messenger;
+  // private MessengerInterface $messenger;
 
   /**
    * {@inheritdoc}
@@ -135,18 +137,16 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    *   Messenger service.
    */
   public function __construct(
-    array $configuration,
+    $configuration,
     $plugin_id,
     $plugin_definition,
-    Client $http_client,
-    entityTypeManagerInterface $entity_type_manager,
-    MessengerInterface $messenger,
+    public Client $http_client,
+    public entityTypeManagerInterface $entity_type_manager,
+    public MessengerInterface $messenger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->httpClient = $http_client;
     $this->nodeStorage = $entity_type_manager->getStorage('node');
     $this->paragraphStorage = $entity_type_manager->getStorage('paragraph');
-    $this->messenger = $messenger;
   }
 
   /**
@@ -168,15 +168,12 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
 
-    $lad_url = self::URL_LAD;
-    $cty_url = self::URL_CTY;
-
     $form['cty'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Local Authority County Code (CTY24CD)'),
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['cty'] ?? "",
-      '#description' => $this->t('County code. You can find this <a href="@url">here</a>. Use the value from the CTY24CD column.', ['@url' => $cty_url]),
+      '#description' => $this->t('County code. You can find this <a href="@url">here</a>. Use the value from the CTY24CD column.', ['@url' => self::URL_CTY]),
       '#required' => TRUE,
     ];
 
@@ -185,7 +182,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
       '#title' => $this->t('Local Authority District Code (LAD23CD)'),
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['lad'] ?? "",
-      '#description' => $this->t('Local Authority District code. You can find this <a href="@url">here</a>. Use the value from the LAD23CD column.', ['@url' => $lad_url]),
+      '#description' => $this->t('Local Authority District code. You can find this <a href="@url">here</a>. Use the value from the LAD23CD column.', ['@url' => self::URL_LAD]),
       '#required' => FALSE,
     ];
 
@@ -205,17 +202,27 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    *   Could potentially throw a GuzzleException.
    */
   protected function fetchBoundaryInformation(array $ids): array {
-    $list = "('" . implode("','", $ids) . "')";
-    $gis_url = self::URL_SERVICES_CED . 'where=' . self::URL_WHERE_CED . $list . '&' . self::URL_FIELDS_GEOJSON;
+    $gis_url = self::URL_SERVICES_CED;
+    $list = implode("','", $ids);
+    $params = [
+      'query' => [
+        'where' => "CED23CD IN ('$list')",
+        'outFields' => '*',
+        'returnDistinctValues' => 'true',
+        'returnGeometry' => 'true',
+        'outSR' => '4326',
+        'f' => 'geojson',
+      ]
+    ];
     $matched_features = [];
-    $response = $this->httpClient->get($gis_url);
-    if ($response->getStatusCode() == 200) {
-      $body = $response->getBody()->getContents();
-
-      $json_decoded = json_decode($body, TRUE);
-      $num_to_match = count($ids);
-      $num_matched = 0;
+    try {
+      $response = $this->http_client->get($gis_url, $params);
       if ($response->getStatusCode() == 200) {
+        $body = $response->getBody()->getContents();
+
+        $json_decoded = json_decode($body, TRUE);
+        $num_to_match = count($ids);
+        $num_matched = 0;
         foreach ($json_decoded['features'] as $feature) {
           if (in_array($feature['properties']['CED23CD'], $ids, TRUE)) {
             $matched_features[] = $feature;
@@ -226,9 +233,13 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
           }
         }
       }
+      return $matched_features;
     }
-
-    return $matched_features;
+    catch(Exception $exception) {
+      $this->messenger->addError($this->t("Failed to get URL: @message",
+          ["@message" => $exception->getMessage()]));
+      return $matched_features;
+    }
   }
 
   /**
@@ -242,25 +253,30 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
     $boundaries = $this->fetchBoundaryInformation($vals);
     $election = $form_values['localgov_election'];
     $election_node = $this->nodeStorage->load($election);
-    $n_areas = 0;
-    foreach ($boundaries as $boundary) {
-      /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
-      $name = str_replace(' ED', '', $boundary['properties']['CED23NM']);
-      $area = $this->nodeStorage->create(
-        [
-          'type' => 'localgov_area_vote',
-          'localgov_election_area_name' => $name,
-          'localgov_election_boundary_data' => json_encode($boundary),
-          'localgov_election' => ['target_id' => $election],
-          'title' => $election_node->getTitle() . ' - ' . $name,
-        ]
-      );
-      $area->save();
-      $n_areas += 1;
-    }
+    if ($election_node instanceof NodeInterface) {
+      $n_areas = 0;
+      foreach ($boundaries as $boundary) {
+        /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
+        $name = str_replace(' ED', '', $boundary['properties']['CED23NM']);
+        $area = $this->nodeStorage->create(
+          [
+            'type' => 'localgov_area_vote',
+            'localgov_election_area_name' => $name,
+            'localgov_election_boundary_data' => json_encode($boundary),
+            'localgov_election' => ['target_id' => $election],
+            'title' => $election_node->getTitle() . ' - ' . $name,
+          ]
+        );
+        $area->save();
+        $n_areas += 1;
+      }
 
-    if ($n_areas > 0) {
-      $this->messenger->addMessage($this->t('Created @n_area area votes records with boundary information', ['@n_area' => $n_areas]));
+      if ($n_areas > 0) {
+        $this->messenger->addMessage($this->t('Created @n_area area votes records with boundary information', ['@n_area' => $n_areas]));
+      }
+    }
+    else {
+      $this->messenger->addError($this->t('Node is not an Election Content Type Node'));
     }
   }
 
@@ -271,24 +287,40 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
     $lad = $form_state->getValue('lad');
     $cty = $form_state->getValue('cty');
     $url = self::URL_SERVICES_LU;
+    $params = [];
+    $where = '';
+    if (!$lad && !$cty) $form_state->setErrorByName('cty', $this->t('The area codes are empty. Please try again.'));
     if ($lad && $cty) {
-      $url = $url . 'where=' . self::URL_WHERE_CTY . $cty . '%27%20AND%20' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_JSON;
+      $where = "CTY24CD = '" . $cty . "' AND LAD24CD = '" . $lad . "'";
     }
     elseif (!$lad && $cty) {
-      $url = $url . 'where=' . self::URL_WHERE_CTY . $cty . '%27&' . self::URL_FIELDS_JSON;
+      $where = "CTY24CD = '" . $cty . "'";
     }
     else {
-      $url = $url . 'where=' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_JSON;
+      $where = "LAD24CD = '" . $lad . "'";
     }
-
-    $response = $this->httpClient->get($url);
-    if ($response->getStatusCode() == 200) {
-      $body = $response->getBody()->getContents();
-      $json_decoded = json_decode($body, TRUE);
-      $features = $json_decoded['features'];
-      if (count($features) == 0) {
-        $form_state->setErrorByName('cty', $this->t('The area codes, @code, you inputted do not seem to come back as valid. Are you sure they are correct? Check that they are correct and try again.', ['@code' => $cty . ',' . $lad]));
+    $params = [
+      'query' => [
+        'where' => $where,
+        'outFields' => '*',
+        'returnDistinctValues' => 'true',
+        'f' => 'json',
+      ]
+    ];
+    try {
+      $response = $this->http_client->get($url, $params);
+      if ($response->getStatusCode() == 200) {
+        $body = $response->getBody()->getContents();
+        $json_decoded = json_decode($body, TRUE);
+        $features = $json_decoded['features'] ?? [];
+        if (count($features) == 0) {
+          $form_state->setErrorByName('cty', $this->t('The area codes, @code, you inputted do not seem to come back as valid. Are you sure they are correct? Check that they are correct and try again.', ['@code' => $cty . ',' . $lad]));
+        }
       }
+    }
+    catch(Exception $exception) {
+      $this->messenger->addError($this->t("Failed to get URL: @message",
+          ["@message" => $exception->getMessage()]));
     }
   }
 
