@@ -115,7 +115,7 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
       }
       return $opts;
     }
-    catch (Exception $exception) {
+    catch (\Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
     }

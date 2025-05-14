@@ -195,7 +195,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
       }
       return $matched_features;
     }
-    catch (Exception $exception) {
+    catch (\Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
       return $matched_features;
@@ -280,7 +280,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
         }
       }
     }
-    catch (Exception $exception) {
+    catch (\Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
     }

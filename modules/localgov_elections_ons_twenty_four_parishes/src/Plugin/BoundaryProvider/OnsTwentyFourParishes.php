@@ -185,7 +185,7 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
       }
       return $matched_features;
     }
-    catch (Exception $exception) {
+    catch (\Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
       return $matched_features;
@@ -253,7 +253,7 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
         }
       }
     }
-    catch (Exception $exception) {
+    catch (\Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
     }
