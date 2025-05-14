@@ -4,6 +4,7 @@ namespace Drupal\localgov_elections_ons_twenty_four_parishes\Form;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_elections\BoundaryProviderInterface;
 use Drupal\localgov_elections\Form\BoundaryProviderSubformInterface;
@@ -19,39 +20,26 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
   use StringTranslationTrait;
 
   /**
+   * The plugin.
+   *
+   * @var \Drupal\localgov_elections\BoundaryProviderInterface
+   */
+  protected $plugin;
+
+  /**
    * Value of the ARCGIS Services URL for the Parish lookup.
    */
-  const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query?';
-
-  /**
-   * Value of the query parameter "where" for LAD.
-   */
-  const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
-
-  /**
-   * The query parameter "outFields" no geometry format json.
-   */
-  const URL_FIELDS_PAR = 'outFields=PAR24CD,PAR24NM,LAD24CD,LAD24NM&f=json';
-
-  /**
-   * Guzzle HTTP client.
-   *
-   * @var \GuzzleHttp\Client
-   */
-  private Client $httpClient;
-
-  /**
-   * The current request.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  private RequestStack $request;
+  const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query';
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('http_client'), $container->get('request_stack'));
+    return new static(
+      $container->get('http_client'),
+      $container->get('request_stack'),
+      $container->get('messenger')
+    );
   }
 
   /**
@@ -61,18 +49,14 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
    *   Guzzle HTTP client.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request
    *   The current request.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   Messenger service.
    */
-  public function __construct(Client $http_client, RequestStack $request) {
-    $this->httpClient = $http_client;
-    $this->request = $request;
-  }
-
-  /**
-   * The plugin.
-   *
-   * @var \Drupal\localgov_elections\BoundaryProviderInterface
-   */
-  protected $plugin;
+  public function __construct(
+    public Client $http_client,
+    public RequestStack $request,
+    public MessengerInterface $messenger,
+  ) {}
 
   /**
    * {@inheritDoc}
@@ -92,7 +76,7 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $opts = [];
+    $opts = $this->getAreasToDownload();
     $form['options'] =
       [
         '#title' => $this->t('Areas to download'),
@@ -101,20 +85,40 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
         '#options' => &$opts,
         '#required' => TRUE,
       ];
-
-    $lad = $this->plugin->getConfiguration()['lad'];
-    $url = self::URL_SERVICES_PAR . 'where=' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_PAR;
-    $response = $this->httpClient->get($url);
-    if ($response->getStatusCode() == 200) {
-      $body = $response->getBody()->getContents();
-      $decoded = json_decode($body, TRUE);
-
-      foreach ($decoded['features'] as $item) {
-        $item = $item['attributes'];
-        $opts[$item['PAR24CD']] = ['area' => $item['PAR24NM']];
-      }
-    }
     return $form;
+  }
+  
+  /**
+   * {@inheritdoc}
+   */
+  public function getAreasToDownload() {
+    $lad = $this->plugin->getConfiguration()['lad'];
+    $url = self::URL_SERVICES_PAR;
+    $params = [
+      'query' => [
+        'where' => "LAD24CD = '$lad'",
+        'outFields' => 'PAR24CD,PAR24NM,LAD24CD,LAD24NM',
+        'f' => 'json',
+      ],
+    ];
+    $opts = [];
+    try {
+      $response = $this->http_client->get($url, $params);
+      if ($response->getStatusCode() == 200) {
+        $body = $response->getBody()->getContents();
+        $decoded = json_decode($body, TRUE);
+
+        foreach ($decoded['features'] as $item) {
+          $item = $item['attributes'];
+          $opts[$item['PAR24CD']] = ['area' => $item['PAR24NM']];
+        }
+      }
+      return $opts;
+    }
+    catch (Exception $exception) {
+      $this->messenger->addError($this->t("Failed to get URL: @message",
+          ["@message" => $exception->getMessage()]));
+    }
   }
 
   /**

@@ -12,6 +12,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_elections\BoundaryProviderPluginBase;
 use Drupal\localgov_elections\BoundarySourceInterface;
+use Drupal\node\NodeInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -34,44 +35,17 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
   /**
    * Value of the URL for the LAD lookup.
    */
-  const URL_LAD = 'https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore';
+  const URL_LAD = 'https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-december-2024-names-and-codes-in-the-uk/explore';
 
   /**
    * Value of the ARCGIS Services URL for PAR & NC PAR Boundaries.
    */
-  const URL_SERVICES_PARNCP = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Parishes_and_Non_Civil_Parished_Areas_December_2024_Boundaries_EW_BFC/FeatureServer/0/query?';
+  const URL_SERVICES_PARNCP = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Parishes_and_Non_Civil_Parished_Areas_December_2024_Boundaries_EW_BFC/FeatureServer/0/query';
 
   /**
    * Value of the ARCGIS Services URL for Parishes List.
    */
-  const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query?';
-
-  /**
-   * Value of the query parameter "where" for PAR.
-   */
-  const URL_WHERE_PAR = 'PARNCP24CD%20IN%20';
-
-  /**
-   * Value of the query parameter "where" for LAD.
-   */
-  const URL_WHERE_LAD = 'LAD24CD%20%3D%20%27';
-
-  /**
-   * The query parameter "outFields" with Geometry output as geojson.
-   */
-  const URL_FIELDS_GEOJSON = 'outFields=*&returnDistinctValues=true&returnGeometry=true&outSR=4326&f=geojson';
-
-  /**
-   * The query parameter "outFields" with no Geometry output as json.
-   */
-  const URL_FIELDS_JSON = 'outFields=PAR24CD,PAR24NM,LAD24CD,LAD24NM&f=json';
-
-  /**
-   * Guzzle HTTP client.
-   *
-   * @var \GuzzleHttp\Client
-   */
-  protected Client $httpClient;
+  const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query';
 
   /**
    * Node storage.
@@ -86,13 +60,6 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected EntityStorageInterface $paragraphStorage;
-
-  /**
-   * Messenger service.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  private MessengerInterface $messenger;
 
   /**
    * {@inheritdoc}
@@ -125,18 +92,16 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
    *   Messenger service.
    */
   public function __construct(
-    array $configuration,
+    $configuration,
     $plugin_id,
     $plugin_definition,
-    Client $http_client,
-    EntityTypeManagerInterface $entity_type_manager,
-    MessengerInterface $messenger,
+    public Client $http_client,
+    public entityTypeManagerInterface $entity_type_manager,
+    public MessengerInterface $messenger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->httpClient = $http_client;
     $this->nodeStorage = $entity_type_manager->getStorage('node');
     $this->paragraphStorage = $entity_type_manager->getStorage('paragraph');
-    $this->messenger = $messenger;
   }
 
   /**
@@ -162,10 +127,10 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
 
     $form['lad'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Local Authority District Code (LAD23CD)'),
+      '#title' => $this->t('Local Authority District Code (LAD24CD)'),
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['lad'] ?? "",
-      '#description' => $this->t('Local Authority District code. You can find this <a href="@url">here</a>. Use the value from the LAD23CD column.', ['@url' => $lad_url]),
+      '#description' => $this->t('Local Authority District code. You can find this <a href="@url">here</a>. Use the value from the LAD24CD column.', ['@url' => $lad_url]),
       '#required' => FALSE,
     ];
 
@@ -185,30 +150,46 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
    *   Could potentially throw a GuzzleException.
    */
   protected function fetchBoundaryInformation(array $ids): array {
-    $list = "('" . implode("','", $ids) . "')";
-    $gis_url = self::URL_SERVICES_PARNCP . 'where=' . self::URL_WHERE_PAR . $list . '&' . self::URL_FIELDS_GEOJSON;
+    $gis_url = self::URL_SERVICES_PARNCP;
+    $list = implode("','", $ids);
+    $params = [
+      'query' => [
+        'where' => "PARNCP24CD IN ('$list')",
+        'outFields' => '*',
+        'returnDistinctValues' => 'true',
+        'returnGeometry' => 'true',
+        'outSR' => '4326',
+        'f' => 'geojson',
+      ],
+    ];
     $matched_features = [];
-    $response = $this->httpClient->get($gis_url);
-    if ($response->getStatusCode() == 200) {
-      $body = $response->getBody()->getContents();
-
-      $json_decoded = json_decode($body, TRUE);
-      $num_to_match = count($ids);
-      $num_matched = 0;
+    try {
+      $response = $this->http_client->get($gis_url, $params);
       if ($response->getStatusCode() == 200) {
-        foreach ($json_decoded['features'] as $feature) {
-          if (in_array($feature['properties']['PARNCP24CD'], $ids, TRUE)) {
-            $matched_features[] = $feature;
-            $num_matched++;
-          }
-          if ($num_matched >= $num_to_match) {
-            break;
+        $body = $response->getBody()->getContents();
+
+        $json_decoded = json_decode($body, TRUE);
+        $num_to_match = count($ids);
+        $num_matched = 0;
+        if ($response->getStatusCode() == 200) {
+          foreach ($json_decoded['features'] as $feature) {
+            if (in_array($feature['properties']['PARNCP24CD'], $ids, TRUE)) {
+              $matched_features[] = $feature;
+              $num_matched++;
+            }
+            if ($num_matched >= $num_to_match) {
+              break;
+            }
           }
         }
       }
+      return $matched_features;
     }
-
-    return $matched_features;
+    catch (Exception $exception) {
+      $this->messenger->addError($this->t("Failed to get URL: @message",
+          ["@message" => $exception->getMessage()]));
+      return $matched_features;
+    }
   }
 
   /**
@@ -222,24 +203,29 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
     $boundaries = $this->fetchBoundaryInformation($vals);
     $election = $form_values['localgov_election'];
     $election_node = $this->nodeStorage->load($election);
-    $n_areas = 0;
-    foreach ($boundaries as $boundary) {
-      /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
-      $area = $this->nodeStorage->create(
-        [
-          'type' => 'localgov_area_vote',
-          'localgov_election_area_name' => $boundary['properties']['PARNCP24NM'],
-          'localgov_election_boundary_data' => json_encode($boundary),
-          'localgov_election' => ['target_id' => $election],
-          'title' => $election_node->getTitle() . ' - ' . $boundary['properties']['PARNCP24NM'],
-        ]
-      );
-      $area->save();
-      $n_areas += 1;
-    }
+    if ($election_node instanceof NodeInterface) {
+      $n_areas = 0;
+      foreach ($boundaries as $boundary) {
+        /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
+        $area = $this->nodeStorage->create(
+          [
+            'type' => 'localgov_area_vote',
+            'localgov_election_area_name' => $boundary['properties']['PARNCP24NM'],
+            'localgov_election_boundary_data' => json_encode($boundary),
+            'localgov_election' => ['target_id' => $election],
+            'title' => $election_node->getTitle() . ' - ' . $boundary['properties']['PARNCP24NM'],
+          ]
+        );
+        $area->save();
+        $n_areas += 1;
+      }
 
-    if ($n_areas > 0) {
-      $this->messenger->addMessage($this->t('Created @n_area area votes records with boundary information', ['@n_area' => $n_areas]));
+      if ($n_areas > 0) {
+        $this->messenger->addMessage($this->t('Created @n_area area votes records with boundary information', ['@n_area' => $n_areas]));
+      }
+    }
+    else {
+      $this->messenger->addError($this->t('Node is not an Election Content Type Node'));
     }
   }
 
@@ -248,16 +234,28 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
     $lad = $form_state->getValue('lad');
-    $url = self::URL_SERVICES_PAR . 'where=' . self::URL_WHERE_LAD . $lad . '%27&' . self::URL_FIELDS_JSON;
-
-    $response = $this->httpClient->get($url);
-    if ($response->getStatusCode() == 200) {
-      $body = $response->getBody()->getContents();
-      $json_decoded = json_decode($body, TRUE);
-      $features = $json_decoded['features'];
-      if (count($features) == 0) {
-        $form_state->setErrorByName('lad', $this->t('The area codes, @code, you inputted do not seem to come back as valid. Are you sure they are correct? Check that they are correct and try again.', ['@code' => $lad]));
+    $url = self::URL_SERVICES_PAR;
+    $params = [
+      'query' => [
+        'where' => "LAD24CD = '$lad'",
+        'outFields' => 'PAR24CD,PAR24NM,LAD24CD,LAD24NM',
+        'f' => 'json',
+      ],
+    ];
+    try {
+      $response = $this->http_client->get($url, $params);
+      if ($response->getStatusCode() == 200) {
+        $body = $response->getBody()->getContents();
+        $json_decoded = json_decode($body, TRUE);
+        $features = $json_decoded['features'];
+        if (count($features) == 0) {
+          $form_state->setErrorByName('lad', $this->t('The area codes, @code, you inputted do not seem to come back as valid. Are you sure they are correct? Check that they are correct and try again.', ['@code' => $lad]));
+        }
       }
+    }
+    catch (Exception $exception) {
+      $this->messenger->addError($this->t("Failed to get URL: @message",
+          ["@message" => $exception->getMessage()]));
     }
   }
 
