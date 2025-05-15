@@ -89,7 +89,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \GuzzleHttp\Client $http_client
+   * @param \GuzzleHttp\Client $httpClient
    *   Http client.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager service.
@@ -100,7 +100,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
     $configuration,
     $plugin_id,
     $plugin_definition,
-    protected Client $http_client,
+    protected Client $httpClient,
     protected entityTypeManagerInterface $entity_type_manager,
     protected MessengerInterface $messenger,
   ) {
@@ -176,7 +176,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
     ];
     $matched_features = [];
     try {
-      $response = $this->http_client->get($gis_url, $params);
+      $response = $this->httpClient->get($gis_url, $params);
       if ($response->getStatusCode() == 200) {
         $body = $response->getBody()->getContents();
 
@@ -270,7 +270,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
       ],
     ];
     try {
-      $response = $this->http_client->get($url, $params);
+      $response = $this->httpClient->get($url, $params);
       if ($response->getStatusCode() == 200) {
         $body = $response->getBody()->getContents();
         $json_decoded = json_decode($body, TRUE);

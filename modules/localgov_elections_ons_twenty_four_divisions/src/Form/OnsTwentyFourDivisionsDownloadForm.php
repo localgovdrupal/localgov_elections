@@ -45,7 +45,7 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
   /**
    * Constructs the ONS 2024.
    *
-   * @param \GuzzleHttp\Client $http_client
+   * @param \GuzzleHttp\Client $httpClient
    *   Guzzle HTTP client.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request
    *   The current request.
@@ -53,7 +53,7 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
    *   Messenger service.
    */
   public function __construct(
-    protected Client $http_client,
+    protected Client $httpClient,
     protected RequestStack $request,
     protected MessengerInterface $messenger,
   ) {}
@@ -127,7 +127,7 @@ class OnsTwentyFourDivisionsDownloadForm implements BoundaryProviderSubformInter
       ],
     ];
     try {
-      $response = $this->http_client->get($url, $params);
+      $response = $this->httpClient->get($url, $params);
       if ($response->getStatusCode() == 200) {
         $body = $response->getBody()->getContents();
         $decoded = json_decode($body, TRUE);
