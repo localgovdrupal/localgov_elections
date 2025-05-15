@@ -100,9 +100,9 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
     $configuration,
     $plugin_id,
     $plugin_definition,
-    public Client $http_client,
-    public entityTypeManagerInterface $entity_type_manager,
-    public MessengerInterface $messenger,
+    protected Client $http_client,
+    protected entityTypeManagerInterface $entity_type_manager,
+    protected MessengerInterface $messenger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->nodeStorage = $entity_type_manager->getStorage('node');

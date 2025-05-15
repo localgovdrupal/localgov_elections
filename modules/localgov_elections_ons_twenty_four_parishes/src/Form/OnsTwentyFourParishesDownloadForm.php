@@ -53,9 +53,9 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
    *   Messenger service.
    */
   public function __construct(
-    public Client $http_client,
-    public RequestStack $request,
-    public MessengerInterface $messenger,
+    protected Client $http_client,
+    protected RequestStack $request,
+    protected MessengerInterface $messenger,
   ) {}
 
   /**
@@ -82,16 +82,22 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
         '#title' => $this->t('Areas to download'),
         '#type' => 'tableselect',
         '#header' => ['area' => $this->t('Area')],
-        '#options' => &$opts,
+        '#options' => $opts,
         '#required' => TRUE,
       ];
     return $form;
   }
 
   /**
-   * {@inheritdoc}
+   * Fetch Parishes.
+   *
+   * Fetches Parish Codes and Names from ONS API.
+   *
+   * @return array
+   *   Will return the array of data - this will be empty if no Parishes returned.
+   *
    */
-  public function getAreasToDownload() {
+  public function getAreasToDownload(): array {
     $lad = $this->plugin->getConfiguration()['lad'];
     $url = self::URL_SERVICES_PAR;
     $params = [
@@ -118,6 +124,7 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
     catch (\Exception $exception) {
       $this->messenger->addError($this->t("Failed to get URL: @message",
           ["@message" => $exception->getMessage()]));
+      return $opts;
     }
   }
 
