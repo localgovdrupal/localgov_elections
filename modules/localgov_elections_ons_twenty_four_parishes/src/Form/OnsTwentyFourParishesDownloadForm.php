@@ -94,8 +94,8 @@ class OnsTwentyFourParishesDownloadForm implements BoundaryProviderSubformInterf
    * Fetches Parish Codes and Names from ONS API.
    *
    * @return array
-   *   Will return the array of data - this will be empty if no Parishes returned.
-   *
+   *   Will return the array of data.
+   *   This will be empty if no Parishes returned.
    */
   public function getAreasToDownload(): array {
     $lad = $this->plugin->getConfiguration()['lad'];
