@@ -48,20 +48,6 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
   const URL_SERVICES_PAR = 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/PAR_DEC_2024_EW_NC/FeatureServer/0/query';
 
   /**
-   * Node storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected EntityStorageInterface $nodeStorage;
-
-  /**
-   * Paragraph storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected EntityStorageInterface $paragraphStorage;
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -100,8 +86,6 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
     protected MessengerInterface $messenger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->nodeStorage = $entityTypeManager->getStorage('node');
-    $this->paragraphStorage = $entityTypeManager->getStorage('paragraph');
   }
 
   /**
@@ -202,12 +186,12 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
 
     $boundaries = $this->fetchBoundaryInformation($vals);
     $election = $form_values['localgov_election'];
-    $election_node = $this->nodeStorage->load($election);
+    $election_node = $this->entityTypeManager->getStorage('node')->load($election);
     if ($election_node instanceof NodeInterface) {
       $n_areas = 0;
       foreach ($boundaries as $boundary) {
         /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
-        $area = $this->nodeStorage->create(
+        $area = $this->entityTypeManager->getStorage('node')->create(
           [
             'type' => 'localgov_area_vote',
             'localgov_election_area_name' => $boundary['properties']['PARNCP24NM'],

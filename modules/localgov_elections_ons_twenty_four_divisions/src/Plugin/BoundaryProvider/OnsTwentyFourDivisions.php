@@ -53,20 +53,6 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
   const URL_CTY = 'https://geoportal.statistics.gov.uk/datasets/ons::counties-december-2024-names-and-codes-in-en/explore';
 
   /**
-   * Node storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected EntityStorageInterface $nodeStorage;
-
-  /**
-   * Paragraph storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected EntityStorageInterface $paragraphStorage;
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -91,7 +77,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
    *   The plugin implementation definition.
    * @param \GuzzleHttp\Client $httpClient
    *   Http client.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity type manager service.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger service.
@@ -101,12 +87,10 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
     $plugin_id,
     $plugin_definition,
     protected Client $httpClient,
-    protected entityTypeManagerInterface $entity_type_manager,
+    protected entityTypeManagerInterface $entityTypeManager,
     protected MessengerInterface $messenger,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->nodeStorage = $entity_type_manager->getStorage('node');
-    $this->paragraphStorage = $entity_type_manager->getStorage('paragraph');
   }
 
   /**
@@ -212,13 +196,13 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
 
     $boundaries = $this->fetchBoundaryInformation($vals);
     $election = $form_values['localgov_election'];
-    $election_node = $this->nodeStorage->load($election);
+    $election_node = $this->entityTypeManager->getStorage('node')->load($election);
     if ($election_node instanceof NodeInterface) {
       $n_areas = 0;
       foreach ($boundaries as $boundary) {
         /** @var \Drupal\paragraphs\Entity\Paragraph $area_paragraph */
         $name = str_replace(' ED', '', $boundary['properties']['CED23NM']);
-        $area = $this->nodeStorage->create(
+        $area = $this->entityTypeManager->getStorage('node')->create(
           [
             'type' => 'localgov_area_vote',
             'localgov_election_area_name' => $name,
