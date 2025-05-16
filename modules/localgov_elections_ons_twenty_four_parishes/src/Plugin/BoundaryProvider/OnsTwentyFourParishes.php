@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\localgov_elections_ons_twenty_four_parishes\Plugin\BoundaryProvider;
 
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
