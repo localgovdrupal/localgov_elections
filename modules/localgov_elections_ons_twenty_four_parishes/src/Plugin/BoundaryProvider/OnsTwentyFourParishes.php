@@ -106,14 +106,12 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
 
-    $lad_url = self::URL_LAD;
-
     $form['lad'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Local Authority District Code (LAD24CD)'),
       '#maxlength' => 1000,
       '#default_value' => $this->configuration['lad'] ?? "",
-      '#description' => $this->t('Local Authority District code. You can find this <a href="@url">here</a>. Use the value from the LAD24CD column.', ['@url' => $lad_url]),
+      '#description' => $this->t('Local Authority District code. You can find this <a href="@url">here</a>. Use the value from the LAD24CD column.', ['@url' => self::URL_LAD]),
       '#required' => FALSE,
     ];
 
