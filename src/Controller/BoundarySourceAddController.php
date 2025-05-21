@@ -24,14 +24,14 @@ class BoundarySourceAddController extends ControllerBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): static {
     return new static($container->get('entity_type.manager'));
   }
 
   /**
    * Controller callback.
    */
-  public function __invoke($plugin_id) {
+  public function __invoke($plugin_id): mixed {
     $entity = $this->entityTypeManager->getStorage('boundary_source')->create(['plugin' => $plugin_id]);
     return $this->entityFormBuilder()->getForm($entity);
   }

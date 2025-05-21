@@ -49,7 +49,7 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
     return new static(
       $configuration,
       $plugin_id,
@@ -90,21 +90,21 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration() {
+  public function defaultConfiguration(): array {
     return [];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isConfigurable() {
+  public function isConfigurable(): true {
     return TRUE;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
 
     $form['lad'] = [
       '#type' => 'textfield',
@@ -176,7 +176,7 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
   /**
    * {@inheritdoc}
    */
-  public function createBoundaries(BoundarySourceInterface $entity, array $form_values) {
+  public function createBoundaries(BoundarySourceInterface $entity, array $form_values): void {
     $vals = array_keys(array_filter($form_values['plugin']['config']['options'], function ($item) {
       return $item !== 0;
     }));
@@ -213,7 +213,7 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
   /**
    * {@inheritDoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state): void {
     $lad = $form_state->getValue('lad');
     $url = self::URL_SERVICES_PAR;
     $params = [
@@ -243,7 +243,7 @@ class OnsTwentyFourParishes extends BoundaryProviderPluginBase implements Contai
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
     // Nothing to do.
   }
 

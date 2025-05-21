@@ -15,7 +15,7 @@ class PartyAbbr extends FieldPluginBase {
   /**
    * Leave empty to avoid a query on this field.
    */
-  public function query() {
+  public function query(): void {
 
   }
 
@@ -24,7 +24,7 @@ class PartyAbbr extends FieldPluginBase {
    *
    * @{inheritdoc}
    */
-  public function render(ResultRow $values) {
+  public function render(ResultRow $values): string {
 
     // @todo Get rid
     return "IND";

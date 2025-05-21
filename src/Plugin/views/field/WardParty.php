@@ -17,7 +17,7 @@ class WardParty extends FieldPluginBase {
   /**
    * Leave empty to avoid a query on this field.
    */
-  public function query() {
+  public function query(): void {
 
   }
 
@@ -28,7 +28,7 @@ class WardParty extends FieldPluginBase {
    *
    * @{inheritdoc}
    */
-  public function render(ResultRow $values) {
+  public function render(ResultRow $values): mixed {
     $node = $values->_entity;
 
     // Iterate through each candidate and store votes.

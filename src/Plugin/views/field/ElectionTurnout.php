@@ -16,7 +16,7 @@ class ElectionTurnout extends FieldPluginBase {
   /**
    * Leave empty to avoid a query on this field.
    */
-  public function query() {
+  public function query():void {
 
   }
 
@@ -28,7 +28,7 @@ class ElectionTurnout extends FieldPluginBase {
    *
    * @{inheritdoc}
    */
-  public function render(ResultRow $values) {
+  public function render(ResultRow $values): string {
     $node = $values->_entity;
     $election = $node->id();
 

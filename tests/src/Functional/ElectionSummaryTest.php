@@ -19,7 +19,7 @@ class ElectionSummaryTest extends BrowserTestBase {
   /**
    * Tests result heading text.
    */
-  public function testResultHeadingOnSummaryPage() {
+  public function testResultHeadingOnSummaryPage(): void {
 
     $election_page_url = $this->electionPage->toUrl();
 

@@ -21,7 +21,7 @@ titled "[Local Authority Districts (April 2023) Names and Codes in the United Ki
 
 ## Boundary Fetching Process
 
-The boundary fetching process used by the ONS Divisions 2024 Plugin is fairly simple and can be described in a few steps:
+The boundary fetching process used by the ONS Parish 2024 Plugin is fairly simple and can be described in a few steps:
 
 1. Get the District Code on the plugin configuration form. This limits the fetched boundaries to a
    specific area. The plugin form validates the district code is valid, so you can't just enter anything here.

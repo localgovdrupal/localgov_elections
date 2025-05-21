@@ -25,12 +25,12 @@
 }
 
 .ward-result .dot {
-  height: 1rem;
   width: 1rem;
-  border-radius: 50%;
+  height: 1rem;
   display: inline-block;
-  border: 1px solid black;
   margin-right: 0.5rem;
+  border: 1px solid black;
+  border-radius: 50%;
 }
 
 .ward-result .label-wrapper {
@@ -38,8 +38,8 @@
 }
 
 .ward-result .results-analysis-grid > * {
-  border-bottom: var(--table-border);
   margin-bottom: 0.1rem;
+  border-bottom: var(--table-border);
 }
 
 .ward-result .box > * {
