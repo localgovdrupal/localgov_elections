@@ -38,8 +38,8 @@
 }
 
 .county-summary .hold-or-gain {
-  padding: 0.25rem;
   margin: 0 0.25rem;
+  padding: 0.25rem;
 }
 
 .county-summary .hold {
@@ -52,10 +52,10 @@
 }
 
 .county-summary .party {
-  padding: 0.25rem;
   width: fit-content;
-  color: white;
+  padding: 0.25rem;
   text-transform: uppercase;
+  color: white;
   font-family: Sans-Serif;
   font-weight: bold;
 }
@@ -66,8 +66,8 @@
 
 .county-summary .seat-not-contested {
   display: inline-flex;
-  text-transform: uppercase;
   padding: 0.25rem;
   border: 1px solid black;
+  text-transform: uppercase;
   font-weight: bold;
 }
