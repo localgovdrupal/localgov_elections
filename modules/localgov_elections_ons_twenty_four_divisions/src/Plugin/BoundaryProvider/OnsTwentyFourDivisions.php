@@ -272,7 +272,7 @@ class OnsTwentyFourDivisions extends BoundaryProviderPluginBase implements Conta
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
     // Nothing to do.
   }
 
