@@ -67,7 +67,7 @@
 .county-summary .seat-not-contested {
   display: inline-flex;
   padding: 0.25rem;
-  border: 1px solid black;
   text-transform: uppercase;
+  border: 1px solid black;
   font-weight: bold;
 }
