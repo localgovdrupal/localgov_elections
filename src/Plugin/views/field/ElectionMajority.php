@@ -16,7 +16,7 @@ class ElectionMajority extends FieldPluginBase {
   /**
    * Leave empty to avoid a query on this field.
    */
-  public function query() {
+  public function query(): void {
 
   }
 
@@ -28,7 +28,7 @@ class ElectionMajority extends FieldPluginBase {
    *
    * @{inheritdoc}
    */
-  public function render(ResultRow $values) {
+  public function render(ResultRow $values): ?float {
     // Get ID of current election node (from URL argument)
     $node = \Drupal::routeMatch()->getParameter('node');
     $majority = NULL;

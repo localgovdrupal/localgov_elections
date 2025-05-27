@@ -13,8 +13,8 @@
 }
 
 .view-election-results-timeline .key-result {
-  text-transform: uppercase;
   display: flex;
+  text-transform: uppercase;
 }
 
 .view-election-results-timeline .key-result .winning-party {
@@ -39,8 +39,8 @@
 }
 
 .view-election-results-timeline .winning-party.ldm {
-  background-color: var(--liberal-democrats);
   color: black;
+  background-color: var(--liberal-democrats);
 }
 
 .view-election-results-timeline .winning-party.ind {
@@ -48,8 +48,8 @@
 }
 
 .view-election-results-timeline .hold-gain {
-  padding: 0.25rem;
   margin: 0 0.25rem;
+  padding: 0.25rem;
 }
 
 .view-election-results-timeline .hold {

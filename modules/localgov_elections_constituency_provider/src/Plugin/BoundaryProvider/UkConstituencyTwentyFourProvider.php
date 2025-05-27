@@ -62,7 +62,7 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
     return new static(
         $configuration,
         $plugin_id,
@@ -106,14 +106,14 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration() {
+  public function defaultConfiguration(): array {
     return [];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isConfigurable() {
+  public function isConfigurable(): true {
     return TRUE;
   }
 
@@ -129,7 +129,7 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
    *
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  private function fetchBoundaryInformation(array $constituencies) {
+  private function fetchBoundaryInformation(array $constituencies): array {
     // Build the rest of the endpoint. The where condition needs added.
     $features = [];
     // Create an array to hold the encoded parts.
@@ -160,7 +160,7 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   /**
    * {@inheritdoc}
    */
-  public function createBoundaries(BoundarySourceInterface $entity, array $form_values) {
+  public function createBoundaries(BoundarySourceInterface $entity, array $form_values): void {
     $boundaries = $this->fetchBoundaryInformation($form_values["plugin"]["config"]["constituencies"]);
     $election = $form_values['localgov_election'];
     $election_node = $this->nodeStorage->load($election);
@@ -188,21 +188,21 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   /**
    * {@inheritDoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
     return [];
   }
 
   /**
    * {@inheritDoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state): void {
 
   }
 
   /**
    * {@inheritDoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
 
   }
 

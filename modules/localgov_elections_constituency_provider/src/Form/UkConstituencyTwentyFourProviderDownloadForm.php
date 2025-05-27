@@ -44,7 +44,7 @@ class UkConstituencyTwentyFourProviderDownloadForm implements BoundaryProviderSu
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): static {
     return new static(
         $container->get('http_client'),
         $container->get('request_stack'),
@@ -92,7 +92,7 @@ class UkConstituencyTwentyFourProviderDownloadForm implements BoundaryProviderSu
   /**
    * {@inheritDoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
 
     // Add our autocomplete field.
     $form['constituencies'] = [
@@ -110,7 +110,7 @@ class UkConstituencyTwentyFourProviderDownloadForm implements BoundaryProviderSu
   /**
    * {@inheritDoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state): void {
     // Make sure we only get triggered on submit and not ajax events too.
     if ($form_state->getTriggeringElement()['#type'] == 'submit') {
       $values = str_getcsv($form_state->getValue('constituencies'));
@@ -131,7 +131,7 @@ class UkConstituencyTwentyFourProviderDownloadForm implements BoundaryProviderSu
   /**
    * {@inheritDoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
     // Map the constituencies into an array instead.
     $constituencies = $form_state->getValue('constituencies');
     $values = str_getcsv($constituencies);

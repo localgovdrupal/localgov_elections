@@ -183,7 +183,7 @@ final class ElectionAliasTest extends BrowserTestBase {
   /**
    * Test election sub-page aliases change after election alias changes.
    */
-  public function testSubPageAliasesChangeAfterElectionAliasChange() {
+  public function testSubPageAliasesChangeAfterElectionAliasChange(): void {
 
     // Get the current paths to compare later.
     $election_path = $this->election->toUrl()->toString();

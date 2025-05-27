@@ -17,7 +17,7 @@ class ElectionShare extends FieldPluginBase {
   /**
    * Leave empty to avoid a query on this field.
    */
-  public function query() {
+  public function query(): void {
 
   }
 
@@ -28,7 +28,7 @@ class ElectionShare extends FieldPluginBase {
    *
    * @{inheritdoc}
    */
-  public function render(ResultRow $values) {
+  public function render(ResultRow $values): ?float {
     // Get value of Area/Division vote (localgov_area_vote) from View -
     // unfortunately cannot use this Node directly due to way Views handles
     // aggregate functions from Custom fields.

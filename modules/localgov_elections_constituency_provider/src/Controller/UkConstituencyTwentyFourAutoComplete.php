@@ -78,7 +78,7 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase {
   /**
    * {@inheritDoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): static {
     return new static(
         $container->get('http_client'),
         $container->get('cache.default'),
@@ -97,7 +97,7 @@ class UkConstituencyTwentyFourAutoComplete extends ControllerBase {
    *
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  private function fetchConstituencies() {
+  private function fetchConstituencies(): ?array {
     if ($this->cacheBackend->get(CacheKey::CONSTITUENCY_NAMES_KEY) === FALSE) {
       $response = $this->httpClient->get($this->constituencyEndpoint);
       $body = $response->getBody()->getContents();

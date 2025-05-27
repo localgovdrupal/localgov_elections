@@ -3,26 +3,26 @@
 }
 
 .election-menu__list {
-  list-style-type: none;
   padding: 0;
+  list-style-type: none;
 }
 
 .election-menu__list-item {
-  margin-bottom: 0.5rem;
   display: flex;
   width: 100%;
+  margin-bottom: 0.5rem;
   padding: 1rem;
 }
 
 .election-menu__list-item a {
-  width: 100%;
   display: block;
+  width: 100%;
   text-decoration: underline;
 }
 
 .election-menu__list-item.active {
-  background-color: var(--color-accent);
   color: white;
+  background-color: var(--color-accent);
 }
 
 .election-menu__list-item.active a {
@@ -30,7 +30,7 @@
 }
 
 .election-menu__list-icon {
-  width: .75rem;
+  width: 0.75rem;
 }
 .election-menu__list-item.active .election-menu__list-icon path {
   fill: white;

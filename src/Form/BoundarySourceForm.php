@@ -29,7 +29,7 @@ class BoundarySourceForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): static {
     return new static(
         $container->get('plugin_form.factory'),
         $container->get('entity_type.manager')
@@ -132,7 +132,7 @@ class BoundarySourceForm extends EntityForm {
   /**
    * Helper function, checks whether an EventSource configuration entity exists.
    */
-  public function exist($id) {
+  public function exist($id): bool {
     $entity = $this->entityTypeManager->getStorage('boundary_source')->getQuery()
       ->accessCheck(FALSE)
       ->condition('id', $id)
@@ -143,7 +143,7 @@ class BoundarySourceForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     $plugin = $this->getEntity()->getPlugin();
     if (!is_subclass_of($plugin, BoundaryProviderPluginBase::class)) {
       $form_state->setErrorByName('', "Plugin not subclass of BoundaryProviderPluginBase");
@@ -156,7 +156,7 @@ class BoundarySourceForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     parent::submitForm($form, $form_state);
     $this->getPluginForm($this->entity->getPlugin())->submitConfigurationForm($form['settings'], SubformState::createForSubform($form['settings'], $form, $form_state));
   }

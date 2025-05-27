@@ -34,7 +34,7 @@ class BounaryProviderAddForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): static {
     return new static(
         $container->get('plugin.manager.boundary_provider')
     );
@@ -43,14 +43,14 @@ class BounaryProviderAddForm extends FormBase {
   /**
    * {@inheritDoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'localgov_elections_boundary_provider_add';
   }
 
   /**
    * {@inheritDoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state): array {
 
     $providers = [];
     foreach ($this->pluginManager->getDefinitions() as $id => $definition) {
@@ -98,7 +98,7 @@ class BounaryProviderAddForm extends FormBase {
   /**
    * {@inheritDoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     parent::validateForm($form, $form_state);
     if (!$form_state->getValue('provider')) {
       $form_state->setErrorByName('provider', $this->t('You need to select a plugin provider before you can add one.'));
@@ -108,7 +108,7 @@ class BounaryProviderAddForm extends FormBase {
   /**
    * {@inheritDoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     if ($form_state->getValue('provider')) {
       $form_state->setRedirect(
           'entity.boundary_source.add_form',
