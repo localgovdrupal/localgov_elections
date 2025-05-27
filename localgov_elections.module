@@ -46,7 +46,11 @@ function localgov_elections_theme($existing, $type, $theme, $path) {
 /**
  * Implements hook_modules_installed().
  */
-function localgov_elections_modules_installed($modules) {
+function localgov_elections_modules_installed($modules, $is_syncing) {
+  if ($is_syncing) {
+    return;
+  }
+
   $services = in_array('localgov_services_navigation', $modules);
   if ($services) {
     \Drupal::service('config.installer')->installOptionalConfig(NULL, [
@@ -80,8 +84,16 @@ function localgov_elections_optional_fields_settings($services) {
             'placeholder' => '',
             'match_limit' => 10,
           ],
-          'weight' => -10,
+          'weight' => -1,
         ])->save();
+        if (
+          ($field_groups = $form_display->getThirdPartySettings('field_group')) &&
+          ($group = $field_groups['group_description'] ?? FALSE)
+        ) {
+          $group['children'][] = 'localgov_services_parent';
+          $form_display->setThirdPartySetting('field_group', 'group_description', $group)
+            ->save();
+        }
       }
     }
   }
