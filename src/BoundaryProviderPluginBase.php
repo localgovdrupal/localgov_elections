@@ -28,7 +28,7 @@ abstract class BoundaryProviderPluginBase extends PluginBase implements Boundary
   /**
    * {@inheritDoc}
    */
-  public function setConfigInstance(BoundarySourceInterface $config_instance) {
+  public function setConfigInstance(BoundarySourceInterface $config_instance): void {
     $this->configInstance = $config_instance;
   }
 
@@ -50,7 +50,7 @@ abstract class BoundaryProviderPluginBase extends PluginBase implements Boundary
   /**
    * {@inheritdoc}
    */
-  public function calculateDependencies() {
+  public function calculateDependencies(): array {
     // @todo should be done properly
     return [];
   }
@@ -58,14 +58,14 @@ abstract class BoundaryProviderPluginBase extends PluginBase implements Boundary
   /**
    * {@inheritDoc}
    */
-  public function getConfiguration() {
+  public function getConfiguration(): array {
     return $this->config;
   }
 
   /**
    * Set the configuration.
    */
-  public function setConfiguration(array $configuration) {
+  public function setConfiguration(array $configuration): void {
     $this->config = $configuration;
   }
 

@@ -18,7 +18,7 @@ class ElectionSeatsParty extends FieldPluginBase {
   /**
    * Leave empty to avoid a query on this field.
    */
-  public function query() {
+  public function query(): void {
 
   }
 
@@ -30,7 +30,7 @@ class ElectionSeatsParty extends FieldPluginBase {
    *
    * @{inheritdoc}
    */
-  public function render(ResultRow $values) {
+  public function render(ResultRow $values): ?int {
     $party = $values->_entity;
     $party_tid = $party->id();
     $seats = 0;

@@ -79,7 +79,7 @@ final class BoundaryFetchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): static {
 
     return new static(
         $container->get('class_resolver'),
@@ -183,7 +183,7 @@ final class BoundaryFetchForm extends FormBase {
    * @return mixed
    *   The form.
    */
-  protected function getFormClassForPlugin($entity) {
+  protected function getFormClassForPlugin($entity): mixed {
     $plugin = $this->entities[$entity]->getPlugin();
     $definition = $plugin->getPluginDefinition();
 

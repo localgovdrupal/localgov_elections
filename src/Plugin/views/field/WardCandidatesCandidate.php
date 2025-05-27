@@ -17,7 +17,7 @@ class WardCandidatesCandidate extends FieldPluginBase {
   /**
    * Leave empty to avoid a query on this field.
    */
-  public function query() {
+  public function query(): void {
 
   }
 
@@ -29,7 +29,7 @@ class WardCandidatesCandidate extends FieldPluginBase {
    *
    * @{inheritdoc}
    */
-  public function render(ResultRow $values) {
+  public function render(ResultRow $values): array {
     $area_vote = $values->_entity;
     $markup = '<div class="ward-candidate-results">';
 

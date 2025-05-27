@@ -86,7 +86,7 @@ final class AutocompleteTest extends WebDriverTestBase {
   /**
    * Tests that that autocomplete field shows options correctly.
    */
-  public function testAutocompleteFieldShowsOptions() {
+  public function testAutocompleteFieldShowsOptions(): void {
     // Navigate to the homepage.
     $id = $this->election->id();
     $this->drupalGet("/node/$id/boundary-fetch");

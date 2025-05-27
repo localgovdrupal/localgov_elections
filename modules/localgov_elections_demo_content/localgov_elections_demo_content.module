@@ -8,7 +8,7 @@
 /**
  * Implements hook_modules_installed().
  */
-function localgov_elections_demo_content_modules_installed($modules, $is_syncing) {
+function localgov_elections_demo_content_modules_installed($modules, $is_syncing): void {
   if (!$is_syncing && in_array('default_content', $modules, TRUE)) {
     // Regenerate all path aliases.
     $nids = \Drupal::entityQuery('node')
