@@ -33,7 +33,7 @@ The libraries required by Charts/Highcharts are included, by default via CDN. If
 
 You may also wish to use the submodules provided as part of the Localgov Election Reporting module. They are:
 
-1. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 District Wards - **DEPRECIATED**
+1. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 District Wards - **DEPRECATED**
 2. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 District Wards
 3. LocalGov Elections Reporting ONS Divisions 2024 - Boundary source provider for Office of National Statistics 2024 County Divisions
 4. LocalGov Elections Reporting ONS Parishes 2024 - Boundary source provider for Office of National Statistics 2024 Parishes
