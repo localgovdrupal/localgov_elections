@@ -1,4 +1,5 @@
 # LocalGov Elections Reporting ONS Wards 2023 (Boundary Source Provider)
+## NOTE: This is **Depreciated** for all new installs use: LocalGov Elections Reporting ONS Wards 2024  
 
 A key part of the module is the idea of boundary source providers. Given that there are many different ways to classify
 election areas (wards, parishes, constituencies) and also change over time. This means we can't provide a one size fits

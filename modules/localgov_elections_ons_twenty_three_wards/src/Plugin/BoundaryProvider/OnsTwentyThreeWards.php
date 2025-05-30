@@ -160,7 +160,6 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
     $gis_url = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD_MAY_2023_UK_BFE/FeatureServer/0/query?where=LAD23CD%20%3D%20%27$lad%27&outFields=LAD23CD,LAD23NM,WD23NM,WD23NMW,WD23CD&returnGeometry=true&outSR=4326&f=geojson";
     $response = $this->httpClient->get($gis_url);
     $body = $response->getBody()->getContents();
-
     $json_decoded = json_decode($body, TRUE);
     $num_to_match = count($ids);
     $num_matched = 0;
