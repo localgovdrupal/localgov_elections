@@ -120,10 +120,9 @@ class OnsTwentyFourWards extends BoundaryProviderPluginBase implements Container
 
   /**
    * Fetches boundary information from Local Authority IDs.
-   * 
-   * @param string $lad
-   *   An array of IDs to check against the GIS API.
    *
+   * @param string $lad
+   *   A string defining the Local Authority.
    * @param array $ids
    *   An array of IDs to check against the GIS API.
    *
@@ -222,7 +221,7 @@ class OnsTwentyFourWards extends BoundaryProviderPluginBase implements Container
     $where = '';
     if (!$lad) {
       $form_state->setErrorByName('lad', $this->t('The area codes are empty. Please try again.'));
-    } 
+    }
     else {
       $where = "LAD24CD = '$lad'";
     }
