@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Template\Attribute;
@@ -40,6 +41,62 @@ function localgov_elections_theme($existing, $type, $theme, $path): mixed {
       ],
     ],
   ];
+}
+
+/**
+ * Implements hook_modules_installed().
+ */
+function localgov_elections_modules_installed($modules, $is_syncing): void {
+  if ($is_syncing) {
+    return;
+  }
+
+  $services = in_array('localgov_services_navigation', $modules, TRUE);
+  if ($services) {
+    \Drupal::service('config.installer')->installOptionalConfig(NULL, [
+      'config' => 'field.storage.node.localgov_services_parent',
+    ]);
+    localgov_elections_optional_fields_settings($services);
+  }
+}
+
+/**
+ * Set form settings for optional services fields on installation.
+ *
+ * @param bool $services
+ *   If localgov_services is (being) installed.
+ */
+function localgov_elections_optional_fields_settings($services): void {
+  $properties = [
+    'targetEntityType' => 'node',
+    'bundle' => 'localgov_election',
+  ];
+  if ($form_displays = \Drupal::entityTypeManager()->getStorage('entity_form_display')->loadByProperties($properties)) {
+    foreach ($form_displays as $form_display) {
+      assert($form_display instanceof EntityFormDisplayInterface);
+      if ($services && !$form_display->getComponent('localgov_services_parent')) {
+        $form_display->setComponent('localgov_services_parent', [
+          'type' => 'entity_reference_autocomplete',
+          'region' => 'content',
+          'settings' => [
+            'match_operator' => 'CONTAINS',
+            'size' => '60',
+            'placeholder' => '',
+            'match_limit' => 10,
+          ],
+          'weight' => -1,
+        ])->save();
+        if (
+          ($field_groups = $form_display->getThirdPartySettings('field_group')) &&
+          ($group = $field_groups['group_description'] ?? FALSE)
+        ) {
+          $group['children'][] = 'localgov_services_parent';
+          $form_display->setThirdPartySetting('field_group', 'group_description', $group)
+            ->save();
+        }
+      }
+    }
+  }
 }
 
 /**
