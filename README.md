@@ -33,13 +33,14 @@ The libraries required by Charts/Highcharts are included, by default via CDN. If
 
 You may also wish to use the submodules provided as part of the Localgov Election Reporting module. They are:
 
-1. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 District Wards
-2. LocalGov Elections Reporting ONS Divisions 2024 - Boundary source provider for Office of National Statistics 2024 County Divisions
-3. LocalGov Elections Reporting ONS Parishes 2024 - Boundary source provider for Office of National Statistics 2024 Parishes
-4. Localgov Elections Parliamentary Constituency Provider - Boundary source provider for Office of National Statistics 2024 constituency boundaries
-5. LocalGov Elections Reporting Social Post Integration - Post results to social media (Twitter/X)
-6. LocalGov Elections Reporting Demo - Demo content to help with testing/evaluation
-7. LocalGov Elections Reporting - UK Parties - Adds the majority of UK political parties to the party taxonomy.
+1. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 District Wards - **DEPRECATED**
+2. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 District Wards
+3. LocalGov Elections Reporting ONS Divisions 2024 - Boundary source provider for Office of National Statistics 2024 County Divisions
+4. LocalGov Elections Reporting ONS Parishes 2024 - Boundary source provider for Office of National Statistics 2024 Parishes
+5. Localgov Elections Parliamentary Constituency Provider - Boundary source provider for Office of National Statistics 2024 constituency boundaries
+6. LocalGov Elections Reporting Social Post Integration - Post results to social media (Twitter/X)
+7. LocalGov Elections Reporting Demo - Demo content to help with testing/evaluation
+8. LocalGov Elections Reporting - UK Parties - Adds the majority of UK political parties to the party taxonomy.
 
 Further details for these modules are in their own module READMEs and the [Documentation](docs/index.md).
 

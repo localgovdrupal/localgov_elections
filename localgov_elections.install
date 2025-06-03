@@ -12,6 +12,10 @@ use Drupal\Core\Entity\EntityStorageException;
  * Implements hook_install().
  */
 function localgov_elections_install($is_syncing): void {
+  if ($is_syncing) {
+    return;
+  }
+
   $module_path = \Drupal::getContainer()
     ->get('module_handler')
     ->getModule('localgov_elections')
@@ -24,6 +28,11 @@ function localgov_elections_install($is_syncing): void {
     $config_data = $files->read($id);
     $config = \Drupal::configFactory()->getEditable($id);
     $config->setData($config_data)->save();
+  }
+
+  $services = \Drupal::moduleHandler()->moduleExists('localgov_services_navigation');
+  if ($services) {
+    localgov_elections_optional_fields_settings($services);
   }
 }
 
