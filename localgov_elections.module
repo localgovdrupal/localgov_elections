@@ -46,12 +46,12 @@ function localgov_elections_theme($existing, $type, $theme, $path): mixed {
 /**
  * Implements hook_modules_installed().
  */
-function localgov_elections_modules_installed($modules, $is_syncing) {
+function localgov_elections_modules_installed($modules, $is_syncing): void {
   if ($is_syncing) {
     return;
   }
 
-  $services = in_array('localgov_services_navigation', $modules);
+  $services = in_array('localgov_services_navigation', $modules, TRUE);
   if ($services) {
     \Drupal::service('config.installer')->installOptionalConfig(NULL, [
       'config' => 'field.storage.node.localgov_services_parent',
@@ -66,7 +66,7 @@ function localgov_elections_modules_installed($modules, $is_syncing) {
  * @param bool $services
  *   If localgov_services is (being) installed.
  */
-function localgov_elections_optional_fields_settings($services) {
+function localgov_elections_optional_fields_settings($services): void {
   $properties = [
     'targetEntityType' => 'node',
     'bundle' => 'localgov_election',

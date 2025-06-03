@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityStorageException;
 /**
  * Implements hook_install().
  */
-function localgov_elections_install($is_syncing) {
+function localgov_elections_install($is_syncing): void {
   if ($is_syncing) {
     return;
   }
