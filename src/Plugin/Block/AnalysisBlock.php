@@ -109,7 +109,7 @@ class AnalysisBlock extends BlockBase {
       }
 
       // Display majority if we can.
-      if ($display_majority && isset($majority)) {
+      if ($display_majority && !is_null($majority)) {
         $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--majority">Majority</div>';
         $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--majority">' . $majority . '</div>';
       }
@@ -118,6 +118,7 @@ class AnalysisBlock extends BlockBase {
       $previous_year = $node->localgov_election_previous_year->value;
       $previous_winning_party = $node->localgov_election_prev_winner->entity;
       $previous_result = $node->localgov_election_prev_result->referencedEntity;
+      $previous_winner_abbr = '';
       if (isset($previous_winning_party)) {
         $previous_winner_abbr = $previous_winning_party->localgov_election_abbreviation->value;
       }

@@ -126,7 +126,7 @@ class AreaVoteSocialPostForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): static {
     return new static(
         $container->get('config.factory'),
         $container->get('social_post.user_manager'),
@@ -149,7 +149,7 @@ class AreaVoteSocialPostForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL): array {
+  public function buildForm(array $form, FormStateInterface $form_state, ?NodeInterface $node = NULL): array {
     if ($node->bundle() != "localgov_area_vote") {
       $this->messenger()->addError("Can only post from area vote nodes");
       return $form;
@@ -258,7 +258,7 @@ class AreaVoteSocialPostForm extends FormBase {
    * @return void
    *   Returns nothing.
    */
-  public function edit($form, FormStateInterface $form_state) {
+  public function edit($form, FormStateInterface $form_state): void {
     $form_state->set('preview', NULL);
     $data = $form_state->get('original_data');
     $form_state->setValue('account', $data['account']);
@@ -277,7 +277,7 @@ class AreaVoteSocialPostForm extends FormBase {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function preview($form, FormStateInterface $form_state) {
+  public function preview($form, FormStateInterface $form_state): void {
     $message = $this->getTokenizedMessage($form, $form_state);
     $form_state->set('preview', $message);
     $form_state->set('original_data', [
@@ -314,7 +314,7 @@ class AreaVoteSocialPostForm extends FormBase {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  protected function getTokenizedMessage($form, FormStateInterface $form_state) {
+  protected function getTokenizedMessage($form, FormStateInterface $form_state): string {
     $message = $form_state->getValue('message');
     $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
     return $this->tokenService->replace($message,
@@ -330,7 +330,7 @@ class AreaVoteSocialPostForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $keys = array_keys($form_state->get('original_data')['account']);
     $accounts = array_filter($this->userManager->getAccounts('social_post_twitter'), function ($obj) use ($keys) {
-      return in_array($obj->id(), $keys);
+      return in_array($obj->id(), $keys, TRUE);
     });
 
     $message = $form_state->getValue('preview');
@@ -360,7 +360,7 @@ class AreaVoteSocialPostForm extends FormBase {
    * @return array
    *   An array of accounts.
    */
-  protected function getTwitterAccounts() {
+  protected function getTwitterAccounts(): array {
     $return_array = [];
     $accounts = $this->userManager->getAccounts('social_post_twitter');
     foreach ($accounts as $acc) {

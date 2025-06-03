@@ -45,7 +45,7 @@ class BoundaryPluginCollection extends DefaultSingleLazyPluginCollection {
   /**
    * {@inheritdoc}
    */
-  protected function initializePlugin($instance_id) {
+  protected function initializePlugin($instance_id): void {
     if (!$instance_id) {
       throw new PluginException("The boundary source '{$this->boundarySourceId}' did not specify a plugin.");
     }

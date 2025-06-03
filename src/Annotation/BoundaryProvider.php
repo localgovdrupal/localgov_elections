@@ -9,12 +9,16 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Defines boundary_provider annotation object.
  *
+ * @see plugin_api
+ *
  * @Annotation
  */
 class BoundaryProvider extends Plugin {
 
   /**
    * The plugin ID.
+   *
+   * @phpstan-ignore-next-line This is allowed in Drupal, but PHPStan complains even though this is valid
    */
   public readonly string $id;
 
@@ -22,6 +26,8 @@ class BoundaryProvider extends Plugin {
    * The human-readable name of the plugin.
    *
    * @ingroup plugin_translatable
+   *
+   * @phpstan-ignore-next-line This is allowed in Drupal, but PHPStan complains even though this is valid
    */
   public readonly string $title;
 
@@ -29,6 +35,8 @@ class BoundaryProvider extends Plugin {
    * The description of the plugin.
    *
    * @ingroup plugin_translatable
+   *
+   * @phpstan-ignore-next-line This is allowed in Drupal, but PHPStan complains even though this is valid
    */
   public readonly string $description;
 
@@ -39,6 +47,8 @@ class BoundaryProvider extends Plugin {
    * form at the moment.
    *
    * @returns array
+   *
+   * @phpstan-ignore-next-line This is allowed in Drupal, but PHPStan complains even though this is valid
    */
   public array $form = [];
 

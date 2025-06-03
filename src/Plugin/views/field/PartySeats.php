@@ -15,7 +15,7 @@ class PartySeats extends FieldPluginBase {
   /**
    * Leave empty to avoid a query on this field.
    */
-  public function query() {
+  public function query(): void {
 
   }
 
@@ -24,7 +24,7 @@ class PartySeats extends FieldPluginBase {
    *
    * @{inheritdoc}
    */
-  public function render(ResultRow $values) {
+  public function render(ResultRow $values): int {
 
     return 3;
   }

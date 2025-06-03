@@ -1,4 +1,5 @@
 # LocalGov Elections Reporting ONS Wards 2023 (Boundary Source Provider)
+## NOTE: This is **Deprecated** for all new installs use: LocalGov Elections Reporting ONS Wards 2024  
 
 A key part of the module is the idea of boundary source providers. Given that there are many different ways to classify
 election areas (wards, parishes, constituencies) and also change over time. This means we can't provide a one size fits
@@ -16,7 +17,7 @@ This dataset provides boundary data for UK Wards.
 
 We also link to a different dataset in the plugin form which is used to help the user find the correct Local Authority
 District Code for when specifying their electoral area. This dataset is
-titled "[Local Authority Districts (April 2023) Names and Codes in the United Kingdom](https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-united-kingdom/explore?showTable=true)".
+titled "[Local Authority Districts (April 2023) Names and Codes in the United Kingdom](https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore)".
 
 ## Boundary Fetching Process
 

@@ -20,7 +20,7 @@ interface BoundaryProviderInterface extends PluginInspectionInterface, Configura
    * @param BoundarySourceInterface $config_instance
    *   The boundary source configuration instance.
    */
-  public function setConfigInstance(BoundarySourceInterface $config_instance);
+  public function setConfigInstance(BoundarySourceInterface $config_instance): void;
 
   /**
    * Get the config instance.
@@ -50,6 +50,6 @@ interface BoundaryProviderInterface extends PluginInspectionInterface, Configura
    * @param array $form_values
    *   The form values which come from the boundary fetch submission.
    */
-  public function createBoundaries(BoundarySourceInterface $entity, array $form_values);
+  public function createBoundaries(BoundarySourceInterface $entity, array $form_values): void;
 
 }

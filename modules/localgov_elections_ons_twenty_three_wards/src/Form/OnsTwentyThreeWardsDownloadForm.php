@@ -35,7 +35,7 @@ class OnsTwentyThreeWardsDownloadForm implements BoundaryProviderSubformInterfac
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): static {
     return new static($container->get('http_client'), $container->get('request_stack'));
   }
 
@@ -62,7 +62,7 @@ class OnsTwentyThreeWardsDownloadForm implements BoundaryProviderSubformInterfac
   /**
    * {@inheritDoc}
    */
-  public function setPlugin(BoundaryProviderInterface $plugin) {
+  public function setPlugin(BoundaryProviderInterface $plugin): void {
     $this->plugin = $plugin;
   }
 
@@ -76,7 +76,7 @@ class OnsTwentyThreeWardsDownloadForm implements BoundaryProviderSubformInterfac
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
     $opts = [];
     $form['options'] =
         [
@@ -103,14 +103,14 @@ class OnsTwentyThreeWardsDownloadForm implements BoundaryProviderSubformInterfac
   /**
    * {@inheritdoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state): void {
     // @todo any validation needed?
   }
 
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
     // @todo any submit handling needed?
   }
 

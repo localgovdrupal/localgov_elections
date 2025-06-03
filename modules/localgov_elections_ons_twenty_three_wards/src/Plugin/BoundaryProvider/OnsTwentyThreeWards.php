@@ -62,7 +62,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): static {
     return new static(
         $configuration,
         $plugin_id,
@@ -107,23 +107,23 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration() {
+  public function defaultConfiguration(): array {
     return [];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isConfigurable() {
+  public function isConfigurable(): true {
     return TRUE;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
 
-    $url = "https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-united-kingdom/explore?showTable=true";
+    $url = "https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-april-2023-names-and-codes-in-the-uk/explore";
 
     $form['lad'] = [
       '#type' => 'textfield',
@@ -167,7 +167,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
     $matched_features = [];
     if ($response->getStatusCode() == 200) {
       foreach ($json_decoded['features'] as $feature) {
-        if (in_array($feature['properties']['WD23CD'], $ids)) {
+        if (in_array($feature['properties']['WD23CD'], $ids, TRUE)) {
           $matched_features[] = $feature;
           $num_matched++;
         }
@@ -183,7 +183,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
   /**
    * {@inheritdoc}
    */
-  public function createBoundaries(BoundarySourceInterface $entity, array $form_values) {
+  public function createBoundaries(BoundarySourceInterface $entity, array $form_values): void {
     $lad = $entity->getSettings()['lad'];
     $vals = array_keys(array_filter($form_values['plugin']['config']['options'], function ($item) {
       return $item !== 0;
@@ -216,7 +216,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
   /**
    * {@inheritDoc}
    */
-  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state): void {
     // Should be not null since we enforce on form.
     $lad = $form_state->getValue('lad');
     // @todo Unsure if we should expose this and the other URL.
@@ -235,7 +235,7 @@ class OnsTwentyThreeWards extends BoundaryProviderPluginBase implements Containe
   /**
    * {@inheritdoc}
    */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
     // Nothing to do.
   }
 

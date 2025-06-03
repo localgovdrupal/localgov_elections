@@ -21,7 +21,7 @@ use Drupal\views\ViewExecutable;
 /**
  * Implements hook_theme().
  */
-function localgov_elections_theme($existing, $type, $theme, $path) {
+function localgov_elections_theme($existing, $type, $theme, $path): mixed {
   return [
     'ward_result' => [
       'variables' => [
@@ -102,7 +102,7 @@ function localgov_elections_optional_fields_settings($services) {
 /**
  * Implements hook_entity_presave().
  */
-function localgov_elections_entity_presave(EntityInterface $entity) {
+function localgov_elections_entity_presave(EntityInterface $entity): void {
   if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_area_vote') {
 
     // Trigger when division vote saved to update the winning candidate only
@@ -168,7 +168,7 @@ function localgov_elections_entity_presave(EntityInterface $entity) {
  * @return void
  *   Returns nothing.
  */
-function localgov_elections_generate_election_aliases(NodeInterface $entity) {
+function localgov_elections_generate_election_aliases(NodeInterface $entity): void {
   if ($entity->getType() == 'localgov_election') {
 
     // Check if the parent election node is aliased.
@@ -228,7 +228,7 @@ function localgov_elections_generate_election_aliases(NodeInterface $entity) {
 /**
  * Implements hook_ENTITY_TYPE_update().
  */
-function localgov_elections_path_alias_update(EntityInterface $entity) {
+function localgov_elections_path_alias_update(EntityInterface $entity): void {
   /** @var \Drupal\path_alias\Entity\PathAlias $original_entity */
   $original_entity = $entity->original;
 
@@ -254,7 +254,7 @@ function localgov_elections_path_alias_update(EntityInterface $entity) {
 /**
  * Implements hook_ENTITY_TYPE_insert().
  */
-function localgov_elections_path_alias_insert(EntityInterface $entity) {
+function localgov_elections_path_alias_insert(EntityInterface $entity): void {
   $path = $entity->getPath();
   $url = Url::fromUserInput($path);
   $params = $url->getRouteParameters();
@@ -276,7 +276,7 @@ function localgov_elections_path_alias_insert(EntityInterface $entity) {
  * @param string $alias
  *   The alias path (e.g., '/my-custom-alias').
  */
-function localgov_elections_delete_alias_by_alias($alias) {
+function localgov_elections_delete_alias_by_alias($alias): void {
   $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
   $alias_entities = $storage->loadByProperties(['alias' => $alias]);
 
@@ -298,7 +298,7 @@ function localgov_elections_delete_alias_by_alias($alias) {
  * @return void
  *   Returns nothing.
  */
-function localgov_elections_delete_election_aliases(NodeInterface $election) {
+function localgov_elections_delete_election_aliases(NodeInterface $election): void {
 
   // Map page.
   $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $election->id()]);
@@ -342,7 +342,7 @@ function localgov_elections_delete_election_aliases(NodeInterface $election) {
  * @return bool
  *   True if alias exists else false.
  */
-function localgov_elections_alias_exists(string $alias) {
+function localgov_elections_alias_exists(string $alias): bool {
   // Get the alias manager service.
   $alias_manager = \Drupal::service('path_alias.manager');
 
@@ -365,7 +365,7 @@ function localgov_elections_alias_exists(string $alias) {
  * @return string|null
  *   Returns alias or null.
  */
-function localgov_elections_get_entity_alias(string $entity_type, int|string $entity_id) {
+function localgov_elections_get_entity_alias(string $entity_type, int|string $entity_id): ?string {
   // Load the entity.
   $entity = \Drupal::entityTypeManager()->getStorage($entity_type)->load($entity_id);
 
@@ -414,7 +414,7 @@ function localgov_elections_create_alias(string $path, string $alias): bool {
 /**
  * Implements hook_entity_predelete().
  */
-function localgov_elections_entity_predelete(EntityInterface $entity) {
+function localgov_elections_entity_predelete(EntityInterface $entity): void {
   // Triggered just before an Election node is deleted.
   if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_election') {
     $election_id = $entity->id();
@@ -452,7 +452,7 @@ function localgov_elections_entity_predelete(EntityInterface $entity) {
 /**
  * Implements hook_views_data_alter().
  */
-function localgov_elections_views_data_alter(array &$data) {
+function localgov_elections_views_data_alter(array &$data): void {
   $data['node']['ward_majority'] = [
     'title' => t('Ward majority'),
     'field' => [
@@ -556,7 +556,7 @@ function localgov_elections_views_data_alter(array &$data) {
 /**
  * Implements hook_menu_local_tasks_alter().
  */
-function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
+function localgov_elections_menu_local_tasks_alter(&$data, $route_name): void {
   // Hide 'Results timelines' tab from all nodes except 'Election' content
   // types.
   $node = \Drupal::routeMatch()->getParameter('node');
@@ -580,7 +580,7 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
 
       // Add the "add area" button to the local tasks if user has permission.
       $can_add_areas = Drupal::currentUser()->hasPermission('can fetch boundaries');
-      if ($can_add_areas && in_array($route_name, $appropriate_fetch_routes)) {
+      if ($can_add_areas && in_array($route_name, $appropriate_fetch_routes, TRUE)) {
         $data['tabs'][0]['boundary_fetch'] = [
           '#theme' => 'menu_local_task',
           '#weight' => 100,
@@ -598,7 +598,7 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name) {
 /**
  * Implements hook_preprocess_HOOK().
  */
-function localgov_elections_preprocess_node(&$variables) {
+function localgov_elections_preprocess_node(&$variables): void {
   $node = $variables['elements']['#node'];
 
   if ($node->bundle() == 'localgov_area_vote') {
@@ -707,7 +707,7 @@ function localgov_elections_preprocess_node(&$variables) {
 /**
  * Implements hook_views_pre_render().
  */
-function localgov_elections_views_pre_render(ViewExecutable $view) {
+function localgov_elections_views_pre_render(ViewExecutable $view): void {
 
   if ($view->id() == 'localgov_electoral_candidates') {
     $view->element['#attached']['library'][] = 'localgov_elections/electoral_candidates_view';
@@ -733,7 +733,7 @@ function localgov_elections_views_pre_render(ViewExecutable $view) {
 /**
  * Implements hook_views_post_render().
  */
-function localgov_elections_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache) {
+function localgov_elections_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache): void {
   if ($view->id() == 'localgov_election_results_via_parties') {
     // Remove rows from rendered output where party is not standing in election
     // (these rows will be NULL)
@@ -757,7 +757,7 @@ function localgov_elections_views_post_render(ViewExecutable $view, array &$outp
 /**
  * Implements hook_chart_definition_CHART_ID_alter().
  */
-function localgov_elections_chart_definition_localgov_election_results_via_parties_block_1_alter(array &$definition, array $element, $chart_id) {
+function localgov_elections_chart_definition_localgov_election_results_via_parties_block_1_alter(array &$definition, array $element, $chart_id): void {
   $definition['yAxis'][0]['allowDecimals'] = FALSE;
   if (!empty($definition['series'][0]['data'])) {
     foreach ($definition['series'][0]['data'] as &$entry) {
@@ -803,7 +803,7 @@ function localgov_elections_chart_definition_localgov_election_results_via_parti
 /**
  * Implements hook_page_attachments_alter().
  */
-function localgov_elections_page_attachments(array &$attachments) {
+function localgov_elections_page_attachments(array &$attachments): void {
   $route = Drupal::routeMatch();
 
   if ($node = $route->getParameter('node')) {
@@ -821,7 +821,7 @@ function localgov_elections_page_attachments(array &$attachments) {
 /**
  * Implements hook_chart_alter().
  */
-function localgov_elections_chart_alter(array &$element, $chart_id) {
+function localgov_elections_chart_alter(array &$element, $chart_id): void {
   $config_obj = \Drupal::configFactory()->getEditable('views.view.localgov_election_results_via_parties');
   $chart_library = $config_obj->get('display.default.display_options.style.options.chart_settings.library');
   if ($chart_library == 'highcharts') {
@@ -836,7 +836,7 @@ function localgov_elections_chart_alter(array &$element, $chart_id) {
 /**
  * Calculates majority.
  */
-function _localgov_elections_calc_majority() {
+function _localgov_elections_calc_majority(): ?int {
   $node = \Drupal::routeMatch()->getParameter('node');
   $majority = NULL;
   if ($node instanceof NodeInterface) {
@@ -854,12 +854,13 @@ function _localgov_elections_calc_majority() {
       return (int) $majority;
     }
   }
+  return NULL;
 }
 
 /**
  * Gets party colours.
  */
-function _localgov_elections_party_colours() {
+function _localgov_elections_party_colours(): array {
   $results = [];
   $terms = Drupal::entityTypeManager()
     ->getStorage('taxonomy_term')
@@ -886,7 +887,7 @@ function _localgov_elections_party_colours() {
 /**
  * Implements hook_preprocess_HOOK().
  */
-function localgov_elections_preprocess_election_menu(&$variables) {
+function localgov_elections_preprocess_election_menu(&$variables): void {
   $attributes = new Attribute();
   $attributes->setAttribute('id', 'election-menu');
   $variables['attributes'] = $attributes;
@@ -911,7 +912,7 @@ function localgov_elections_preprocess_election_menu(&$variables) {
 /**
  * Implements hook_preprocess_HOOK().
  */
-function localgov_elections_preprocess_block(&$variables) {
+function localgov_elections_preprocess_block(&$variables): void {
   if ($variables['base_plugin_id'] == 'localgov_elections_electionmenu') {
     $variables['attributes']['class'][] = 'election-menu-block';
   }
@@ -932,14 +933,14 @@ function localgov_elections_preprocess_block(&$variables) {
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
  */
-function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   $form['#validate'][] = "localgov_elections_area_vote_form_validation";
 }
 
 /**
  * Implements hook_form_BASE_FORM_ID_alter().
  */
-function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   if (isset($form["name"]["widget"][0]['value'])) {
     $form["name"]["widget"][0]['value']["#description"] = t("The party name. Do not enter brackets in the party nameph.");
   }
@@ -948,7 +949,7 @@ function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form,
 /**
  * Validation function for area vote node forms.
  */
-function localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state) {
+function localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state): void {
   $contested = $form_state->getValue('localgov_election_no_contest')['value'];
   $candidates = $form_state->getValue('localgov_election_candidates');
   $candidate_keys = array_filter(array_keys($candidates), function ($key) {

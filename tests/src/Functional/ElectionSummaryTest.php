@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\localgov_elections\Functional;
 
-use Drupal\node\NodeInterface;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\node\NodeInterface;
 
 /**
  * Tests results heading text on the summary page.
@@ -19,7 +19,7 @@ class ElectionSummaryTest extends BrowserTestBase {
   /**
    * Tests result heading text.
    */
-  public function testResultHeadingOnSummaryPage() {
+  public function testResultHeadingOnSummaryPage(): void {
 
     $election_page_url = $this->electionPage->toUrl();
 
