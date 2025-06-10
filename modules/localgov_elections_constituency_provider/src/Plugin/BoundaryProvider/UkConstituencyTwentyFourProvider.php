@@ -113,7 +113,7 @@ class UkConstituencyTwentyFourProvider extends BoundaryProviderPluginBase implem
   /**
    * {@inheritdoc}
    */
-  public function isConfigurable(): true {
+  public function isConfigurable(): bool {
     return TRUE;
   }
 
