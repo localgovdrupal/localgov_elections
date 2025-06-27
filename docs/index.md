@@ -71,7 +71,7 @@ For each electoral area you need, do the following:
 
 ### Add candidate and electoral area details
 
-1. On viewing the election node you will be presented with a list of electoral area results. Use the `[edit]` link to access each electoral area details. ![image](images/ward-results.png)  
+1. On viewing the election node you will be presented with a list of electoral area results. Use the `[edit]` link to access each electoral area details. ![image](images/ward-results.png)
 
 2. You need to add the following details for each electoral area in the preparation stage
    1. Details tab - Eligible voters
@@ -90,7 +90,7 @@ If you are preparing for an election which is not 'all out' and only elects a pr
 
 ## Running an election
 
-Once the results from the count start to come in you can enter them from viewing the election node. 
+Once the results from the count start to come in you can enter them from viewing the election node.
 
 ### Entering electoral area results
 
@@ -98,13 +98,4 @@ Once the results from the count start to come in you can enter them from viewing
 2. For each candidate listed, click the Edit button and enter the number of votes they received.
 3. Click the 'Votes finalised' slider to confirm this result is declared.
 4. In the Overall results tab enter the number of spoils and whether it was a Hold or Gain for the winning party.
-5. Click Save or Save and Tweet (if you have enabled the submodule and wish to post the result to social media)
-
-### Tweet the result
-
-The module will need configured before use. Please see the submodule [documentation](../modules/localgov_election_reporting_social_post/README.md) for instructions.
-
-1. Having followed the process for [Entering electoral area results](#entering-electoral-area-results) you click Save and Tweet.
-2. You are then presented with a screen to select the account (as setup in submodule [documentation](../modules/localgov_election_reporting_social_post/README.md)) and the message to tweet. This supports tokens. ![image](images/tweet.png)
-3. Click Preview
-4. You can them Edit or Tweet.
+5. Click Save.
