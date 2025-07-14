@@ -2,7 +2,7 @@
  * @file Override charts libraries.
  */
 
-(function lgdElectionsScript(Drupal, once) {
+(function lgdElectionsChartsOverrideScript(Drupal, once) {
   Drupal.localgov_elections = Drupal.localgov_elections || {};
 
   Drupal.localgov_elections.setChartColours = function setChartColours(
@@ -34,7 +34,7 @@
     chartData.options.scales.x.ticks.precision = 0;
   };
 
-  Drupal.behaviors.charts_override = {
+  Drupal.behaviors.lgdElectionsChartsOverride = {
     attach(context, settings) {
       once('allChartJS', '.charts-chartjs', context).forEach((chart) => {
         chart.addEventListener(
