@@ -2,53 +2,57 @@
  * @file Override charts libraries.
  */
 
-(function (Drupal, once) {
+(function lgdElectionsScript(Drupal, once) {
   Drupal.localgov_elections = Drupal.localgov_elections || {};
 
-  Drupal.localgov_elections.setChartColours = function (chart_data, settings) {
-    let data = [];
+  Drupal.localgov_elections.setChartColours = function setChartColours(
+    chartData,
+    settings,
+  ) {
+    const data = [];
 
     // Strip out rows with no content in label.
-    chart_data.data.labels.forEach((entry, i) => {
-      if (entry === ""){
-        chart_data.data.datasets[0].data.splice(i,1);
-        chart_data.data.labels.splice(i,1);
+    chartData.data.labels.forEach(function stripEmptyLabels(entry, i) {
+      if (entry === '') {
+        chartData.data.datasets[0].data.splice(i, 1);
+        chartData.data.labels.splice(i, 1);
       }
     });
 
-    chart_data.data.labels.forEach((entry, i) => {
-      let colour = null;
+    chartData.data.labels.forEach(function setRowColour(entry) {
       // Find the background colour, so we can apply it to the row.
-      for (const [key, value] of Object.entries(settings.localgov_elections.parties)) {
-        if (entry.includes(value.full_name)) {
-          colour = value.colour;
-          break;
-        }
-      }
-      if (colour){
-        data.push(colour)
+      const found = Object.entries(settings.localgov_elections.parties).find(
+        ([, value]) => entry.includes(value.full_name),
+      );
+      if (found) {
+        data.push(found[1].colour);
       } else {
         data.push('#ffffff');
       }
-      colour = null;
     });
-    chart_data.data.datasets[0].backgroundColor = data;
-    chart_data.options.scales.x.ticks.precision = 0;
+    chartData.data.datasets[0].backgroundColor = data;
+    chartData.options.scales.x.ticks.precision = 0;
   };
 
   Drupal.behaviors.charts_override = {
-    attach: function (context, settings) {
-      once('allChartJS', '.charts-chartjs', context).forEach(chart => {
-          chart.addEventListener('drupalChartsConfigsInitialization', function (e) {
-            let data = e.detail;
+    attach(context, settings) {
+      once('allChartJS', '.charts-chartjs', context).forEach((chart) => {
+        chart.addEventListener(
+          'drupalChartsConfigsInitialization',
+          function handleChartsConfigsInitialization(e) {
+            const data = e.detail;
             const id = data.drupalChartDivId;
             Drupal.localgov_elections.setChartColours(data, settings);
-            if (id === 'chart-election-results-via-parties-block-1' || 'chart-localgov-election-results-via-parties-block-1') {
-              data.options.scales.y.grid = { display: false};
+            if (
+              id === 'chart-election-results-via-parties-block-1' ||
+              id === 'chart-localgov-election-results-via-parties-block-1'
+            ) {
+              data.options.scales.y.grid = { display: false };
               data.options.scales.y.ticks.autoSkip = false;
             }
-          });
-        });
-      }
+          },
+        );
+      });
+    },
   };
 })(Drupal, once);
