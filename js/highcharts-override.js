@@ -2,7 +2,7 @@
  * @file Override charts libraries.
  */
 
-function highchartsOverride(Drupal, once) {
+function lgdElectionsHighchartsOverrideScript(Drupal, once) {
   Drupal.localgov_elections = Drupal.localgov_elections || {};
   Drupal.localgov_elections.categoryFormatter = function categoryFormatter() {
     const val = this.value.trim();
@@ -15,10 +15,10 @@ function highchartsOverride(Drupal, once) {
       },
     );
     return (
-      `<div class='label-wrapper'>` +
-      `<span class='dot' style='background-color: ${color}'></span>` +
-      `<div>${this.value}</div>` +
-      `</div>`
+      `<div class='label-wrapper'>
+        <span class='dot' style='background-color: ${color}'></span>
+        <div>${this.value}</div>
+      </div>`
     );
   };
 
@@ -43,7 +43,7 @@ function highchartsOverride(Drupal, once) {
   ) {
     Drupal.localgov_elections.getChartInfo(chartData);
     chartData.series[0].data.forEach((entry, i) => {
-      // get data from earlier
+      // Get data from earlier.
       const _data = Drupal.localgov_elections.charts_data[i];
       Object.values(settings.localgov_elections.parties).forEach((value) => {
         if (_data.label.includes(value.full_name)) {
@@ -53,7 +53,7 @@ function highchartsOverride(Drupal, once) {
     });
   };
 
-  Drupal.behaviors.charts_override = {
+  Drupal.behaviors.lgdElectionsHighchartsOverride = {
     attach: function chartsOverrideAttach(context, settings) {
       const highCharts = once('allHighCharts', '.charts-highchart', context);
       if (highCharts) {
@@ -95,5 +95,4 @@ function highchartsOverride(Drupal, once) {
       }
     },
   };
-}
-highchartsOverride(Drupal, once);
+}(Drupal, once);

@@ -2,8 +2,8 @@
  * @file Election party colours.
  * */
 
-function partyColours(Drupal, once) {
-  Drupal.behaviors.party_colours = {
+function lgdElectionPartyColoursScript(Drupal, once) {
+  Drupal.behaviors.lgdElectionPartyColours = {
     attach(context, settings) {
       const boxes = once('allBoxes', '.box', context);
       if (boxes && boxes.length > 0) {
@@ -47,5 +47,4 @@ function partyColours(Drupal, once) {
       }
     },
   };
-}
-partyColours(Drupal, once);
+}(Drupal, once);

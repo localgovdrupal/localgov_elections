@@ -19,7 +19,7 @@
       }
     });
 
-    chartData.data.labels.forEach(function setRowColour(entry) {
+    chartData.data.labels.forEach((entry) => {
       // Find the background colour, so we can apply it to the row.
       const found = Object.entries(settings.localgov_elections.parties).find(
         ([, value]) => entry.includes(value.full_name),

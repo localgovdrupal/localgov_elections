@@ -2,8 +2,8 @@
  * @file Check/Uncheck all checkboxes.
  * */
 
-function selectAllIIFE(Drupal, once) {
-  Drupal.behaviors.selectAll = {
+function lgdElectionsSelectAllIIFE(Drupal, once) {
+  Drupal.behaviors.lgdElectionsSelectAll = {
     attach: function selectAllAttach(context) {
       const checkboxes = once('allCheckboxes', '.form-checkboxes', context);
       const selectAll = once('allSelectAlls', '.shield-select-all', context);
@@ -37,5 +37,4 @@ function selectAllIIFE(Drupal, once) {
       }
     },
   };
-}
-selectAllIIFE(Drupal, once);
+}(Drupal, once);

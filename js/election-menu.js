@@ -1,8 +1,8 @@
 /**
  * @file JS functions for the election menu block.
  */
-(function electionMenuScript(Drupal) {
-  Drupal.behaviors.electionMenu = {
+(function lgdElectionMenuScript(Drupal) {
+  Drupal.behaviors.lgdElectionMenu = {
     attach(context) {
       const electionMenuBlocks = once(
         'allElectionMenuBlocks',
