@@ -2,7 +2,7 @@ name: LocalGov Elections Reporting - ONS Divisions 2024
 description: ONS Divisions 2024 Plugin
 type: module
 package: LocalGov Drupal
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 
 dependencies:
   - localgov_elections:localgov_elections
