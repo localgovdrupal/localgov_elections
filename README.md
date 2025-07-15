@@ -9,7 +9,6 @@ the LocalGov Drupal distribution.
 - 'All-out' and not 'all-out' (e.g. halves or thirds) elections
 - Table, graph and map based views of the results
 - Extensible boundary source provider for electoral areas and geo data
-- Social media posting of results (currently Twitter / X)
 
 ## How to use
 
@@ -38,9 +37,8 @@ You may also wish to use the submodules provided as part of the Localgov Electio
 3. LocalGov Elections Reporting ONS Divisions 2024 - Boundary source provider for Office of National Statistics 2024 County Divisions
 4. LocalGov Elections Reporting ONS Parishes 2024 - Boundary source provider for Office of National Statistics 2024 Parishes
 5. Localgov Elections Parliamentary Constituency Provider - Boundary source provider for Office of National Statistics 2024 constituency boundaries
-6. LocalGov Elections Reporting Social Post Integration - Post results to social media (Twitter/X)
-7. LocalGov Elections Reporting Demo - Demo content to help with testing/evaluation
-8. LocalGov Elections Reporting - UK Parties - Adds the majority of UK political parties to the party taxonomy.
+6. LocalGov Elections Reporting Demo - Demo content to help with testing/evaluation
+7. LocalGov Elections Reporting - UK Parties - Adds the majority of UK political parties to the party taxonomy.
 
 Further details for these modules are in their own module READMEs and the [Documentation](docs/index.md).
 

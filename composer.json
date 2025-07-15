@@ -15,9 +15,7 @@
         "cweagans/composer-patches": "^1.6",
         "drupal/charts": "^5.0",
         "drupal/views_field_view": "^1.0@beta",
-        "drupal/views_simple_math_field": "^3.0",
-        "drupal/social_post": "^3.0",
-        "drupal/social_post_twitter": "^3.0"
+        "drupal/views_simple_math_field": "^3.0"
     },
     "extra": {
         "enable-patching": true,
@@ -25,11 +23,6 @@
         "patchLevel": {
             "drupal/core": "-p2"
         },
-        "patches": {
-            "drupal/social_post_twitter": {
-                "Fix API integration (see https://www.drupal.org/project/social_post_twitter/issues/3392216)": "https://www.drupal.org/files/issues/2023-10-13/twitter_fixes.patch",
-                "Fix WOD (see https://www.drupal.org/project/social_post_twitter/issues/3436436#comment-15522882)": "https://www.drupal.org/files/issues/2024-03-27/sdk-init-fix.patch"
-            }
-        }
+        "patches": {}
     }
 }
