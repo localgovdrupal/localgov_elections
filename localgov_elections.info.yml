@@ -2,7 +2,7 @@ name: LocalGov Elections Reporting
 description: Election reporting module.
 type: module
 package: LocalGov Drupal
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 
 dependencies:
   - autocomplete_deluxe:autocomplete_deluxe
