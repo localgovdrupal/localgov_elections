@@ -1,3 +1,4 @@
+uuid: a8e7a2ba-87ed-4840-8ad1-bec200c410f0
 langcode: en
 status: true
 dependencies:
@@ -10,11 +11,13 @@ dependencies:
   enforced:
     module:
       - localgov_elections
+_core:
+  default_config_hash: xR_5-Ac_icG_kYtVe4O4JkxpfIdbo_l3j4x-ety1tSg
 id: node.localgov_area_vote.localgov_election_winner
 field_name: localgov_election_winner
 entity_type: node
 bundle: localgov_area_vote
-label: 'Elected candidate(s)'
+label: 'Winning candidate(s)'
 description: ''
 required: false
 translatable: false
@@ -27,10 +30,34 @@ settings:
       localgov_election_candidate: localgov_election_candidate
     negate: 0
     target_bundles_drag_drop:
+      from_library:
+        weight: 11
+        enabled: false
+      localgov_area_seat:
+        weight: 12
+        enabled: false
+      localgov_area_vote:
+        weight: 15
+        enabled: false
+      localgov_contact:
+        weight: 14
+        enabled: false
       localgov_election_candidate:
         weight: 14
         enabled: true
-      localgov_area_vote:
-        weight: 15
+      localgov_image:
+        weight: 16
+        enabled: false
+      localgov_link:
+        weight: 17
+        enabled: false
+      localgov_numbered_text:
+        weight: 18
+        enabled: false
+      localgov_text:
+        weight: 19
+        enabled: false
+      topic_list_builder:
+        weight: 20
         enabled: false
 field_type: entity_reference_revisions

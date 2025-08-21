@@ -1,3 +1,4 @@
+uuid: 6e8151c2-64f8-49e7-8369-ec9ec9f46f64
 langcode: en
 status: true
 dependencies:
@@ -24,6 +25,8 @@ dependencies:
   enforced:
     module:
       - localgov_elections
+_core:
+  default_config_hash: Y5_yCONjAAFJqn8B9f8qQXlaew4Btu0-9chZFGQVRNE
 id: localgov_election_results
 label: 'Election Results'
 module: views
@@ -586,8 +589,431 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
-  block_3:
-    id: block_3
+  block_4:
+    id: block_4
+    display_title: 'Chart overview'
+    display_plugin: block
+    position: 4
+    display_options:
+      title: 'Overall Results'
+      fields:
+        localgov_election_abbreviation:
+          id: localgov_election_abbreviation
+          table: taxonomy_term__localgov_election_abbreviation
+          field: localgov_election_abbreviation
+          relationship: localgov_election_party
+          group_type: count
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        localgov_election_abbreviation_1:
+          id: localgov_election_abbreviation_1
+          table: taxonomy_term__localgov_election_abbreviation
+          field: localgov_election_abbreviation
+          relationship: localgov_election_party
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+      sorts:
+        localgov_election_abbreviation_value:
+          id: localgov_election_abbreviation_value
+          table: taxonomy_term__localgov_election_abbreviation
+          field: localgov_election_abbreviation_value
+          relationship: localgov_election_party
+          group_type: count
+          admin_label: ''
+          plugin_id: standard
+          order: DESC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
+      style:
+        type: chart
+        options:
+          grouping: {  }
+          chart_settings:
+            library: chartjs
+            type: bar
+            fields:
+              label: localgov_election_abbreviation_1
+              stacking: false
+              data_providers:
+                localgov_election_abbreviation:
+                  enabled: true
+                  color: '#080808'
+                  weight: 2
+                localgov_election_abbreviation_1:
+                  enabled: false
+                  color: '#000000'
+                  weight: 3
+            display:
+              title: ''
+              title_position: out
+              subtitle: ''
+              data_labels: true
+              data_markers: false
+              legend_position: ''
+              background: ''
+              three_dimensional: 0
+              polar: 0
+              tooltips: true
+              dimensions:
+                width: ''
+                width_units: '%'
+                height: ''
+                height_units: ''
+              gauge:
+                max: '100'
+                min: '0'
+                green_from: '85'
+                green_to: '100'
+                yellow_from: '50'
+                yellow_to: '85'
+                red_from: '0'
+                red_to: '50'
+              color_changer: false
+            xaxis:
+              title: ''
+              labels_rotation: '0'
+            yaxis:
+              title: ''
+              min: ''
+              max: ''
+              prefix: ''
+              suffix: ''
+              decimal_count: '0'
+              labels_rotation: '0'
+      row:
+        type: fields
+        options: {  }
+      defaults:
+        title: false
+        group_by: false
+        style: false
+        row: false
+        relationships: false
+        fields: false
+        sorts: false
+      relationships:
+        localgov_election_winner:
+          id: localgov_election_winner
+          table: node__localgov_election_winner
+          field: localgov_election_winner
+          relationship: none
+          group_type: group
+          admin_label: 'localgov_election_winner: Paragraph'
+          plugin_id: standard
+          required: false
+        localgov_election_party:
+          id: localgov_election_party
+          table: paragraph__localgov_election_party
+          field: localgov_election_party
+          relationship: localgov_election_winner
+          group_type: group
+          admin_label: 'localgov_election_party: Taxonomy term'
+          plugin_id: standard
+          required: false
+      group_by: true
+      display_description: ''
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url
+        - 'user.node_grants:view'
+        - user.permissions
+      tags:
+        - 'config:field.storage.taxonomy_term.localgov_election_abbreviation'
+  block_5:
+    id: block_5
+    display_title: Majority
+    display_plugin: block
+    position: 2
+    display_options:
+      title: ''
+      fields:
+        nid:
+          id: nid
+          table: node_field_data
+          field: nid
+          relationship: none
+          group_type: count
+          admin_label: ''
+          entity_type: node
+          entity_field: nid
+          plugin_id: field
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ','
+          field_api_classes: false
+          set_precision: false
+          precision: 0
+          decimal: .
+          format_plural: 0
+          format_plural_string: !!binary MQNAY291bnQ=
+          prefix: ''
+          suffix: ''
+        election_majority:
+          id: election_majority
+          table: node
+          field: election_majority
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          plugin_id: election_majority
+          label: 'Overall majority required'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+      sorts:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          entity_field: status
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
+      style:
+        type: default
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
+      row:
+        type: fields
+        options: {  }
+      defaults:
+        title: false
+        group_by: false
+        style: false
+        row: false
+        relationships: false
+        fields: false
+        sorts: false
+      relationships: {  }
+      group_by: true
+      display_description: 'Calculated field 50% of Wards count + 1'
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - 'user.node_grants:view'
+        - user.permissions
+      tags: {  }
+  summary_table:
+    id: summary_table
     display_title: 'Summary Table'
     display_plugin: block
     position: 3
@@ -1370,7 +1796,10 @@ display:
           table: views
           field: area_election_results_heading
           plugin_id: localgov_elections_results_heading
-      display_extenders: {  }
+      display_extenders:
+        localgov_page_header_display_extender:
+          lede: ''
+          tokenize: false
     cache_metadata:
       max-age: -1
       contexts:
@@ -1386,426 +1815,3 @@ display:
         - 'config:field.storage.paragraph.localgov_election_candidate'
         - 'config:field.storage.paragraph.localgov_election_forename'
         - 'config:field.storage.paragraph.localgov_election_votes'
-  block_4:
-    id: block_4
-    display_title: 'Chart overview'
-    display_plugin: block
-    position: 4
-    display_options:
-      title: 'Overall Results'
-      fields:
-        localgov_election_abbreviation:
-          id: localgov_election_abbreviation
-          table: taxonomy_term__localgov_election_abbreviation
-          field: localgov_election_abbreviation
-          relationship: localgov_election_party
-          group_type: count
-          admin_label: ''
-          plugin_id: field
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-        localgov_election_abbreviation_1:
-          id: localgov_election_abbreviation_1
-          table: taxonomy_term__localgov_election_abbreviation
-          field: localgov_election_abbreviation
-          relationship: localgov_election_party
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-      sorts:
-        localgov_election_abbreviation_value:
-          id: localgov_election_abbreviation_value
-          table: taxonomy_term__localgov_election_abbreviation
-          field: localgov_election_abbreviation_value
-          relationship: localgov_election_party
-          group_type: count
-          admin_label: ''
-          plugin_id: standard
-          order: DESC
-          expose:
-            label: ''
-            field_identifier: ''
-          exposed: false
-      style:
-        type: chart
-        options:
-          grouping: {  }
-          chart_settings:
-            library: chartjs
-            type: bar
-            fields:
-              label: localgov_election_abbreviation_1
-              stacking: false
-              data_providers:
-                localgov_election_abbreviation:
-                  enabled: true
-                  color: '#080808'
-                  weight: 2
-                localgov_election_abbreviation_1:
-                  enabled: false
-                  color: '#000000'
-                  weight: 3
-            display:
-              title: ''
-              title_position: out
-              subtitle: ''
-              data_labels: true
-              data_markers: false
-              legend_position: ''
-              background: ''
-              three_dimensional: 0
-              polar: 0
-              tooltips: true
-              dimensions:
-                width: ''
-                width_units: '%'
-                height: ''
-                height_units: ''
-              gauge:
-                max: '100'
-                min: '0'
-                green_from: '85'
-                green_to: '100'
-                yellow_from: '50'
-                yellow_to: '85'
-                red_from: '0'
-                red_to: '50'
-              color_changer: false
-            xaxis:
-              title: ''
-              labels_rotation: '0'
-            yaxis:
-              title: ''
-              min: ''
-              max: ''
-              prefix: ''
-              suffix: ''
-              decimal_count: '0'
-              labels_rotation: '0'
-      row:
-        type: fields
-        options: {  }
-      defaults:
-        title: false
-        group_by: false
-        style: false
-        row: false
-        relationships: false
-        fields: false
-        sorts: false
-      relationships:
-        localgov_election_winner:
-          id: localgov_election_winner
-          table: node__localgov_election_winner
-          field: localgov_election_winner
-          relationship: none
-          group_type: group
-          admin_label: 'localgov_election_winner: Paragraph'
-          plugin_id: standard
-          required: false
-        localgov_election_party:
-          id: localgov_election_party
-          table: paragraph__localgov_election_party
-          field: localgov_election_party
-          relationship: localgov_election_winner
-          group_type: group
-          admin_label: 'localgov_election_party: Taxonomy term'
-          plugin_id: standard
-          required: false
-      group_by: true
-      display_description: ''
-      display_extenders: {  }
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_content'
-        - 'languages:language_interface'
-        - url
-        - 'user.node_grants:view'
-        - user.permissions
-      tags:
-        - 'config:field.storage.taxonomy_term.localgov_election_abbreviation'
-  block_5:
-    id: block_5
-    display_title: Majority
-    display_plugin: block
-    position: 2
-    display_options:
-      title: ''
-      fields:
-        nid:
-          id: nid
-          table: node_field_data
-          field: nid
-          relationship: none
-          group_type: count
-          admin_label: ''
-          entity_type: node
-          entity_field: nid
-          plugin_id: field
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: number_integer
-          settings:
-            thousand_separator: ''
-            prefix_suffix: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ','
-          field_api_classes: false
-          set_precision: false
-          precision: 0
-          decimal: .
-          format_plural: 0
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
-        election_majority:
-          id: election_majority
-          table: node
-          field: election_majority
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: node
-          plugin_id: election_majority
-          label: 'Overall majority required'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-      sorts:
-        status:
-          id: status
-          table: node_field_data
-          field: status
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: node
-          entity_field: status
-          plugin_id: standard
-          order: ASC
-          expose:
-            label: ''
-            field_identifier: ''
-          exposed: false
-      style:
-        type: default
-        options:
-          grouping: {  }
-          row_class: ''
-          default_row_class: true
-      row:
-        type: fields
-        options: {  }
-      defaults:
-        title: false
-        group_by: false
-        style: false
-        row: false
-        relationships: false
-        fields: false
-        sorts: false
-      relationships: {  }
-      group_by: true
-      display_description: 'Calculated field 50% of Wards count + 1'
-      display_extenders: {  }
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_interface'
-        - url
-        - 'user.node_grants:view'
-        - user.permissions
-      tags: {  }
