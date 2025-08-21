@@ -5,11 +5,12 @@ dependencies:
     - field.field.node.localgov_election.body
     - field.field.node.localgov_election.localgov_election_add_all_areas
     - field.field.node.localgov_election.localgov_election_date
-    - field.field.node.localgov_election.localgov_election_majority
     - field.field.node.localgov_election.localgov_election_display_map
+    - field.field.node.localgov_election.localgov_election_majority
     - field.field.node.localgov_election.localgov_election_organisation
     - field.field.node.localgov_election.localgov_election_service_type
     - field.field.node.localgov_election.localgov_election_type
+    - field.field.node.localgov_election.localgov_services_parent
     - node.type.localgov_election
   module:
     - datetime
@@ -39,9 +40,11 @@ third_party_settings:
         width_breakpoint: 640
     group_description:
       children:
+        - localgov_services_parent
         - title
         - localgov_election_date
         - localgov_election_type
+        - localgov_election_default_seat_count
         - localgov_election_display_map
         - localgov_election_majority
       label: Details
@@ -73,6 +76,8 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
+_core:
+  default_config_hash: LmBi58q0SjAxMzYSr97sU4vZq1Zfnv-AuQ0AnSELDtI
 id: node.localgov_election.default
 targetEntityType: node
 bundle: localgov_election
@@ -80,7 +85,7 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 1
+    weight: 52
     region: content
     settings:
       rows: 9
@@ -96,16 +101,9 @@ content:
     third_party_settings: {  }
   localgov_election_date:
     type: datetime_default
-    weight: 2
+    weight: 1
     region: content
     settings: {  }
-    third_party_settings: {  }
-  localgov_election_majority:
-    type: boolean_checkbox
-    weight: 5
-    region: content
-    settings:
-      display_label: true
     third_party_settings: {  }
   localgov_election_display_map:
     type: boolean_checkbox
@@ -114,9 +112,16 @@ content:
     settings:
       display_label: true
     third_party_settings: {  }
+  localgov_election_majority:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
   localgov_election_organisation:
     type: link_default
-    weight: 2
+    weight: 53
     region: content
     settings:
       placeholder_url: ''
@@ -124,7 +129,7 @@ content:
     third_party_settings: {  }
   localgov_election_service_type:
     type: link_default
-    weight: 3
+    weight: 54
     region: content
     settings:
       placeholder_url: ''
@@ -132,9 +137,19 @@ content:
     third_party_settings: {  }
   localgov_election_type:
     type: options_select
-    weight: 3
+    weight: 2
     region: content
     settings: {  }
+    third_party_settings: {  }
+  localgov_services_parent:
+    type: entity_reference_autocomplete
+    weight: -1
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default
@@ -176,7 +191,7 @@ content:
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: 1
+    weight: 0
     region: content
     settings:
       size: 60
@@ -191,6 +206,11 @@ content:
       match_limit: 10
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  url_redirects:
+    weight: 50
+    region: content
+    settings: {  }
     third_party_settings: {  }
 hidden:
   localgov_election_add_all_areas: true

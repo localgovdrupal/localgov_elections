@@ -1,0 +1,40 @@
+langcode: en
+status: false
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.summary
+    - field.field.paragraph.localgov_area_seat.localgov_candidate_uncontested
+    - field.field.paragraph.localgov_area_seat.localgov_seat
+    - field.field.paragraph.localgov_area_seat.localgov_seat_not_contested
+    - field.field.paragraph.localgov_area_seat.localgov_term_length
+    - paragraphs.paragraphs_type.localgov_area_seat
+  module:
+    - field_formatter_class
+id: paragraph.localgov_area_seat.summary
+targetEntityType: paragraph
+bundle: localgov_area_seat
+mode: summary
+content:
+  localgov_seat:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  localgov_seat_not_contested:
+    type: boolean
+    label: hidden
+    settings:
+      format: custom
+      format_custom_false: Contested
+      format_custom_true: Uncontested
+    third_party_settings:
+      field_formatter_class:
+        class: ''
+    weight: 1
+    region: content
+hidden:
+  localgov_candidate_uncontested: true
+  localgov_term_length: true

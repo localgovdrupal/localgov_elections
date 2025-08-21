@@ -14,7 +14,7 @@ id: node.localgov_area_vote.localgov_election_winner
 field_name: localgov_election_winner
 entity_type: node
 bundle: localgov_area_vote
-label: 'Winning candidate'
+label: 'Elected candidate(s)'
 description: ''
 required: false
 translatable: false

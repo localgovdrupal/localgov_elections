@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.localgov_term_length
+    - paragraphs.paragraphs_type.localgov_area_seat
+id: paragraph.localgov_area_seat.localgov_term_length
+field_name: localgov_term_length
+entity_type: paragraph
+bundle: localgov_area_seat
+label: 'Term length'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

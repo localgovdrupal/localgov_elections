@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: localgov_area_seat
+label: Seat
+icon_uuid: null
+icon_default: null
+description: 'A seat within an electoral area'
+behavior_plugins: {  }

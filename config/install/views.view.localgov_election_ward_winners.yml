@@ -221,7 +221,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: 'Winning candidate'
+          label: 'Elected candidate(s)'
           exclude: false
           alter:
             alter_text: false
