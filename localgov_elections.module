@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
@@ -103,60 +104,96 @@ function localgov_elections_optional_fields_settings($services): void {
  * Implements hook_entity_presave().
  */
 function localgov_elections_entity_presave(EntityInterface $entity): void {
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_area_vote') {
+  if ($entity->getEntityTypeId() === 'node' && $entity->getType() === 'localgov_area_vote') {
 
-    // Trigger when division vote saved to update the winning candidate only
-    // if 'Hold or Gain' stated.
-    $candidates = $entity->get('localgov_election_candidates');
+    $candidates_field = $entity->get('localgov_election_candidates');
     $finalised = $entity->localgov_election_votes_final?->value;
-    if ($finalised == 1) {
-      $results = [];
 
-      // Iterate through candidates and store their votes.
-      foreach ($candidates->referencedEntities() as $candidate) {
-        $votes = $candidate->get('localgov_election_votes')->value;
-        $cand_id = $candidate->id();
-        $results[] = ['cand' => $cand_id, 'votes' => $votes];
+    if ($finalised == 1) {
+      // Count available seats, excluding uncontested seats.
+      $available_seats = 0;
+      foreach ($entity->get('localgov_election_seats')->referencedEntities() as $seat) {
+        if (!$seat->get('localgov_seat_not_contested')->value) {
+          $available_seats++;
+        }
       }
 
-      if ($results) {
-        // Sort by Vote results into descending order.
-        $votes = array_column($results, 'votes');
-        $sorted = array_multisort($votes, SORT_DESC, $results);
+      // If no seats are available, clear winners and stop.
+      if ($available_seats === 0) {
+        $entity->set('localgov_election_winner', []);
+        return;
+      }
 
-        // If sort worked, pull 1st result and update localgov_election_winner.
-        if ($sorted) {
-          if (isset($results[0])) {
-            $winner = $results[0]['cand'];
-          }
-          // Only update localgov_election_winner if there
-          // is a result (ie, one or
-          // more candidates standing and Hold/Gain set.
-          if (isset($winner)) {
-            $candidate = Paragraph::load($winner);
-            $entity->localgov_election_winner = $candidate;
+      // Order of candidates in area vote determines winner in case of a tie.
+      // Need to use delta as paragraphs have no weight.
+      $winner_order_map = [];
+      $existing_winners = $entity->get('localgov_election_winner');
+      foreach ($existing_winners as $delta => $winner) {
+        if (!empty($winner->target_id)) {
+          $winner_order_map[(int) $winner->target_id] = (int) $delta;
+        }
+      }
+      // Default tie weight for candidates not already in winners.
+      $tie_wight = PHP_INT_MAX;
+
+      // Collect candidates with votes and their tie weight.
+      $candidates = [];
+      foreach ($candidates_field->referencedEntities() as $candidate) {
+        $cand_id = (int) $candidate->id();
+        $votes = (int) $candidate->get('localgov_election_votes')->value;
+        $tie_weight = $winner_order_map[$cand_id] ?? $tie_wight;
+
+        $candidates[] = [
+          'cand_id' => $cand_id,
+          'votes' => $votes,
+          'tie_weight'   => $tie_weight,
+        ];
+      }
+
+      if (!empty($candidates)) {
+        // Sort by votes DESC, then tie weight ASC.
+        $votes_col = array_column($candidates, 'votes');
+        $tie_col   = array_column($candidates, 'tie_weight');
+        array_multisort($votes_col, SORT_DESC, $tie_col, SORT_ASC, $candidates);
+
+        // Pick top N to fill available seats.
+        $winners = array_slice($candidates, 0, $available_seats);
+
+        // Load winner paragraph entities in the resolved order.
+        $winner_paragraphs = [];
+        foreach ($winners as $winner) {
+          if ($winner_paragraph = Paragraph::load($winner['cand_id'])) {
+            $winner_paragraphs[] = $winner_paragraph;
           }
         }
+
+        // We add any uncontested seats to winners, they will have no vote count set so can be identified in output
+        foreach ($entity->get('localgov_election_seats')->referencedEntities() as $seat) {
+          if ($seat->get('localgov_seat_not_contested')->value) {
+            $uncontested_paragraph = $seat->get('localgov_candidate_uncontested')->entity;
+            if ($uncontested_paragraph) {
+              $winner_paragraphs[] = $uncontested_paragraph;
+            }
+          }
+        }
+
+        $entity->set('localgov_election_winner', $winner_paragraphs);
       }
     }
     else {
-      if ($original_entity = $entity->original) {
-        if ($original_entity?->localgov_election_votes_final?->value == 1) {
-          $entity->localgov_election_winner = NULL;
+      // If vote is not finalised, clear previous winners.
+      if ($original = $entity->original) {
+        if ($original?->localgov_election_votes_final?->value == 1) {
+          $entity->set('localgov_election_winner', []);
         }
       }
     }
   }
 
-  if ($entity->getEntityTypeId() == 'paragraph' && $entity->getType() == 'localgov_election_candidate') {
-    // We are referencing two instances of the same paragraph, the winning
-    // localgov_election_candidate. When 'create new revision' is checked, this
-    // seems to attempt to create two new revisions and the original entity
-    // reference from the candidates field is broken.
-    // To mitifate this we can force the paragraph NOT to create a new revision.
+  // Prevent creating multiple revisions for candidate paragraphs.
+  if ($entity->getEntityTypeId() === 'paragraph' && $entity->getType() === 'localgov_election_candidate') {
     $entity->setNewRevision(FALSE);
   }
-
 }
 
 /**
@@ -631,7 +668,7 @@ function localgov_elections_preprocess_node(&$variables): void {
           '#result' => [
             '#type' => 'view',
             '#name' => 'localgov_election_area_results',
-            '#display_id' => 'block_2',
+            '#display_id' => 'block_area_winners',
             '#arguments' => [$node->id()],
           ],
           '#analysis' => $analysis,
@@ -675,7 +712,7 @@ function localgov_elections_preprocess_node(&$variables): void {
     $variables['content']['results_fieldset']['sub_heading']['election_results_turnout'] = [
       '#type' => 'view',
       '#name' => 'localgov_election_results',
-      '#display_id' => 'block_2',
+      '#display_id' => 'block_area_winners',
       '#arguments' => [$node->id()],
     ];
 
@@ -935,6 +972,22 @@ function localgov_elections_preprocess_block(&$variables): void {
  */
 function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   $form['#validate'][] = "localgov_elections_area_vote_form_validation";
+
+  // Show the area vote edit form if a seat is uncontested.
+  if (!empty($form['localgov_election_seats']['widget'])) {
+    $node = $form_state->getFormObject()->getEntity();
+    foreach ($node->get('localgov_election_seats')->referencedEntities() as $delta => $paragraph) {
+      if ($paragraph->bundle() === 'localgov_area_seat' && $paragraph->get('localgov_seat_not_contested')->value) {
+        if (isset($form['localgov_election_seats']['widget'][$delta]['top']['summary']['fields_info']['#summary']['content'])) {
+          $summary = &$form['localgov_election_seats']['widget'][$delta]['top']['summary']['fields_info']['#summary']['content'];
+
+          if (isset($summary[0])) {
+            $summary[0] .= ', Not contested';
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -983,5 +1036,59 @@ function localgov_elections_area_vote_form_validation($form, FormStateInterface 
   $finalised = $form_state->getValue('localgov_election_votes_final')['value'];
   if ($finalised && count($candidate_keys) < 1) {
     $form_state->setErrorByName('localgov_election_candidates', t("You cannot finalise the votes with no candidates"));
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ * Create default seats when area vote is created
+ */
+function localgov_elections_node_insert(NodeInterface $node) {
+  // Only act on our specific bundle.
+  if ($node->bundle() !== 'localgov_area_vote') {
+    return;
+  }
+
+  // Ensure the reference to parent election exists.
+  if ($node->hasField('localgov_election') && !$node->get('localgov_election')
+      ->isEmpty()) {
+    $parent = $node->get('localgov_election')->entity;
+
+    if ($parent instanceof NodeInterface && $parent->hasField('localgov_election_seat_count')) {
+      $seat_count = (int) $parent->get('localgov_election_seat_count')->value;
+
+      // Only proceed if no seats already exist.
+      if (!$node->get('localgov_election_seats')->isEmpty()) {
+        return;
+      }
+
+      // Base name for seats.
+      $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
+
+      $paragraph_storage = \Drupal::entityTypeManager()
+        ->getStorage('paragraph');
+      $seat_paragraphs = [];
+
+      // Always create at least 1 seat, more if parent says so.
+      for ($i = 1; $i <= $seat_count; $i++) {
+        $seat_label = $seat_count > 1 ? $area_name . ' ' . $i : $area_name;
+
+        $seat_paragraph = $paragraph_storage->create([
+          'type' => 'localgov_area_seat',
+          'localgov_seat' => $seat_label,
+        ]);
+        $seat_paragraph->save();
+
+        $seat_paragraphs[] = $seat_paragraph;
+      }
+
+      // Attach them to the node’s reference field.
+      foreach ($seat_paragraphs as $seat_paragraph) {
+        $node->get('localgov_election_seats')->appendItem($seat_paragraph);
+      }
+
+      // Save the node again with attached paragraphs.
+      $node->save();
+    }
   }
 }
