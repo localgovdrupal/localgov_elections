@@ -1,24 +1,20 @@
-uuid: b345c1f3-cfab-4619-8315-f5ff90c1d63f
 langcode: en
 status: true
 dependencies:
   module:
     - entity_reference_revisions
-    - node
     - paragraphs
-  enforced:
-    module:
-      - localgov_elections
-id: node.localgov_election_winner
-field_name: localgov_election_winner
-entity_type: node
+id: paragraph.localgov_candidate_uncontested
+field_name: localgov_candidate_uncontested
+entity_type: paragraph
 type: entity_reference_revisions
 settings:
   target_type: paragraph
 module: entity_reference_revisions
 locked: false
-cardinality: -1
+cardinality: 1
 translatable: true
 indexes: {  }
 persist_with_no_fields: false
 custom_storage: false
+

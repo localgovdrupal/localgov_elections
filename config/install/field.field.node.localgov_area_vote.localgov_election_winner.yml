@@ -1,4 +1,3 @@
-uuid: a8e7a2ba-87ed-4840-8ad1-bec200c410f0
 langcode: en
 status: true
 dependencies:
@@ -11,8 +10,6 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-_core:
-  default_config_hash: xR_5-Ac_icG_kYtVe4O4JkxpfIdbo_l3j4x-ety1tSg
 id: node.localgov_area_vote.localgov_election_winner
 field_name: localgov_election_winner
 entity_type: node

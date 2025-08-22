@@ -13,8 +13,6 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-_core:
-  default_config_hash: W2-lqePQ30EVEhICpc02uSRHKnizPeSogb2t4RrydCE
 id: localgov_election_ward_winners
 label: 'Ward winners'
 module: views

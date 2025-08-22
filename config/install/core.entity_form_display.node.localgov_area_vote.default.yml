@@ -2,22 +2,24 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.localgov_area_vote.localgov_election
     - field.field.node.localgov_area_vote.localgov_election_area_name
     - field.field.node.localgov_area_vote.localgov_election_boundary_data
-    - field.field.node.localgov_area_vote.localgov_election_candidates
     - field.field.node.localgov_area_vote.localgov_election_cand_file
-    - field.field.node.localgov_area_vote.localgov_election
+    - field.field.node.localgov_area_vote.localgov_election_candidates
     - field.field.node.localgov_area_vote.localgov_election_electorate
     - field.field.node.localgov_area_vote.localgov_election_hold_or_gain
+    - field.field.node.localgov_area_vote.localgov_election_no_contest
     - field.field.node.localgov_area_vote.localgov_election_prev_result
     - field.field.node.localgov_area_vote.localgov_election_prev_winner
     - field.field.node.localgov_area_vote.localgov_election_previous_year
-    - field.field.node.localgov_area_vote.localgov_election_no_contest
+    - field.field.node.localgov_area_vote.localgov_election_seats
     - field.field.node.localgov_area_vote.localgov_election_spoils
     - field.field.node.localgov_area_vote.localgov_election_votes_final
     - field.field.node.localgov_area_vote.localgov_election_winner
     - node.type.localgov_area_vote
   module:
+    - field_formatter_class
     - field_group
     - file
     - paragraphs
@@ -47,7 +49,7 @@ third_party_settings:
       label: 'Overall results'
       region: content
       parent_name: group_votes
-      weight: 6
+      weight: 7
       format_type: tab
       format_settings:
         classes: ''
@@ -62,6 +64,7 @@ third_party_settings:
         - group_candidates
         - group_results
         - group_previous_election
+        - group_seats
       label: Votes
       region: content
       parent_name: ''
@@ -76,9 +79,9 @@ third_party_settings:
     group_details:
       children:
         - title
-        - localgov_election
         - localgov_election_area_name
         - localgov_election_electorate
+        - localgov_election
       label: Details
       region: content
       parent_name: group_votes
@@ -116,7 +119,7 @@ third_party_settings:
       label: 'Previous election'
       region: content
       parent_name: group_votes
-      weight: 7
+      weight: 8
       format_type: tab
       format_settings:
         classes: ''
@@ -131,7 +134,7 @@ third_party_settings:
       label: Lookup
       region: hidden
       parent_name: ''
-      weight: 12
+      weight: 13
       format_type: details
       format_settings:
         classes: ''
@@ -140,6 +143,22 @@ third_party_settings:
         open: false
         description: 'Can only look up data on prior elections if they are stored on this system - if no such data use data fields above.'
         required_fields: true
+    group_seats:
+      children:
+        - localgov_election_seats
+      label: Seats
+      region: hidden
+      parent_name: group_votes
+      weight: 6
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        formatter: closed
+        description: ''
+        required_fields: true
 id: node.localgov_area_vote.default
 targetEntityType: node
 bundle: localgov_area_vote
@@ -147,9 +166,19 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 4
+    weight: 3
     region: content
     settings: {  }
+    third_party_settings: {  }
+  localgov_election:
+    type: entity_reference_autocomplete
+    weight: 31
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   localgov_election_area_name:
     type: string_textfield
@@ -158,6 +187,13 @@ content:
     settings:
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  localgov_election_cand_file:
+    type: file_generic
+    weight: 30
+    region: content
+    settings:
+      progress_indicator: bar
     third_party_settings: {  }
   localgov_election_candidates:
     type: paragraphs
@@ -179,23 +215,6 @@ content:
         convert: '0'
         duplicate: '0'
     third_party_settings: {  }
-  localgov_election_cand_file:
-    type: file_generic
-    weight: 30
-    region: content
-    settings:
-      progress_indicator: bar
-    third_party_settings: {  }
-  localgov_election:
-    type: entity_reference_autocomplete
-    weight: 31
-    region: content
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
   localgov_election_electorate:
     type: number
     weight: 3
@@ -208,6 +227,13 @@ content:
     weight: 29
     region: content
     settings: {  }
+    third_party_settings: {  }
+  localgov_election_no_contest:
+    type: boolean_checkbox
+    weight: 32
+    region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   localgov_election_prev_winner:
     type: entity_reference_autocomplete
@@ -226,13 +252,28 @@ content:
     settings:
       placeholder: ''
     third_party_settings: {  }
-  localgov_election_no_contest:
-    type: boolean_checkbox
-    weight: 32
+  localgov_election_seats:
+    type: paragraphs
+    weight: 0
     region: content
     settings:
-      display_label: true
-    third_party_settings: {  }
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: localgov_area_seat
+      features:
+        add_above: '0'
+        collapse_edit_all: collapse_edit_all
+        convert: '0'
+        duplicate: '0'
+    third_party_settings:
+      field_formatter_class:
+        class: ''
   localgov_election_spoils:
     type: number
     weight: 27
@@ -260,7 +301,7 @@ content:
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    weight: 5
+    weight: 4
     region: content
     settings:
       display_label: true
@@ -275,13 +316,18 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 3
+    weight: 2
     region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  url_redirects:
+    weight: 7
+    region: content
+    settings: {  }
     third_party_settings: {  }
 hidden:
   localgov_election_boundary_data: true

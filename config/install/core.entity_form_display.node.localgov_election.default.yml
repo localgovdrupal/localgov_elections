@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.localgov_election.localgov_election_display_map
     - field.field.node.localgov_election.localgov_election_majority
     - field.field.node.localgov_election.localgov_election_organisation
+    - field.field.node.localgov_election.localgov_election_seat_count
     - field.field.node.localgov_election.localgov_election_service_type
     - field.field.node.localgov_election.localgov_election_type
     - field.field.node.localgov_election.localgov_services_parent
@@ -44,7 +45,7 @@ third_party_settings:
         - title
         - localgov_election_date
         - localgov_election_type
-        - localgov_election_default_seat_count
+        - localgov_election_seat_count
         - localgov_election_display_map
         - localgov_election_majority
       label: Details
@@ -76,8 +77,6 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
-_core:
-  default_config_hash: LmBi58q0SjAxMzYSr97sU4vZq1Zfnv-AuQ0AnSELDtI
 id: node.localgov_election.default
 targetEntityType: node
 bundle: localgov_election
@@ -126,6 +125,13 @@ content:
     settings:
       placeholder_url: ''
       placeholder_title: ''
+    third_party_settings: {  }
+  localgov_election_seat_count:
+    type: number
+    weight: 3
+    region: content
+    settings:
+      placeholder: ''
     third_party_settings: {  }
   localgov_election_service_type:
     type: link_default

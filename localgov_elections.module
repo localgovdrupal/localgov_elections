@@ -1048,12 +1048,10 @@ function localgov_elections_node_insert(NodeInterface $node) {
   if ($node->bundle() !== 'localgov_area_vote') {
     return;
   }
-
   // Ensure the reference to parent election exists.
   if ($node->hasField('localgov_election') && !$node->get('localgov_election')
       ->isEmpty()) {
     $parent = $node->get('localgov_election')->entity;
-
     if ($parent instanceof NodeInterface && $parent->hasField('localgov_election_seat_count')) {
       $seat_count = (int) $parent->get('localgov_election_seat_count')->value;
 
@@ -1064,7 +1062,6 @@ function localgov_elections_node_insert(NodeInterface $node) {
 
       // Base name for seats.
       $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
-
       $paragraph_storage = \Drupal::entityTypeManager()
         ->getStorage('paragraph');
       $seat_paragraphs = [];

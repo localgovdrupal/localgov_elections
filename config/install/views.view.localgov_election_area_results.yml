@@ -26,8 +26,6 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-_core:
-  default_config_hash: J4jw6CRkpaXmnT4ksQQCpndtwoPXoiWQvNTdOGyqdVs
 id: localgov_election_area_results
 label: 'Ward Results'
 module: views

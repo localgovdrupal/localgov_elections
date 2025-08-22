@@ -25,8 +25,6 @@ dependencies:
   enforced:
     module:
       - localgov_elections
-_core:
-  default_config_hash: Y5_yCONjAAFJqn8B9f8qQXlaew4Btu0-9chZFGQVRNE
 id: localgov_election_results
 label: 'Election Results'
 module: views
