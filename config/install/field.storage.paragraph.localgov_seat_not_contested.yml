@@ -3,6 +3,9 @@ status: true
 dependencies:
   module:
     - paragraphs
+  enforced:
+    module:
+      - localgov_elections
 id: paragraph.localgov_seat_not_contested
 field_name: localgov_seat_not_contested
 entity_type: paragraph

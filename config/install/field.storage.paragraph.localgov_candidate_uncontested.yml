@@ -4,6 +4,9 @@ dependencies:
   module:
     - entity_reference_revisions
     - paragraphs
+  enforced:
+    module:
+      - localgov_elections
 id: paragraph.localgov_candidate_uncontested
 field_name: localgov_candidate_uncontested
 entity_type: paragraph

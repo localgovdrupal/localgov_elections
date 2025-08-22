@@ -1,6 +1,9 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  enforced:
+    module:
+      - localgov_elections
 id: localgov_area_seat
 label: Seat
 icon_uuid: null

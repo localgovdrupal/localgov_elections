@@ -5,6 +5,9 @@ dependencies:
     - entity_reference_revisions
     - node
     - paragraphs
+  enforced:
+    module:
+      - localgov_elections
 id: node.localgov_election_seats
 field_name: localgov_election_seats
 entity_type: node

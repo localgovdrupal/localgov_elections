@@ -4,6 +4,9 @@ dependencies:
   config:
     - field.storage.paragraph.localgov_seat_not_contested
     - paragraphs.paragraphs_type.localgov_area_seat
+  enforced:
+    module:
+      - localgov_elections
 id: paragraph.localgov_area_seat.localgov_seat_not_contested
 field_name: localgov_seat_not_contested
 entity_type: paragraph
