@@ -735,7 +735,7 @@ function localgov_elections_preprocess_node(&$variables): void {
     $variables['content']['election_results_summary_table'] = [
       '#type' => 'view',
       '#name' => 'localgov_election_results',
-      '#display_id' => 'block_3',
+      '#display_id' => 'summary_table',
       '#arguments' => [$node->id()],
     ];
   }
@@ -761,7 +761,7 @@ function localgov_elections_views_pre_render(ViewExecutable $view): void {
   }
 
   if ($view->id() == 'localgov_election_results') {
-    if ($view->getDisplay()->display['id'] == 'block_3') {
+    if ($view->getDisplay()->display['id'] == 'summary_table') {
       $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
     }
   }
