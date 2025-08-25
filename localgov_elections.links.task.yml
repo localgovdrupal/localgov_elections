@@ -1,0 +1,11 @@
+localgov_elections.election_duplicate_tab:
+  route_name: localgov_elections.election_duplicate
+  title: 'Duplicate'
+  base_route: entity.node.canonical
+  weight: 20
+
+localgov_electionselection_duplicate_tab_on_edit:
+  route_name: localgov_elections.election_duplicate
+  title: 'Duplicate'
+  base_route: entity.node.edit_form
+  weight: 20

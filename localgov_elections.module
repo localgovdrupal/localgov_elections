@@ -630,6 +630,15 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name): void {
       }
     }
   }
+
+  if ($route_name === 'entity.node.canonical') {
+    $node = \Drupal::routeMatch()->getParameter('node');
+
+    if ($node instanceof NodeInterface && $node->bundle() !== 'localgov_election') {
+      // Remove duplicate tab if not localgov_election.
+      unset($data['tabs'][0]['localgov_elections.election_duplicate_tab']);
+    }
+  }
 }
 
 /**

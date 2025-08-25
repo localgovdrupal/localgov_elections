@@ -2,3 +2,6 @@ services:
   plugin.manager.boundary_provider:
     class: Drupal\localgov_elections\BoundaryProviderPluginManager
     parent: default_plugin_manager
+  localgov_elections.election_duplicator:
+    class: Drupal\localgov_elections\Service\ElectionDuplicator
+    arguments: ['@entity_type.manager']

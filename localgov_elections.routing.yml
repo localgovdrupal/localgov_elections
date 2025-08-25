@@ -43,3 +43,15 @@ localgov_elections.boundary_fetch:
     parameters:
       node:
         type: entity:node
+
+localgov_elections.election_duplicate:
+  path: '/node/{node}/duplicate'
+  defaults:
+    _controller: '\Drupal\localgov_elections\Controller\ElectionDuplicateController::duplicate'
+    _title: 'Duplicate election'
+  requirements:
+    _custom_access: 'Drupal\localgov_elections\Controller\ElectionDuplicateController::access'
+  options:
+    parameters:
+      node:
+        type: entity:node
