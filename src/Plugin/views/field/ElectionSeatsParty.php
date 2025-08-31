@@ -40,7 +40,7 @@ class ElectionSeatsParty extends FieldPluginBase {
     $node = \Drupal::routeMatch()->getParameter('node');
     if ($node instanceof NodeInterface) {
       // Arg must be NID of an Election content type.
-      if ($node->getType() == 'localgov_election') {
+      if ($node->getType() === 'localgov_election') {
         $election = $node->id();
         // Find all 'Area vote' (localgov_area_vote) nodes referencing this
         // election.
@@ -48,16 +48,16 @@ class ElectionSeatsParty extends FieldPluginBase {
           ->condition('type', 'localgov_area_vote')
           ->condition('localgov_election', $election);
         $query->accessCheck(FALSE);
-        $wards = $query->execute();
+        $areas = $query->execute();
         // Go through each ward/area/division.
-        // If a party has a candidate in the ward set $party_standing to TRUE
+        // If a party has a candidate in the area set $party_standing to TRUE
         // If a party won the seat increment the $seats counter;.
-        foreach ($wards as $ward_id) {
-          $ward = Node::load($ward_id);
+        foreach ($areas as $area_id) {
+          $area = Node::load($area_id);
           // Iterate through each candidate to see if party standing -
           // only if not already flagged.
-          if ($party_standing == FALSE) {
-            $candidates = $ward->get('localgov_election_candidates');
+          if ($party_standing === FALSE) {
+            $candidates = $area->get('localgov_election_candidates');
 
             foreach ($candidates->referencedEntities() as $candidate) {
               $cand_party = $candidate->get('localgov_election_party')->target_id;
@@ -67,13 +67,10 @@ class ElectionSeatsParty extends FieldPluginBase {
             }
           }
 
-          // Find party of Ward/Area/Division winning candidate.
-          $winning_cand_id = $ward->get('localgov_election_winner')->target_id;
-          if (!is_null($winning_cand_id)) {
-            $winning_cand = Paragraph::load($winning_cand_id);
-            if (isset($winning_cand)) {
-              $winning_party = $winning_cand->get('localgov_election_party')->target_id;
-              if ($party_tid == $winning_party) {
+          if (!$area->get('localgov_election_winner')->isEmpty()) {
+            foreach ($area->get('localgov_election_winner')->referencedEntities() as $winner) {
+              $winning_party = $winner->get('localgov_election_party')->target_id ?? NULL;
+              if ($party_tid === $winning_party) {
                 $seats++;
               }
             }
@@ -81,12 +78,8 @@ class ElectionSeatsParty extends FieldPluginBase {
         }
       }// End of node being an Election node type
     } // End of being a node
-    if ($party_standing) {
-      return $seats;
-    }
-    else {
-      return NULL;
-    }
+
+    return $party_standing ? $seats : NULL;
   }
 
 }

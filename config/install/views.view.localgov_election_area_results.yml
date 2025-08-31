@@ -1518,8 +1518,8 @@ display:
       tags:
         - 'config:field.storage.paragraph.localgov_election_candidate'
         - 'config:field.storage.paragraph.localgov_election_forename'
-  block_4:
-    id: block_4
+  chart_overview:
+    id: chart_overview
     display_title: 'Winning party'
     display_plugin: block
     position: 2

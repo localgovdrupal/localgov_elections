@@ -10,7 +10,6 @@ use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\Core\Render\Element;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
@@ -108,18 +107,20 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
 
     $candidates_field = $entity->get('localgov_election_candidates');
     $finalised = $entity->localgov_election_votes_final?->value;
+    $uncontested_area = $entity->localgov_election_no_contest?->value;
 
-    if ($finalised == 1) {
+    if ($finalised === 1 || $uncontested_area === 1) {
       // Count available seats, excluding uncontested seats.
+      $seats = $entity->get('localgov_election_seats')->referencedEntities();
+      $total_seats = count($seats);
       $available_seats = 0;
-      foreach ($entity->get('localgov_election_seats')->referencedEntities() as $seat) {
+      foreach ($seats as $seat) {
         if (!$seat->get('localgov_seat_not_contested')->value) {
           $available_seats++;
         }
       }
-
       // If no seats are available, clear winners and stop.
-      if ($available_seats === 0) {
+      if ($total_seats === 0) {
         $entity->set('localgov_election_winner', []);
         return;
       }
@@ -167,17 +168,21 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
           }
         }
 
-        // We add any uncontested seats to winners, they will have no vote count set so can be identified in output
-        foreach ($entity->get('localgov_election_seats')->referencedEntities() as $seat) {
-          if ($seat->get('localgov_seat_not_contested')->value) {
-            $uncontested_paragraph = $seat->get('localgov_candidate_uncontested')->entity;
-            if ($uncontested_paragraph) {
-              $winner_paragraphs[] = $uncontested_paragraph;
-            }
+      }
+      // We add any uncontested seats to winners, they will have no vote
+      // count set so can be identified in output.
+      foreach ($entity->get('localgov_election_seats')->referencedEntities() as $seat) {
+        if ($seat->get('localgov_seat_not_contested')->value) {
+          $uncontested_paragraph = $seat->get('localgov_candidate_uncontested')->entity;
+          if ($uncontested_paragraph) {
+            $winner_paragraphs[] = $uncontested_paragraph;
           }
         }
+      }
 
-        $entity->set('localgov_election_winner', $winner_paragraphs);
+      if (!empty($winner_paragraphs)) {
+        $entity->set('localgov_election_winner',
+          $winner_paragraphs);
       }
     }
     else {
@@ -982,6 +987,10 @@ function localgov_elections_preprocess_block(&$variables): void {
 function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   $form['#validate'][] = "localgov_elections_area_vote_form_validation";
 
+  // Add custom submit handler to ensure updates to uncontested candidates
+  // are saved.
+  array_unshift($form['actions']['submit']['#submit'], '_localgov_elections_localgov_area_vote_save_candidates');
+
   // Show the area vote edit form if a seat is uncontested.
   if (!empty($form['localgov_election_seats']['widget'])) {
     $node = $form_state->getFormObject()->getEntity();
@@ -1012,17 +1021,20 @@ function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form,
  * Validation function for area vote node forms.
  */
 function localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state): void {
-  $contested = $form_state->getValue('localgov_election_no_contest')['value'];
+  $uncontested = $form_state->getValue('localgov_election_no_contest')['value'];
+  $areas = $form_state->getValue('localgov_election_candidates');
   $candidates = $form_state->getValue('localgov_election_candidates');
   $candidate_keys = array_filter(array_keys($candidates), function ($key) {
     return is_int($key);
   });
 
-  if ($contested && count($candidate_keys) > 1) {
-    $form_state->setErrorByName('localgov_election_candidates', t("If the seat is <b>not</b> contested there should only be one candidate."));
+  // If an area is uncontested, no candidates should be associate with the
+  // area node - they will be associated with each seat instead
+  if ($uncontested && count($candidate_keys) > 0) {
+    $form_state->setErrorByName('localgov_election_candidates', t("If the seat is <b>not</b> contested there should only be uncontested candidates assigned to seats."));
   }
 
-  if ($contested) {
+  if ($uncontested) {
     $storage = $form_state->get('field_storage');
     if (isset($storage['#parents']['#fields']['localgov_election_candidates'])) {
       $candidates = $storage['#parents']['#fields']['localgov_election_candidates'];
@@ -1043,14 +1055,15 @@ function localgov_elections_area_vote_form_validation($form, FormStateInterface 
 
   // Should not be able to finalise votes without having at least one candidate.
   $finalised = $form_state->getValue('localgov_election_votes_final')['value'];
-  if ($finalised && count($candidate_keys) < 1) {
+  if ($finalised && !$uncontested && count($candidate_keys) < 1) {
     $form_state->setErrorByName('localgov_election_candidates', t("You cannot finalise the votes with no candidates"));
   }
 }
 
 /**
  * Implements hook_node_insert().
- * Create default seats when area vote is created
+ *
+ * Create default seats when area vote is created.
  */
 function localgov_elections_node_insert(NodeInterface $node) {
   // Only act on our specific bundle.
@@ -1059,7 +1072,7 @@ function localgov_elections_node_insert(NodeInterface $node) {
   }
   // Ensure the reference to parent election exists.
   if ($node->hasField('localgov_election') && !$node->get('localgov_election')
-      ->isEmpty()) {
+    ->isEmpty()) {
     $parent = $node->get('localgov_election')->entity;
     if ($parent instanceof NodeInterface && $parent->hasField('localgov_election_seat_count')) {
       $seat_count = (int) $parent->get('localgov_election_seat_count')->value;
@@ -1071,6 +1084,11 @@ function localgov_elections_node_insert(NodeInterface $node) {
 
       // Base name for seats.
       $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
+      // If the area is marked as uncontested we want to set seats as
+      // uncontested also
+      $area_uncontested = $node->get('localgov_election_no_contest')->value ??
+        0;
+
       $paragraph_storage = \Drupal::entityTypeManager()
         ->getStorage('paragraph');
       $seat_paragraphs = [];
@@ -1082,6 +1100,7 @@ function localgov_elections_node_insert(NodeInterface $node) {
         $seat_paragraph = $paragraph_storage->create([
           'type' => 'localgov_area_seat',
           'localgov_seat' => $seat_label,
+          'localgov_seat_not_contested' => $area_uncontested,
         ]);
         $seat_paragraph->save();
 

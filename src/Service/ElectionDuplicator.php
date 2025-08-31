@@ -7,7 +7,7 @@ use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
 
 /**
- * Provides an election duplication service
+ * Provides an election duplication service.
  */
 class ElectionDuplicator {
 
@@ -87,7 +87,7 @@ class ElectionDuplicator {
   }
 
   /**
-   * Duplicate a paragraph and any nested entities (eg candidate in uncontested seats).
+   * Duplicate a paragraph and any nested entities.
    */
   protected function duplicateParagraph(Paragraph $paragraph): Paragraph {
     $new_paragraph = $paragraph->createDuplicate();

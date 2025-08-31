@@ -40,25 +40,25 @@ class ElectionTurnout extends FieldPluginBase {
     // OR ->condition('localgov_election.entity:node.entity_id', $election);
     // Exclude contested.
     $query->accessCheck(FALSE);
-    $wards = $query->execute();
+    $areas = $query->execute();
 
     $turnout = 0;
     $electorate = 0;
 
-    // Add all candidate votes + spoils for each ward.
-    foreach ($wards as $ward_id) {
-      $ward = Node::load($ward_id);
+    // Add all candidate votes + spoils for each area.
+    foreach ($areas as $area_id) {
+      $area = Node::load($area_id);
 
-      if ($ward->get("localgov_election_no_contest")?->value == "1") {
+      if ($area->get("localgov_election_no_contest")?->value == "1") {
         continue;
       }
 
       // Find spoils and add to turnout.
-      $spoils = $ward->get('localgov_election_spoils')->value;
+      $spoils = $area->get('localgov_election_spoils')->value;
       $turnout += $spoils;
 
       // Iterate through each candidate and add votes to turnout.
-      $candidates = $ward->get('localgov_election_candidates');
+      $candidates = $area->get('localgov_election_candidates');
 
       /** @var \Drupal\paragraphs\Entity\Paragraph $candidate */
       foreach ($candidates->referencedEntities() as $candidate) {
@@ -67,8 +67,8 @@ class ElectionTurnout extends FieldPluginBase {
       }
 
       // Find electorate and add to running total.
-      $eligible_electorate = $ward->get('localgov_election_electorate')->value;
-      if ($ward->localgov_election_votes_final?->value == 1) {
+      $eligible_electorate = $area->get('localgov_election_electorate')->value;
+      if ($area->localgov_election_votes_final?->value == 1) {
         $electorate += $eligible_electorate;
       }
     }
