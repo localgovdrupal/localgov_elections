@@ -1,0 +1,24 @@
+{#
+@file
+Render a timeline table.
+#}
+{% set rowspan = candidates|length %}
+{% for candidate in candidates %}
+  <tr{{ candidate.winner ? ' class="winner"'}}>
+    {% if loop.first %}
+      <th rowspan="{{ rowspan }}">{{ time }}</th>
+      <th rowspan="{{ rowspan }}">{{ area }}</th>
+    {% endif %}
+    <td>{{ candidate.candidate|upper }}</td>
+    <td>
+      {% if candidate.winner %}
+        <span class="winning-party {{ candidate.abbreviation|lower }}">
+      {{ candidate.party }}
+    </span>
+      {% else %}
+        {{ candidate.party }}
+      {% endif %}
+    </td>
+    <td>{{ candidate.votes }}</td>
+  </tr>
+{% endfor %}

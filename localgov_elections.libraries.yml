@@ -16,27 +16,18 @@ electoral_candidates_view:
   version: 1.x
   css:
     theme:
-      css/variables.css: { }
       css/electoral-candidates-view.css: { }
 
 division_results:
   version: 1.x
   css:
     theme:
-      css/variables.css: { }
       css/ward-results.css: { }
-
-results_share:
-  version: 1.x
-  css:
-    theme:
-      css/variables.css: { }
 
 results_timeline:
   version: 1.x
   css:
     theme:
-      css/variables.css: { }
       css/election-timeline.css: { }
 
 

@@ -26,7 +26,7 @@ dependencies:
 id: localgov_election_results
 label: 'Election Results'
 module: views
-description: 'Blocks to make Ward results'
+description: 'Blocks to make election results'
 tag: ''
 base_table: node_field_data
 base_field: nid
@@ -268,7 +268,12 @@ display:
           field: localgov_election_party
           relationship: localgov_election_winner
           plugin_id: standard
-      header: {  }
+      header:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          plugin_id: text_custom
       footer: {  }
       display_extenders: {  }
     cache_metadata:
@@ -281,130 +286,6 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.node.localgov_election_winner'
-  block_1:
-    id: block_1
-    display_title: Electorate
-    display_plugin: block
-    position: 2
-    display_options:
-      title: ''
-      fields:
-        localgov_election_electorate:
-          id: localgov_election_electorate
-          table: node__localgov_election_electorate
-          field: localgov_election_electorate
-          relationship: none
-          group_type: sum
-          admin_label: ''
-          plugin_id: field
-          label: Electorate
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: number_integer
-          settings:
-            thousand_separator: ''
-            prefix_suffix: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ','
-          field_api_classes: false
-          set_precision: false
-          precision: 0
-          decimal: .
-          format_plural: 0
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
-      sorts:
-        status:
-          id: status
-          table: node_field_data
-          field: status
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: node
-          entity_field: status
-          plugin_id: standard
-          order: ASC
-          expose:
-            label: ''
-            field_identifier: ''
-          exposed: false
-      style:
-        type: default
-        options:
-          grouping: {  }
-          row_class: ''
-          default_row_class: true
-      row:
-        type: fields
-        options: {  }
-      defaults:
-        title: false
-        group_by: false
-        style: false
-        row: false
-        relationships: false
-        fields: false
-        sorts: false
-      relationships: {  }
-      group_by: true
-      display_description: 'Count all electorate'
-      display_extenders: {  }
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_interface'
-        - url
-        - 'user.node_grants:view'
-        - user.permissions
-      tags: {  }
   block_2:
     id: block_2
     display_title: Turnout
@@ -577,7 +458,14 @@ display:
         arguments: false
         filters: false
         filter_groups: false
+        header: false
       display_description: 'Sum of all votes cast + spoils'
+      header:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          plugin_id: text_custom
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -587,26 +475,24 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
-  block_5:
-    id: block_5
-    display_title: Majority
+  block_electorate:
+    id: block_electorate
+    display_title: Electorate
     display_plugin: block
     position: 2
     display_options:
       title: ''
       fields:
-        nid:
-          id: nid
-          table: node_field_data
-          field: nid
+        localgov_election_electorate:
+          id: localgov_election_electorate
+          table: node__localgov_election_electorate
+          field: localgov_election_electorate
           relationship: none
-          group_type: count
+          group_type: sum
           admin_label: ''
-          entity_type: node
-          entity_field: nid
           plugin_id: field
-          label: ''
-          exclude: true
+          label: Electorate
+          exclude: false
           alter:
             alter_text: false
             text: ''
@@ -638,7 +524,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: false
+          element_label_colon: true
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -668,6 +554,61 @@ display:
           format_plural_string: !!binary MQNAY291bnQ=
           prefix: ''
           suffix: ''
+      sorts:
+        status:
+          id: status
+          table: node_field_data
+          field: status
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          entity_field: status
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
+      style:
+        type: default
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
+      row:
+        type: fields
+        options: {  }
+      defaults:
+        title: false
+        group_by: false
+        style: false
+        row: false
+        relationships: false
+        fields: false
+        sorts: false
+        header: false
+      relationships: {  }
+      group_by: true
+      display_description: 'Count all electorate'
+      header: {  }
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - 'user.node_grants:view'
+        - user.permissions
+      tags: {  }
+  block_majority:
+    id: block_majority
+    display_title: Majority
+    display_plugin: block
+    position: 2
+    display_options:
+      title: ''
+      fields:
         election_majority:
           id: election_majority
           table: node
@@ -751,9 +692,16 @@ display:
         relationships: false
         fields: false
         sorts: false
+        header: false
       relationships: {  }
       group_by: true
       display_description: 'Calculated field 50% of Wards count + 1'
+      header:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          plugin_id: text_custom
       display_extenders: {  }
     cache_metadata:
       max-age: -1
@@ -999,10 +947,7 @@ display:
           required: false
       group_by: true
       display_description: ''
-      display_extenders:
-        localgov_page_header_display_extender:
-          lede: ''
-          tokenize: false
+      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:
@@ -1744,10 +1689,7 @@ display:
           table: views
           field: area_election_results_heading
           plugin_id: localgov_elections_results_heading
-      display_extenders:
-        localgov_page_header_display_extender:
-          lede: ''
-          tokenize: false
+      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:

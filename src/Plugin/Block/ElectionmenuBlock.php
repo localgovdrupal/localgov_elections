@@ -113,7 +113,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     if ($display_map == "1" && $results) {
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Electoral map'), Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Electoral map'), Url::fromRoute('view.localgov_election_electoral_map.page_map', ['node' => $this->node->id()])),
       ];
     }
 
@@ -131,7 +131,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       if ($node->get('localgov_election_type')?->value != "NationalParliamentary") {
         $urls[] = [
           'attributes' => new Attribute(),
-          'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.localgov_election_results_timeline.page_1', ['node' => $this->node->id()])),
+          'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.localgov_election_results_timeline.page_timeline', ['node' => $this->node->id()])),
         ];
       }
 
@@ -140,7 +140,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
       if ($node->get('localgov_election_type')?->value != "NationalParliamentary") {
         $urls[] = [
           'attributes' => new Attribute(),
-          'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.localgov_election_results_vote.page_1', ['node' => $this->node->id()])),
+          'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.localgov_election_results_vote.page_vote_share', ['node' => $this->node->id()])),
         ];
       }
     }
@@ -156,7 +156,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     if ($results) {
       $urls[] = [
         'attributes' => new Attribute(),
-        'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.localgov_electoral_candidates.page_1', ['node' => $this->node->id()])),
+        'link' => Link::fromTextAndUrl($this->t('Electoral candidates'), Url::fromRoute('view.localgov_electoral_candidates.page_candidates', ['node' => $this->node->id()])),
       ];
     }
     return $urls;

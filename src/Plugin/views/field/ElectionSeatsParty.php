@@ -4,7 +4,6 @@ namespace Drupal\localgov_elections\Plugin\views\field;
 
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
 
@@ -53,31 +52,34 @@ class ElectionSeatsParty extends FieldPluginBase {
         // If a party has a candidate in the area set $party_standing to TRUE
         // If a party won the seat increment the $seats counter;.
         foreach ($areas as $area_id) {
-          $area = Node::load($area_id);
-          // Iterate through each candidate to see if party standing -
-          // only if not already flagged.
-          if ($party_standing === FALSE) {
-            $candidates = $area->get('localgov_election_candidates');
+          if ($area = Node::load($area_id)) {
+            // Iterate through each candidate to see if party standing -
+            // only if not already flagged.
+            if ($party_standing === FALSE) {
+              $candidates = $area->get('localgov_election_candidates');
 
-            foreach ($candidates->referencedEntities() as $candidate) {
-              $cand_party = $candidate->get('localgov_election_party')->target_id;
-              if ($party_tid == $cand_party) {
-                $party_standing = TRUE;
+              foreach ($candidates->referencedEntities() as $candidate) {
+                $cand_party = $candidate->get('localgov_election_party')->target_id;
+                if ($party_tid == $cand_party) {
+                  $party_standing = TRUE;
+                }
               }
             }
-          }
 
-          if (!$area->get('localgov_election_winner')->isEmpty()) {
-            foreach ($area->get('localgov_election_winner')->referencedEntities() as $winner) {
-              $winning_party = $winner->get('localgov_election_party')->target_id ?? NULL;
-              if ($party_tid === $winning_party) {
-                $seats++;
+            if (!$area->get('localgov_election_winner')->isEmpty()) {
+              foreach ($area->get('localgov_election_winner')->referencedEntities() as $winner) {
+                $winning_party = $winner->get('localgov_election_party')->target_id ?? NULL;
+                if ($party_tid === $winning_party) {
+                  // Catches uncontested seats.
+                  $party_standing = TRUE;
+                  $seats++;
+                }
               }
             }
           }
         }
-      }// End of node being an Election node type
-    } // End of being a node
+      }
+    }
 
     return $party_standing ? $seats : NULL;
   }

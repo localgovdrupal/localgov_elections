@@ -1,10 +1,10 @@
 /**
  * @file Election party colours.
- * */
+ */
 
-function lgdElectionPartyColoursScript(Drupal, once) {
+(function (Drupal, once) {
   Drupal.behaviors.lgdElectionPartyColours = {
-    attach(context, settings) {
+    attach: function (context, settings) {
       const boxes = once('allBoxes', '.box', context);
       if (boxes && boxes.length > 0) {
         const box = boxes[0];
@@ -17,7 +17,7 @@ function lgdElectionPartyColoursScript(Drupal, once) {
                   box.style.backgroundColor = value.colour;
                   box.style.color = value['text-colour'];
                 }
-              },
+              }
             );
           }
         });
@@ -39,12 +39,12 @@ function lgdElectionPartyColoursScript(Drupal, once) {
                     party.style.backgroundColor = value.colour;
                     party.style.color = value['text-colour'];
                   }
-                },
+                }
               );
             }
           });
         });
       }
-    },
+    }
   };
-}(Drupal, once);
+})(Drupal, once);

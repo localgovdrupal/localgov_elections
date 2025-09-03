@@ -272,8 +272,8 @@ display:
         - 'languages:language_interface'
         - user.permissions
       tags: {  }
-  block_1:
-    id: block_1
+  block_party_results:
+    id: block_party_results
     display_title: Block
     display_plugin: block
     position: 1

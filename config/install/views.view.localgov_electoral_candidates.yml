@@ -2,9 +2,9 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.storage.node.localgov_election
     - field.storage.node.localgov_election_area_name
     - field.storage.node.localgov_election_cand_file
-    - field.storage.node.localgov_election
     - node.type.localgov_area_vote
     - node.type.localgov_election
   module:
@@ -492,11 +492,11 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
+        - 'config:field.storage.node.localgov_election'
         - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.node.localgov_election_cand_file'
-        - 'config:field.storage.node.localgov_election'
-  page_1:
-    id: page_1
+  page_candidates:
+    id: page_candidates
     display_title: Page
     display_plugin: page
     position: 1
@@ -521,6 +521,6 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
+        - 'config:field.storage.node.localgov_election'
         - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.node.localgov_election_cand_file'
-        - 'config:field.storage.node.localgov_election'

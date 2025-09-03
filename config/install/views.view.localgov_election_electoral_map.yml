@@ -387,8 +387,8 @@ display:
             options: '{"permanent":false,"direction":"center"}'
           leaflet_popup:
             value: localgov_election_area_name
-            options: '{"maxWidth":"300","minWidth":"50","autoPan":true}'
             view_mode: full
+            options: '{"maxWidth":"300","minWidth":"50","autoPan":true}'
           leaflet_map: 'OSM Mapnik'
           height: '900'
           height_unit: px
@@ -444,9 +444,12 @@ display:
             control: false
             options: '{"position":"topleft","pseudoFullscreen":false}'
           path: '{"color":"#444","opacity":"0.5","stroke":true,"weight":3,"fill":"depends","fillColor":"{{ localgov_election_party_colour }}","fillOpacity":"0.5","radius":"6"}'
+          feature_properties:
+            values: ''
           geocoder:
             control: false
             settings:
+              popup: false
               autocomplete:
                 placeholder: 'Search Address'
                 title: 'Search an Address on the Map'
@@ -468,12 +471,9 @@ display:
               min_terms: 4
               delay: 800
               zoom: 16
-              popup: false
               options: ''
           map_lazy_load:
             lazy_load: false
-          feature_properties:
-            values: ''
       row:
         type: 'entity:node'
         options:
@@ -533,8 +533,8 @@ display:
         - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.node.localgov_election_boundary_data'
         - 'config:field.storage.taxonomy_term.localgov_election_party_colour'
-  page_1:
-    id: page_1
+  page_map:
+    id: page_map
     display_title: Page
     display_plugin: page
     position: 1

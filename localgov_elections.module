@@ -40,6 +40,21 @@ function localgov_elections_theme($existing, $type, $theme, $path): mixed {
         'election_type' => '',
       ],
     ],
+    'election_timeline_table_row' => [
+      'variables' => [
+        'time' => NULL,
+        'area' => NULL,
+        'candidates' => [],
+      ],
+      'template' => 'election-timeline-table-row',
+    ],
+    'views_view_unformatted__localgov_election_results_timeline' => [
+      'variables' => [
+        'rows' => [],
+        'title' => NULL,
+      ],
+      'template' => 'election-timeline-table',
+    ],
   ];
 }
 
@@ -119,35 +134,32 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
           $available_seats++;
         }
       }
+
       // If no seats are available, clear winners and stop.
       if ($total_seats === 0) {
         $entity->set('localgov_election_winner', []);
         return;
       }
 
-      // Order of candidates in area vote determines winner in case of a tie.
-      // Need to use delta as paragraphs have no weight.
-      $winner_order_map = [];
-      $existing_winners = $entity->get('localgov_election_winner');
-      foreach ($existing_winners as $delta => $winner) {
-        if (!empty($winner->target_id)) {
-          $winner_order_map[(int) $winner->target_id] = (int) $delta;
+      // Order candidates by delta in case of a tie.
+      $candidate_order_map = [];
+      foreach ($candidates_field as $delta => $item) {
+        if (!empty($item->target_id)) {
+          $candidate_order_map[(int) $item->target_id] = (int) $delta;
         }
       }
-      // Default tie weight for candidates not already in winners.
-      $tie_wight = PHP_INT_MAX;
 
       // Collect candidates with votes and their tie weight.
       $candidates = [];
       foreach ($candidates_field->referencedEntities() as $candidate) {
         $cand_id = (int) $candidate->id();
         $votes = (int) $candidate->get('localgov_election_votes')->value;
-        $tie_weight = $winner_order_map[$cand_id] ?? $tie_wight;
+        $tie_weight = $candidate_order_map[$cand_id] ?? PHP_INT_MAX;
 
         $candidates[] = [
-          'cand_id' => $cand_id,
-          'votes' => $votes,
-          'tie_weight'   => $tie_weight,
+          'cand_id'    => $cand_id,
+          'votes'      => $votes,
+          'tie_weight' => $tie_weight,
         ];
       }
 
@@ -167,10 +179,9 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
             $winner_paragraphs[] = $winner_paragraph;
           }
         }
-
       }
-      // We add any uncontested seats to winners, they will have no vote
-      // count set so can be identified in output.
+
+      // Add uncontested seats to winners (no votes set).
       foreach ($entity->get('localgov_election_seats')->referencedEntities() as $seat) {
         if ($seat->get('localgov_seat_not_contested')->value) {
           $uncontested_paragraph = $seat->get('localgov_candidate_uncontested')->entity;
@@ -181,8 +192,7 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
       }
 
       if (!empty($winner_paragraphs)) {
-        $entity->set('localgov_election_winner',
-          $winner_paragraphs);
+        $entity->set('localgov_election_winner', $winner_paragraphs);
       }
     }
     else {
@@ -217,7 +227,7 @@ function localgov_elections_generate_election_aliases(NodeInterface $entity): vo
     if ($alias = localgov_elections_get_entity_alias('node', $entity->id())) {
 
       // Map page.
-      $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $entity->id()]);
+      $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_map', ['node' => $entity->id()]);
       $map_path = $map_page_url->toString();
 
       if (!(localgov_elections_alias_exists($map_path))) {
@@ -226,7 +236,7 @@ function localgov_elections_generate_election_aliases(NodeInterface $entity): vo
       }
 
       // Results timeline.
-      $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
+      $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_timeline',
           [
             'node' => $entity->id(),
           ]
@@ -239,7 +249,7 @@ function localgov_elections_generate_election_aliases(NodeInterface $entity): vo
       }
 
       // Vote share.
-      $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
+      $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_vote_share',
           [
             'node' => $entity->id(),
           ]
@@ -252,7 +262,7 @@ function localgov_elections_generate_election_aliases(NodeInterface $entity): vo
       }
 
       // Electoral candidates.
-      $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_1',
+      $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_candidates',
           [
             'node' => $entity->id(),
           ]
@@ -343,12 +353,12 @@ function localgov_elections_delete_alias_by_alias($alias): void {
 function localgov_elections_delete_election_aliases(NodeInterface $election): void {
 
   // Map page.
-  $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1', ['node' => $election->id()]);
+  $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_map', ['node' => $election->id()]);
   $map_path = $map_page_url->toString();
   localgov_elections_delete_alias_by_alias($map_path);
 
   // Results timeline.
-  $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
+  $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_timeline',
       [
         'node' => $election->id(),
       ]
@@ -357,7 +367,7 @@ function localgov_elections_delete_election_aliases(NodeInterface $election): vo
   localgov_elections_delete_alias_by_alias($results_path);
 
   // Electoral candidates.
-  $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_1',
+  $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_candidates',
       [
         'node' => $election->id(),
       ]
@@ -366,7 +376,7 @@ function localgov_elections_delete_election_aliases(NodeInterface $election): vo
   localgov_elections_delete_alias_by_alias($candidate_path);
 
   // Vote share.
-  $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
+  $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_vote_share',
       [
         'node' => $election->id(),
       ]
@@ -519,6 +529,14 @@ function localgov_elections_views_data_alter(array &$data): void {
       'id' => 'election_turnout',
     ],
   ];
+  $data['node']['election_timeline'] = [
+    'title' => t('Election timeline'),
+    'field' => [
+      'title' => t('Election timeline'),
+      'help' => t('Gathers timeline data for an area.'),
+      'id' => 'election_timeline',
+    ],
+  ];
   $data['node']['election_majority'] = [
     'title' => t('Election majority'),
     'field' => [
@@ -606,10 +624,10 @@ function localgov_elections_menu_local_tasks_alter(&$data, $route_name): void {
     // You can get nid and anything else you need from the node object.
     $type = $node->getType();
     if ($type != 'localgov_election') {
-      unset($data['tabs'][0]['views_view:view.localgov_election_results_timeline.page_1']);
-      unset($data['tabs'][0]['views_view:view.localgov_election_results_vote.page_1']);
-      unset($data['tabs'][0]['views_view:view.localgov_electoral_candidates.page_1']);
-      unset($data['tabs'][0]['views_view:view.localgov_election_electoral_map.page_1']);
+      unset($data['tabs'][0]['views_view:view.localgov_election_results_timeline.page_timeline']);
+      unset($data['tabs'][0]['views_view:view.localgov_election_results_vote.page_vote_share']);
+      unset($data['tabs'][0]['views_view:view.localgov_electoral_candidates.page_candidates']);
+      unset($data['tabs'][0]['views_view:view.localgov_election_electoral_map.page_map']);
     }
     else {
       $appropriate_fetch_routes = [
@@ -719,7 +737,7 @@ function localgov_elections_preprocess_node(&$variables): void {
     $variables['content']['results_fieldset']['sub_heading']['election_results_electorate'] = [
       '#type' => 'view',
       '#name' => 'localgov_election_results',
-      '#display_id' => 'block_1',
+      '#display_id' => 'block_electorate',
       '#arguments' => [$node->id()],
     ];
 
@@ -733,7 +751,7 @@ function localgov_elections_preprocess_node(&$variables): void {
     $variables['content']['results_fieldset']['election_results_by_party'] = [
       '#type' => 'view',
       '#name' => 'localgov_election_results_via_parties',
-      '#display_id' => 'block_1',
+      '#display_id' => 'block_party_results',
       '#arguments' => [$node->id()],
     ];
 
@@ -741,7 +759,7 @@ function localgov_elections_preprocess_node(&$variables): void {
       $variables['content']['results_fieldset']['election_results_majority'] = [
         '#type' => 'view',
         '#name' => 'localgov_election_results',
-        '#display_id' => 'block_5',
+        '#display_id' => 'block_majority',
         '#arguments' => [$node->id()],
       ];
     }
@@ -788,15 +806,15 @@ function localgov_elections_views_post_render(ViewExecutable $view, array &$outp
   if ($view->id() == 'localgov_election_results_via_parties') {
     // Remove rows from rendered output where party is not standing in election
     // (these rows will be NULL)
-    $rows = $output["#rows"]["block_1__election_seats_party_0"]["#data"];
+    $rows = $output["#rows"]["block_party_results__election_seats_party_0"]["#data"];
     $idx = 0;
     $removed = 0;
     foreach ($rows as $row) {
       if (!isset($row)) {
-        array_splice($output["#rows"]["block_1__election_seats_party_0"]["#data"], $idx - $removed, 1);
+        array_splice($output["#rows"]["block_party_results__election_seats_party_0"]["#data"], $idx - $removed, 1);
         array_splice($output["#rows"]["xaxis"]["#labels"], $idx - $removed, 1);
-        if (isset($output["#rows"]["block_1__election_seats_party_0"]["#mapped_data"])) {
-          array_splice($output["#rows"]["block_1__election_seats_party_0"]["#mapped_data"], $idx - $removed, 1);
+        if (isset($output["#rows"]["block_party_results__election_seats_party_0"]["#mapped_data"])) {
+          array_splice($output["#rows"]["block_party_results__election_seats_party_0"]["#mapped_data"], $idx - $removed, 1);
         }
         $removed++;
       }
@@ -808,7 +826,7 @@ function localgov_elections_views_post_render(ViewExecutable $view, array &$outp
 /**
  * Implements hook_chart_definition_CHART_ID_alter().
  */
-function localgov_elections_chart_definition_localgov_election_results_via_parties_block_1_alter(array &$definition, array $element, $chart_id): void {
+function localgov_elections_chart_definition_localgov_election_results_via_parties_block_party_results_alter(array &$definition, array $element, $chart_id): void {
   $definition['yAxis'][0]['allowDecimals'] = FALSE;
   if (!empty($definition['series'][0]['data'])) {
     foreach ($definition['series'][0]['data'] as &$entry) {
@@ -987,10 +1005,6 @@ function localgov_elections_preprocess_block(&$variables): void {
 function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   $form['#validate'][] = "localgov_elections_area_vote_form_validation";
 
-  // Add custom submit handler to ensure updates to uncontested candidates
-  // are saved.
-  array_unshift($form['actions']['submit']['#submit'], '_localgov_elections_localgov_area_vote_save_candidates');
-
   // Show the area vote edit form if a seat is uncontested.
   if (!empty($form['localgov_election_seats']['widget'])) {
     $node = $form_state->getFormObject()->getEntity();
@@ -1022,14 +1036,13 @@ function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form,
  */
 function localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state): void {
   $uncontested = $form_state->getValue('localgov_election_no_contest')['value'];
-  $areas = $form_state->getValue('localgov_election_candidates');
   $candidates = $form_state->getValue('localgov_election_candidates');
   $candidate_keys = array_filter(array_keys($candidates), function ($key) {
     return is_int($key);
   });
 
   // If an area is uncontested, no candidates should be associate with the
-  // area node - they will be associated with each seat instead
+  // area node - they will be associated with each seat instead.
   if ($uncontested && count($candidate_keys) > 0) {
     $form_state->setErrorByName('localgov_election_candidates', t("If the seat is <b>not</b> contested there should only be uncontested candidates assigned to seats."));
   }
@@ -1084,8 +1097,8 @@ function localgov_elections_node_insert(NodeInterface $node) {
 
       // Base name for seats.
       $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
-      // If the area is marked as uncontested we want to set seats as
-      // uncontested also
+      // If the area is marked as uncontested we want to set all seats as
+      // uncontested also.
       $area_uncontested = $node->get('localgov_election_no_contest')->value ??
         0;
 
