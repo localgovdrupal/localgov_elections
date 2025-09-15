@@ -30,6 +30,15 @@ results_timeline:
     theme:
       css/election-timeline.css: { }
 
+multi-winner-map:
+  version: 1.x
+  js:
+    js/multi-winner-boundaries.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - leaflet/leaflet-drupal
+    - leaflet_views/leaflet-views
 
 highcharts_overrides:
   js:

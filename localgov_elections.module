@@ -1130,3 +1130,85 @@ function localgov_elections_node_insert(NodeInterface $node) {
     }
   }
 }
+
+/**
+ * Implements hook_preprocess_views_view().
+ */
+function localgov_elections_preprocess_views_view__localgov_election_electoral_map(&$variables) {
+  $view = $variables['view'];
+  $has_multi_winners = FALSE;
+  $multi_winner_data = [];
+  $single_winner_data = [];
+
+  foreach ($view->result as $row) {
+    $winners = $row->_entity->get('localgov_election_winner')->referencedEntities();
+    $boundary_field = $row->_entity->get('localgov_election_boundary_data');
+
+    if (!$boundary_field->isEmpty()) {
+      $boundary_value = $boundary_field->first();
+      $boundary_data = $boundary_value->value;
+
+      if (!empty($boundary_data)) {
+        if (count($winners) > 1) {
+          // Multi-winner constituency.
+          $has_multi_winners = TRUE;
+          $js_data = localgov_elections_prepare_js_data($boundary_data, $winners, $row->nid);
+          if (!empty($js_data)) {
+            $multi_winner_data[$row->nid] = $js_data;
+          }
+        }
+        elseif (count($winners) === 1) {
+          // Single-winner constituency.
+          $winner = $winners[0];
+          $party = $winner->get('localgov_election_party')->entity;
+          if ($party) {
+            $single_winner_data[$row->nid] = [
+              'boundary' => $boundary_data,
+              'party_color' => $party->get('localgov_election_party_colour')->color ?? '#cccccc',
+              'party_name' => $party->getName(),
+              'node_id' => $row->nid,
+            ];
+          }
+        }
+      }
+    }
+  }
+
+  if ($has_multi_winners || !empty($single_winner_data)) {
+    $variables['#attached']['drupalSettings']['multiWinnerData'] = $multi_winner_data;
+    $variables['#attached']['drupalSettings']['singleWinnerData'] = $single_winner_data;
+    $variables['#attached']['library'][] = 'localgov_elections/multi-winner-map';
+  }
+}
+
+/**
+ * Prepare winning candidate data for js.
+ */
+function localgov_elections_prepare_js_data($boundary_data, $winners, $node_id) {
+  $winner_data = [];
+
+  foreach ($winners as $winner) {
+    $party = $winner->get('localgov_election_party')->entity;
+    $vote_count = $winner->get('localgov_election_votes')->value ?? 0;
+
+    if ($party) {
+      $winner_data[] = [
+        'party_name' => $party->getName(),
+        'color' => $party->get('localgov_election_party_colour')->color ?? '#cccccc',
+        'vote_count' => $vote_count,
+      ];
+    }
+  }
+
+  if (count($winner_data) < 2) {
+    return [];
+  }
+
+  // Return data for JavaScript processing.
+  return [
+    'boundary' => $boundary_data,
+    'winners' => $winner_data,
+    'winner_count' => count($winner_data),
+    'node_id' => $node_id,
+  ];
+}

@@ -443,7 +443,7 @@ display:
           fullscreen:
             control: false
             options: '{"position":"topleft","pseudoFullscreen":false}'
-          path: '{"color":"#444","opacity":"0.5","stroke":true,"weight":3,"fill":"depends","fillColor":"{{ localgov_election_party_colour }}","fillOpacity":"0.5","radius":"6"}'
+          path: '{"color":"#444","opacity":"0.5","stroke":true,"weight":3,"fill":"false"}'
           feature_properties:
             values: ''
           geocoder:
