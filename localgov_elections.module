@@ -1074,21 +1074,51 @@ function localgov_elections_area_vote_form_validation($form, FormStateInterface 
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function localgov_elections_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $target_forms = [
+    'node_localgov_area_vote_form',
+    'node_localgov_area_vote_edit_form',
+  ];
+
+  if (in_array($form_id, $target_forms, TRUE)) {
+
+    if (isset($form['localgov_election_seats']['widget'])) {
+      foreach ($form['localgov_election_seats']['widget'] as $delta => &$seat_element) {
+        if (is_numeric($delta) && isset($seat_element['subform'])) {
+
+          // Show/hide candidate field based on uncontested checkbox.
+          if (isset($seat_element['subform']['localgov_candidate_uncontested'])) {
+            $seat_element['subform']['localgov_candidate_uncontested']['#states'] = [
+              'visible' => [
+                ':input[name="localgov_election_seats[' . $delta . '][subform][localgov_seat_not_contested][value]"]' => ['checked' => TRUE],
+              ],
+            ];
+          }
+        }
+      }
+    }
+
+    $form['#attached']['library'][] = 'localgov_elections/localgov_elections_form';
+  }
+}
+
+/**
  * Implements hook_node_insert().
  *
  * Create default seats when area vote is created.
  */
 function localgov_elections_node_insert(NodeInterface $node) {
-  // Only act on our specific bundle.
   if ($node->bundle() !== 'localgov_area_vote') {
     return;
   }
   // Ensure the reference to parent election exists.
   if ($node->hasField('localgov_election') && !$node->get('localgov_election')
-    ->isEmpty()) {
+      ->isEmpty()) {
     $parent = $node->get('localgov_election')->entity;
     if ($parent instanceof NodeInterface && $parent->hasField('localgov_election_seat_count')) {
-      $seat_count = (int) $parent->get('localgov_election_seat_count')->value;
+      $seat_count = (int)$parent->get('localgov_election_seat_count')->value;
 
       // Only proceed if no seats already exist.
       if (!$node->get('localgov_election_seats')->isEmpty()) {
@@ -1097,8 +1127,8 @@ function localgov_elections_node_insert(NodeInterface $node) {
 
       // Base name for seats.
       $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
-      // If the area is marked as uncontested we want to set all seats as
-      // uncontested also.
+      // If the area is marked as uncontested we want to set all seats to
+      // uncontested.
       $area_uncontested = $node->get('localgov_election_no_contest')->value ??
         0;
 
@@ -1106,7 +1136,7 @@ function localgov_elections_node_insert(NodeInterface $node) {
         ->getStorage('paragraph');
       $seat_paragraphs = [];
 
-      // Always create at least 1 seat, more if parent says so.
+      // Always create at least 1 seat, more if parent requires it.
       for ($i = 1; $i <= $seat_count; $i++) {
         $seat_label = $seat_count > 1 ? $area_name . ' ' . $i : $area_name;
 
@@ -1120,7 +1150,7 @@ function localgov_elections_node_insert(NodeInterface $node) {
         $seat_paragraphs[] = $seat_paragraph;
       }
 
-      // Attach them to the node’s reference field.
+      // Attach them to the node's reference field.
       foreach ($seat_paragraphs as $seat_paragraph) {
         $node->get('localgov_election_seats')->appendItem($seat_paragraph);
       }
@@ -1204,7 +1234,6 @@ function localgov_elections_prepare_js_data($boundary_data, $winners, $node_id) 
     return [];
   }
 
-  // Return data for JavaScript processing.
   return [
     'boundary' => $boundary_data,
     'winners' => $winner_data,

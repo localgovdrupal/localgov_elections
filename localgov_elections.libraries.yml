@@ -74,3 +74,8 @@ election_menu:
   dependencies:
     - core/drupal
     - core/drupal.debounce
+
+localgov_elections_form:
+  css:
+    theme:
+      css/localgov-elections-form.css: {}

@@ -1,0 +1,4 @@
+/* Hide votes fieldset on uncontested seat */
+fieldset[data-drupal-selector*="localgov-candidate-uncontested"][data-drupal-selector*="group-result"] {
+  display: none !important;
+}

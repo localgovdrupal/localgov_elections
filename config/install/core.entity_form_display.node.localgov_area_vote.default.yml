@@ -103,7 +103,7 @@ third_party_settings:
       label: 'Candidates and Votes'
       region: content
       parent_name: group_votes
-      weight: 5
+      weight: 6
       format_type: tab
       format_settings:
         classes: ''
@@ -134,7 +134,7 @@ third_party_settings:
       label: Lookup
       region: hidden
       parent_name: ''
-      weight: 13
+      weight: 12
       format_type: details
       format_settings:
         classes: ''
@@ -149,7 +149,7 @@ third_party_settings:
       label: Seats
       region: hidden
       parent_name: group_votes
-      weight: 6
+      weight: 5
       format_type: tab
       format_settings:
         classes: ''
@@ -197,7 +197,7 @@ content:
     third_party_settings: {  }
   localgov_election_candidates:
     type: paragraphs
-    weight: 33
+    weight: 34
     region: content
     settings:
       title: Paragraph
@@ -224,13 +224,13 @@ content:
     third_party_settings: {  }
   localgov_election_hold_or_gain:
     type: options_buttons
-    weight: 29
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
   localgov_election_no_contest:
     type: boolean_checkbox
-    weight: 32
+    weight: 33
     region: content
     settings:
       display_label: true
@@ -276,7 +276,7 @@ content:
         class: ''
   localgov_election_spoils:
     type: number
-    weight: 27
+    weight: 3
     region: content
     settings:
       placeholder: ''
@@ -295,7 +295,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   simple_sitemap:
-    weight: 6
+    weight: 5
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -325,7 +325,7 @@ content:
       placeholder: ''
     third_party_settings: {  }
   url_redirects:
-    weight: 7
+    weight: 6
     region: content
     settings: {  }
     third_party_settings: {  }
