@@ -40,6 +40,9 @@ function localgov_elections_theme($existing, $type, $theme, $path): mixed {
         'election_type' => '',
       ],
     ],
+    'views_view_table__localgov_election_results__summary_table' => [
+      'base hook' => 'views_view_table',
+    ],
     'election_timeline_table_row' => [
       'variables' => [
         'time' => NULL,
@@ -506,17 +509,17 @@ function localgov_elections_entity_predelete(EntityInterface $entity): void {
  */
 function localgov_elections_views_data_alter(array &$data): void {
   $data['node']['ward_majority'] = [
-    'title' => t('Ward majority'),
+    'title' => t('Area majority'),
     'field' => [
-      'title' => t('Ward majority'),
+      'title' => t('Area majority'),
       'help' => t('Calculates the difference between number of votes of first and second results in an electoral area.'),
       'id' => 'ward_majority',
     ],
   ];
   $data['node']['ward_party'] = [
-    'title' => t('Ward winning party'),
+    'title' => t('Area winning party'),
     'field' => [
-      'title' => t('Ward winning party'),
+      'title' => t('Area winning party'),
       'help' => t('Winning party in an electoral area for an election.'),
       'id' => 'ward_party',
     ],
@@ -547,28 +550,28 @@ function localgov_elections_views_data_alter(array &$data): void {
   ];
 
   $data['node']['ward_candidates'] = [
-    'title' => t('Candidate results for a ward'),
+    'title' => t('Candidate results for an area'),
     'field' => [
-      'title' => t('Candidate results for a ward'),
-      'help' => t('Produces all candidates results for each area/ward in a specific election.'),
+      'title' => t('Candidate results for an area'),
+      'help' => t('Produces all candidates results for each area in a specific election.'),
       'id' => 'ward_candidates',
     ],
   ];
 
   $data['node']['ward_candidates_candidate'] = [
-    'title' => t('Candidate result for a ward'),
+    'title' => t('Candidate result for an area'),
     'field' => [
-      'title' => t('Candidate result for a ward'),
-      'help' => t('Produces all candidates results for each area/ward in a specific election.'),
+      'title' => t('Candidate result for an area'),
+      'help' => t('Produces all candidates results for each area in a specific election.'),
       'id' => 'ward_candidates_candidate',
     ],
   ];
 
   $data['node']['ward_candidates_party'] = [
-    'title' => t('Candidate party result for a ward'),
+    'title' => t('Candidate party result for an area'),
     'field' => [
-      'title' => t('Candidate party result for a ward'),
-      'help' => t('Produces all candidates results for each area/ward in a specific election.'),
+      'title' => t('Candidate party result for an area'),
+      'help' => t('Produces all candidates results for each area in a specific election.'),
       'id' => 'ward_candidates_party',
     ],
   ];
@@ -577,7 +580,7 @@ function localgov_elections_views_data_alter(array &$data): void {
     'title' => t('Candidate votes result for a ward'),
     'field' => [
       'title' => t('Candidate votes result for a ward'),
-      'help' => t('Produces all candidates results for each area/ward in a specific election.'),
+      'help' => t('Produces all candidates results for each area in a specific election.'),
       'id' => 'ward_candidates_votes',
     ],
   ];
@@ -724,13 +727,13 @@ function localgov_elections_preprocess_node(&$variables): void {
     }
     $variables['content']['results_fieldset'] = [
       '#type' => 'container',
-      '#prefix' => '<div class="county-summary"> <div class="county-summary__header" ><h2>' . t("Seats won") . '</h2></div>',
+      '#prefix' => '<div class="area-summary"> <div class="area-summary__header" ><h2>' . t("Seats won") . '</h2></div>',
       '#suffix' => '</div>',
     ];
 
     $variables['content']['results_fieldset']['sub_heading'] = [
       '#type' => 'container',
-      '#prefix' => '<div class="county-summary__subheading">',
+      '#prefix' => '<div class="area-summary__subheading">',
       '#suffix' => '</div>',
     ];
 

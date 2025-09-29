@@ -1,0 +1,51 @@
+{#
+/**
+ * @file
+ * Theme override for displaying a view as a table.
+ */
+#}
+
+{# Check if table has any real content #}
+{% set has_content = false %}
+{% for row in rows %}
+  {% for key, column in row.columns %}
+    {% set rendered = column.content|render|striptags|trim %}
+    {% if rendered is not empty %}
+      {% set has_content = true %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+<table{{ attributes }}>
+  {% if caption_needed %}
+    <caption>{{ caption }}</caption>
+  {% endif %}
+
+  {% if has_content %}
+    {% if header %}
+      <thead>
+      <tr>
+        {% for key, column in header %}
+          <th{{ column.attributes }}>{{ column.content }}</th>
+        {% endfor %}
+      </tr>
+      </thead>
+    {% endif %}
+
+    <tbody>
+    {% for row in rows %}
+      <tr{{ row.attributes }}>
+        {% for key, column in row.columns %}
+          <td{{ column.attributes }}>{{ column.content }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  {% else %}
+    <tbody>
+    <tr>
+      <td colspan="{{ header|length }}"><em>Results pending.</em></td>
+    </tr>
+    </tbody>
+  {% endif %}
+</table>

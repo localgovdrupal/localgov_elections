@@ -24,7 +24,7 @@ class ElectionTurnout extends FieldPluginBase {
    * Render function for the election_turnout field.
    *
    * Displays the difference between number of votes of first and second
-   * results in an electoral area (Ward).
+   * results in an electoral area.
    *
    * @{inheritdoc}
    */
