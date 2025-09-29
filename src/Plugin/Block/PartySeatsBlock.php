@@ -67,7 +67,6 @@ class PartySeatsBlock extends BlockBase {
         }
       }
 
-      // Wrapper to be displayed as highcharts table.
       $markup .= '<div class="results-seats-chart">';
       foreach ($election_parties as $election_party) {
         $p_abbr = $election_party['abbr'];

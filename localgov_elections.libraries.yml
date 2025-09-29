@@ -40,14 +40,6 @@ multi-winner-map:
     - leaflet/leaflet-drupal
     - leaflet_views/leaflet-views
 
-highcharts_overrides:
-  js:
-    js/highcharts-override.js: { weight: -5 }
-  dependencies:
-    - charts/global
-    - core/drupal
-    - core/drupalSettings
-    - core/once
 chartjs_overrides:
   js:
     js/chartjs-override.js: { weight: -5 }
