@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormBuilderInterface;
-use Drupal\localgov_elections\Form\BounaryProviderAddForm;
+use Drupal\localgov_elections\Form\BoundaryProviderAddForm;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -78,7 +78,7 @@ final class BoundarySourceListBuilder extends ConfigEntityListBuilder {
    * {@inheritDoc}
    */
   public function render() {
-    $build['provider_entity_create_form'] = $this->formBuilder->getForm(BounaryProviderAddForm::class);
+    $build['provider_entity_create_form'] = $this->formBuilder->getForm(BoundaryProviderAddForm::class);
     $build['provider_header']['#markup'] = '<br><h3>' . $this->t('Available Boundary Providers') . '</h3>';
     $build['provider_entity_list'] = parent::render();
     return $build;

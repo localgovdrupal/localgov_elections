@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Boundary Provider Add Form.
  */
-class BounaryProviderAddForm extends FormBase {
+class BoundaryProviderAddForm extends FormBase {
 
   /**
    * The boundary provider plugin manager.

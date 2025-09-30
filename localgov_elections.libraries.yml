@@ -1,11 +1,3 @@
-selectall:
-  version: 1.x
-  js:
-    js/selectall.js: { }
-  dependencies:
-    - core/drupal
-    - core/once
-
 election:
   version: 1.x
   css:
