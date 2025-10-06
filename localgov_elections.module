@@ -556,6 +556,14 @@ function localgov_elections_views_data_alter(array &$data): void {
       'id' => 'area_seats_count',
     ],
   ];
+  $data['paragraph']['winner_tie_indicator'] = [
+    'title' => t('Winner tie indicator'),
+    'field' => [
+      'title' => t('Winner tie indicator'),
+      'help' => t('Displays " (tie winner)" if the winner won on a tie.'),
+      'id' => 'winner_tie_indicator',
+    ],
+  ];
 
   $data['taxonomy_term_data']['election_share'] = [
     'title' => t('Percentage of election share'),

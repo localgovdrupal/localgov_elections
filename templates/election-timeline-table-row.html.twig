@@ -19,6 +19,6 @@ Render a timeline table.
         {{ candidate.party }}
       {% endif %}
     </td>
-    <td>{{ candidate.votes }}</td>
+    <td>{{ candidate.votes }}{% if candidate.tie %} (tie winner){% endif %}</td>
   </tr>
 {% endfor %}

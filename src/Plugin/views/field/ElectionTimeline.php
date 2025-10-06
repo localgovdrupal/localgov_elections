@@ -32,11 +32,14 @@ class ElectionTimeline extends FieldPluginBase {
     $winner_ids = array_map(fn($item) => $item['target_id'], $node->get('localgov_election_winner')->getValue());
 
     $candidates = [];
+    $votes_map = [];
+
     foreach ($node->get('localgov_election_candidates')->referencedEntities() as $candidate_paragraph) {
       $votes_field = $candidate_paragraph->get('localgov_election_votes')->getValue();
       $votes = (int) ($votes_field[0]['value'] ?? 0);
+      $cand_id = $candidate_paragraph->id();
 
-      $is_winner = in_array($candidate_paragraph->id(), $winner_ids, TRUE);
+      $is_winner = in_array($cand_id, $winner_ids, TRUE);
 
       if ($is_winner && $votes === 0) {
         continue;
@@ -50,7 +53,33 @@ class ElectionTimeline extends FieldPluginBase {
         'abbreviation' => $party?->get('localgov_election_abbreviation')->value ?? '',
         'votes' => $votes,
         'winner' => $is_winner,
+        'id' => $cand_id,
       ];
+
+      $votes_map[$cand_id] = $votes;
+    }
+
+    // Check for ties - a winner won on a tie if they have the same votes as a non-winner.
+    // Get the minimum votes among winners.
+    $min_winner_votes = PHP_INT_MAX;
+    foreach ($candidates as $candidate) {
+      if ($candidate['winner'] && $candidate['votes'] < $min_winner_votes) {
+        $min_winner_votes = $candidate['votes'];
+      }
+    }
+
+    // Check if any non-winner has the same votes as the minimum winner votes.
+    $has_tie = FALSE;
+    foreach ($candidates as $candidate) {
+      if (!$candidate['winner'] && $candidate['votes'] === $min_winner_votes) {
+        $has_tie = TRUE;
+        break;
+      }
+    }
+
+    // Mark winners with minimum votes as tie winners if there's a tie.
+    foreach ($candidates as &$candidate) {
+      $candidate['tie'] = $candidate['winner'] && $has_tie && $candidate['votes'] === $min_winner_votes;
     }
     if (empty($candidates)) {
       return [];
