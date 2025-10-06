@@ -558,6 +558,7 @@ function localgov_elections_views_data_alter(array &$data): void {
   ];
   $data['paragraph']['winner_tie_indicator'] = [
     'title' => t('Winner tie indicator'),
+    'group' => t('Paragraph'),
     'field' => [
       'title' => t('Winner tie indicator'),
       'help' => t('Displays " (tie winner)" if the winner won on a tie.'),
