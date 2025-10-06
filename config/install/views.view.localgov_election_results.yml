@@ -39,15 +39,15 @@ display:
     display_options:
       title: 'Election Results'
       fields:
-        ward_party:
-          id: ward_party
+        area_party:
+          id: area_party
           table: node
-          field: ward_party
+          field: area_party
           relationship: none
           group_type: count
           admin_label: ''
           entity_type: node
-          plugin_id: ward_party
+          plugin_id: area_party
           label: ''
           exclude: false
           alter:
@@ -945,6 +945,15 @@ display:
           admin_label: 'localgov_election_party: Taxonomy term'
           plugin_id: standard
           required: false
+        localgov_election_party_summary:
+          id: localgov_election_party_summary
+          table: paragraph__localgov_election_party
+          field: localgov_election_party
+          relationship: localgov_election_winner
+          group_type: group
+          admin_label: 'localgov_election_party: Taxonomy term (for summary table)'
+          plugin_id: standard
+          required: false
       group_by: true
       display_description: ''
       display_extenders: {  }
@@ -1083,134 +1092,6 @@ display:
           text: view
           output_url_as_text: true
           absolute: false
-        localgov_election_area_name:
-          id: localgov_election_area_name
-          table: node__localgov_election_area_name
-          field: localgov_election_area_name
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: field
-          label: 'Area name'
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: false
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-        title:
-          id: title
-          table: node_field_data
-          field: title
-          relationship: none
-          group_type: group
-          admin_label: ''
-          entity_type: node
-          entity_field: title
-          plugin_id: field
-          label: Area
-          exclude: false
-          alter:
-            alter_text: true
-            text: '{{ localgov_election_area_name }}'
-            make_link: true
-            path: '{{ view_node }}'
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: 'View full details for the {{ localgov_election_area_name }} electoral area'
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: string
-          settings:
-            link_to_entity: true
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
         edit_node:
           id: edit_node
           table: node
@@ -1221,7 +1102,7 @@ display:
           entity_type: node
           plugin_id: entity_link_edit
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -1264,6 +1145,197 @@ display:
           text: ' [edit]'
           output_url_as_text: false
           absolute: false
+        localgov_election_area_name:
+          id: localgov_election_area_name
+          table: node__localgov_election_area_name
+          field: localgov_election_area_name
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: true
+          alter:
+            alter_text: true
+            text: '<a href="{{ view_node }}">{{ localgov_election_area_name }}</a> {{ edit_node }}'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        title:
+          id: title
+          table: node_field_data
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          entity_field: title
+          plugin_id: field
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: '{{ localgov_election_area_name }}'
+            make_link: false
+            path: '{{ view_node }}'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: 'View full details for the {{ localgov_election_area_name }} electoral area'
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: false
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+        localgov_election_abbreviation:
+          id: localgov_election_abbreviation
+          table: taxonomy_term__localgov_election_abbreviation
+          field: localgov_election_abbreviation
+          relationship: localgov_election_party_summary
+          group_type: group
+          admin_label: ''
+          plugin_id: field
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
         localgov_election_party:
           id: localgov_election_party
           table: paragraph__localgov_election_party
@@ -1275,8 +1347,8 @@ display:
           label: Party
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: '<span class="party {{ localgov_election_abbreviation|lower }}">{{ localgov_election_party }}</span>'
             make_link: false
             path: ''
             absolute: false
@@ -1577,7 +1649,7 @@ display:
             localgov_election_area_name: localgov_election_area_name
             title: title
             edit_node: title
-            ward_party: ward_party
+            area_party: area_party
             localgov_election_hold_or_gain: localgov_election_hold_or_gain
             localgov_election_candidate: localgov_election_candidate
             localgov_election_forename: localgov_election_candidate
@@ -1619,7 +1691,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            ward_party:
+            area_party:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -1674,13 +1746,32 @@ display:
         group_by: false
         style: false
         row: false
-        relationships: true
+        relationships: false
         fields: false
         sorts: false
         arguments: true
         filters: false
         filter_groups: false
         header: false
+      relationships:
+        localgov_election_winner:
+          id: localgov_election_winner
+          table: node__localgov_election_winner
+          field: localgov_election_winner
+          relationship: none
+          group_type: group
+          admin_label: 'localgov_election_winner: Paragraph'
+          plugin_id: standard
+          required: false
+        localgov_election_party_summary:
+          id: localgov_election_party_summary
+          table: paragraph__localgov_election_party
+          field: localgov_election_party
+          relationship: localgov_election_winner
+          group_type: group
+          admin_label: 'localgov_election_party: Taxonomy term (for summary table)'
+          plugin_id: standard
+          required: false
       group_by: false
       display_description: ''
       header:

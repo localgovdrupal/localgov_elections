@@ -49,9 +49,13 @@
   font-weight: bold;
 }
 
-.view-localgov-election-results table caption {
+.area-summary-table caption {
   font-size: 1.25rem;
   font-weight: bold;
   margin: 1rem 0;
   text-align: left;
+}
+
+span.party {
+  padding: 0.25rem 0.5rem;
 }

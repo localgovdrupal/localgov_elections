@@ -1,0 +1,32 @@
+{#
+/**
+ * @file
+ * Theme override for displaying a view as a table.
+ */
+#}
+
+<table{{ attributes.addClass('area-summary-table') }}>
+  {% if caption_needed %}
+    <caption>{{ caption }}</caption>
+  {% endif %}
+
+  {% if header %}
+    <thead>
+      <tr>
+        {% for key, column in header %}
+          <th{{ column.attributes }}>{{ column.content }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+  {% endif %}
+
+  <tbody>
+    {% for row in rows %}
+      <tr{{ row.attributes }}>
+        {% for key, column in row.columns %}
+          <td{{ column.attributes }}>{{ column.content }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

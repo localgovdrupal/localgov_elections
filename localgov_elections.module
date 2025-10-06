@@ -23,7 +23,7 @@ use Drupal\views\ViewExecutable;
  */
 function localgov_elections_theme($existing, $type, $theme, $path): mixed {
   return [
-    'ward_result' => [
+    'area_result' => [
       'variables' => [
         'chart' => NULL,
         'result' => NULL,
@@ -516,12 +516,12 @@ function localgov_elections_views_data_alter(array &$data): void {
       'id' => 'ward_majority',
     ],
   ];
-  $data['node']['ward_party'] = [
+  $data['node']['area_party'] = [
     'title' => t('Area winning party'),
     'field' => [
       'title' => t('Area winning party'),
       'help' => t('Winning party in an electoral area for an election.'),
-      'id' => 'ward_party',
+      'id' => 'area_party',
     ],
   ];
   $data['node']['election_turnout'] = [
@@ -548,40 +548,12 @@ function localgov_elections_views_data_alter(array &$data): void {
       'id' => 'election_majority',
     ],
   ];
-
-  $data['node']['ward_candidates'] = [
-    'title' => t('Candidate results for an area'),
+  $data['node']['area_seats_count'] = [
+    'title' => t('Area seats count'),
     'field' => [
-      'title' => t('Candidate results for an area'),
-      'help' => t('Produces all candidates results for each area in a specific election.'),
-      'id' => 'ward_candidates',
-    ],
-  ];
-
-  $data['node']['ward_candidates_candidate'] = [
-    'title' => t('Candidate result for an area'),
-    'field' => [
-      'title' => t('Candidate result for an area'),
-      'help' => t('Produces all candidates results for each area in a specific election.'),
-      'id' => 'ward_candidates_candidate',
-    ],
-  ];
-
-  $data['node']['ward_candidates_party'] = [
-    'title' => t('Candidate party result for an area'),
-    'field' => [
-      'title' => t('Candidate party result for an area'),
-      'help' => t('Produces all candidates results for each area in a specific election.'),
-      'id' => 'ward_candidates_party',
-    ],
-  ];
-
-  $data['node']['ward_candidates_votes'] = [
-    'title' => t('Candidate votes result for a ward'),
-    'field' => [
-      'title' => t('Candidate votes result for a ward'),
-      'help' => t('Produces all candidates results for each area in a specific election.'),
-      'id' => 'ward_candidates_votes',
+      'title' => t('Area seats count'),
+      'help' => t('Counts the number of seats in an electoral area.'),
+      'id' => 'area_seats_count',
     ],
   ];
 
@@ -694,7 +666,7 @@ function localgov_elections_preprocess_node(&$variables): void {
           ->addCacheableDependency($analysis, $plugin_block);
 
         $variables['content']['results'] = [
-          '#theme' => 'ward_result',
+          '#theme' => 'area_result',
           '#chart' => [
             '#type' => 'view',
             '#name' => 'localgov_election_area_results',
@@ -703,7 +675,7 @@ function localgov_elections_preprocess_node(&$variables): void {
           '#result' => [
             '#type' => 'view',
             '#name' => 'localgov_election_area_results',
-            '#display_id' => 'block_area_winners',
+            '#display_id' => 'block_area_results_table',
             '#arguments' => [$node->id()],
           ],
           '#analysis' => $analysis,
@@ -781,18 +753,26 @@ function localgov_elections_preprocess_node(&$variables): void {
  */
 function localgov_elections_views_pre_render(ViewExecutable $view): void {
 
-  if ($view->id() == 'localgov_electoral_candidates') {
+  $view_storage = $view->storage;
+  $dependencies = $view_storage ? $view_storage->get('dependencies') : [];
+  $enforced_modules = $dependencies['enforced']['module'] ?? [];
+
+  if (in_array('localgov_elections', $enforced_modules, TRUE)) {
+    $view->element['#attached']['library'][] = 'localgov_elections/election';
+  }
+
+  if ($view->id() === 'localgov_electoral_candidates') {
     $view->element['#attached']['library'][] = 'localgov_elections/electoral_candidates_view';
   }
 
-  if ($view->id() == 'localgov_election_results_timeline') {
+  if ($view->id() === 'localgov_election_results_timeline') {
     $view->element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
     $view->element['#attached']['library'][] = 'localgov_elections/results_timeline';
     $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
   }
 
-  if ($view->id() == 'localgov_election_results') {
-    if ($view->getDisplay()->display['id'] == 'summary_table') {
+  if ($view->id() === 'localgov_election_results') {
+    if ($view->getDisplay()->display['id'] === 'summary_table') {
       $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
     }
   }
@@ -802,7 +782,7 @@ function localgov_elections_views_pre_render(ViewExecutable $view): void {
  * Implements hook_views_post_render().
  */
 function localgov_elections_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache): void {
-  if ($view->id() == 'localgov_election_results_via_parties') {
+  if ($view->id() === 'localgov_election_results_via_parties') {
     // Remove rows from rendered output where party is not standing in election
     // (these rows will be NULL)
     $rows = $output["#rows"]["block_party_results__election_seats_party_0"]["#data"];
@@ -876,11 +856,12 @@ function localgov_elections_page_attachments(array &$attachments): void {
 
   if ($node = $route->getParameter('node')) {
     if ($node != NULL && $node instanceof NodeInterface) {
-      if ($node->bundle() == 'localgov_election') {
+      if ($node->bundle() === 'localgov_election') {
         $attachments['#attached']['library'][] = 'localgov_elections/election';
       }
-      elseif ($node->bundle() == 'localgov_area_vote') {
-        $attachments['#attached']['library'][] = 'localgov_elections/division_results';
+      elseif ($node->bundle() === 'localgov_area_vote') {
+        $attachments['#attached']['library'][] = 'localgov_elections/election';
+        $attachments['#attached']['library'][] = 'localgov_elections/area_results';
       }
     }
   }

@@ -16,7 +16,7 @@
   {% endfor %}
 {% endfor %}
 
-<table{{ attributes }}>
+<table{{ attributes.addClass('area-summary-table') }}>
   {% if caption_needed %}
     <caption>{{ caption }}</caption>
   {% endif %}

@@ -10,7 +10,7 @@ use Drupal\views\ResultRow;
 /**
  * Field handler to flag the node type.
  *
- * @ViewsField("ward_party")
+ * @ViewsField("area_party")
  */
 class WardParty extends FieldPluginBase {
 
@@ -22,7 +22,7 @@ class WardParty extends FieldPluginBase {
   }
 
   /**
-   * Render function for the ward_party field.
+   * Render function for the area_party field.
    *
    * Displays the winning party in an electoral area (Ward).
    *

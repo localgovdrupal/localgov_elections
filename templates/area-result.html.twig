@@ -1,0 +1,32 @@
+<div class="area-result">
+
+  {% if result %}
+    <div class="area-result__result">
+      <div class="area-result__result-header">
+        <h2>{{ "Elected candidates"|t }}</h2>
+      </div>
+      <div class="area-result__result-content">
+        {{ result }}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if chart %}
+    <div class="area-result__chart">
+      <div class="area-result__chart-header">
+        <h2>{{ "Votes cast"|t }}</h2>
+      </div>
+      {{ chart }}
+    </div>
+  {% endif %}
+
+  {% if analysis %}
+    <div class="area-result__analysis">
+      <div class="area-result__analysis-header">
+        <h2>{{ "Analysis"|t }}</h2>
+      </div>
+      {{ analysis }}
+    </div>
+  {% endif %}
+
+</div>

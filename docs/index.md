@@ -71,7 +71,7 @@ For each electoral area you need, do the following:
 
 ### Add candidate and electoral area details
 
-1. On viewing the election node you will be presented with a list of electoral area results. Use the `[edit]` link to access each electoral area details. ![image](images/ward-results.png)
+1. On viewing the election node you will be presented with a list of electoral area results. Use the `[edit]` link to access each electoral area details. ![image](images/area-results.png)
 
 2. You need to add the following details for each electoral area in the preparation stage
    1. Details tab - Eligible voters

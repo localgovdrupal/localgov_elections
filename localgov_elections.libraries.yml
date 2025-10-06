@@ -4,17 +4,11 @@ election:
     theme:
       css/election-results.css: { }
 
-electoral_candidates_view:
+area_results:
   version: 1.x
   css:
     theme:
-      css/electoral-candidates-view.css: { }
-
-division_results:
-  version: 1.x
-  css:
-    theme:
-      css/ward-results.css: { }
+      css/area-results.css: { }
 
 results_timeline:
   version: 1.x
