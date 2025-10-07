@@ -10,6 +10,7 @@ dependencies:
     - field.storage.paragraph.localgov_election_forename
     - field.storage.paragraph.localgov_election_party
     - field.storage.paragraph.localgov_election_votes
+    - field.storage.taxonomy_term.localgov_election_abbreviation
     - field.storage.taxonomy_term.localgov_election_party_colour
     - node.type.localgov_area_vote
   module:
@@ -494,7 +495,7 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: '<div>{{ localgov_election_forename }} {{ localgov_election_candidate }}</div><div> ({{ localgov_election_party }})</div>'
+            text: '<div>{{ localgov_election_forename }} {{ localgov_election_candidate|upper }}</div><div> ({{ localgov_election_party }})</div>'
             make_link: false
             path: ''
             absolute: false
@@ -1365,10 +1366,10 @@ display:
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
-          empty: ''
+          empty: "{% if localgov_election_candidate %}\r\nUncontested\r\n{% endif %}"
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: true
+          hide_alter_empty: false
           click_sort_column: value
           type: number_integer
           settings:

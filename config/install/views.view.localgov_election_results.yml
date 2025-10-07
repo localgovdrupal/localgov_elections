@@ -1645,7 +1645,6 @@ display:
           table: views
           field: area_election_results_heading
           plugin_id: localgov_elections_results_heading
-      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:

@@ -108,6 +108,14 @@ class AnalysisBlock extends BlockBase {
         }
       }
 
+      // Suppress majority if area has more than one seat.
+      if ($node->hasField('localgov_election_seats')) {
+        $seat_count = $node->get('localgov_election_seats')->count();
+        if ($seat_count > 1) {
+          $display_majority = FALSE;
+        }
+      }
+
       // Display majority if we can.
       if ($display_majority && !is_null($majority)) {
         $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--majority">Majority</div>';
