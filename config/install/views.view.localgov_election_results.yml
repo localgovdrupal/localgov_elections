@@ -1218,11 +1218,11 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: Candidate
-          exclude: false
+          label: ''
+          exclude: true
           alter:
-            alter_text: true
-            text: "{% if localgov_election_votes_final  == \"1\" %}\r\n{{ localgov_election_candidate }}\r\n{% endif %}"
+            alter_text: false
+            text: ''
             make_link: false
             path: ''
             absolute: false
@@ -1280,11 +1280,11 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: field
-          label: ''
+          label: Candidate
           exclude: false
           alter:
             alter_text: true
-            text: "{% if localgov_election_votes_final  == \"1\" %}\r\n, {{ localgov_election_forename }}\r\n{% endif %}\r\n"
+            text: "{% if localgov_election_votes_final  == \"1\" %}{{ localgov_election_candidate }}, {{ localgov_election_forename }}{% endif %}\r\n"
             make_link: false
             path: ''
             absolute: false
@@ -1519,11 +1519,13 @@ display:
           columns:
             localgov_election_votes_final: localgov_election_votes_final
             view_node: view_node
+            edit_node: title
             localgov_election_area_name: localgov_election_area_name
             title: title
-            edit_node: title
+            localgov_election_abbreviation: localgov_election_abbreviation
+            localgov_election_party: localgov_election_party
             localgov_election_candidate: localgov_election_candidate
-            localgov_election_forename: localgov_election_candidate
+            localgov_election_forename: localgov_election_forename
             winner_tie_indicator: winner_tie_indicator
             localgov_election_votes: localgov_election_votes
           default: '-1'
@@ -1536,6 +1538,13 @@ display:
               empty_column: false
               responsive: ''
             view_node:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            edit_node:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -1556,7 +1565,14 @@ display:
               separator: ' '
               empty_column: false
               responsive: ''
-            edit_node:
+            localgov_election_abbreviation:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            localgov_election_party:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -1644,6 +1660,9 @@ display:
           id: area_election_results_heading
           table: views
           field: area_election_results_heading
+          relationship: none
+          group_type: group
+          admin_label: ''
           plugin_id: localgov_elections_results_heading
     cache_metadata:
       max-age: -1
@@ -1660,3 +1679,4 @@ display:
         - 'config:field.storage.paragraph.localgov_election_forename'
         - 'config:field.storage.paragraph.localgov_election_party'
         - 'config:field.storage.paragraph.localgov_election_votes'
+        - 'config:field.storage.taxonomy_term.localgov_election_abbreviation'
