@@ -58,4 +58,5 @@ class WinnerTieIndicator extends FieldPluginBase {
 
     return '';
   }
+
 }

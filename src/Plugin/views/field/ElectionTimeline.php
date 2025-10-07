@@ -59,8 +59,7 @@ class ElectionTimeline extends FieldPluginBase {
       $votes_map[$cand_id] = $votes;
     }
 
-    // Check for ties - a winner won on a tie if they have the same votes as a non-winner.
-    // Get the minimum votes among winners.
+    // Find the lowest winning vote count.
     $min_winner_votes = PHP_INT_MAX;
     foreach ($candidates as $candidate) {
       if ($candidate['winner'] && $candidate['votes'] < $min_winner_votes) {
@@ -68,7 +67,7 @@ class ElectionTimeline extends FieldPluginBase {
       }
     }
 
-    // Check if any non-winner has the same votes as the minimum winner votes.
+    // Do any non-winners have the same votes as the lowest winning vote count?
     $has_tie = FALSE;
     foreach ($candidates as $candidate) {
       if (!$candidate['winner'] && $candidate['votes'] === $min_winner_votes) {
