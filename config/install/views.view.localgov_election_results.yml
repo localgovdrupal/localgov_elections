@@ -1284,7 +1284,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if localgov_election_votes_final  == \"1\" %}{{ localgov_election_candidate }}, {{ localgov_election_forename }}{% endif %}\r\n"
+            text: "{% if localgov_election_votes_final  == \"1\" %}{{ localgov_election_candidate|upper }}, {{ localgov_election_forename }}{% endif %}\r\n"
             make_link: false
             path: ''
             absolute: false
@@ -1664,6 +1664,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: localgov_elections_results_heading
+      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:
