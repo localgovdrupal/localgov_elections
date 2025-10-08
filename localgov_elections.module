@@ -796,7 +796,13 @@ function localgov_elections_views_post_render(ViewExecutable $view, array &$outp
   if ($view->id() === 'localgov_election_results_via_parties') {
     // Remove rows from rendered output where party is not standing in election
     // (these rows will be NULL)
+    if (!isset($output["#rows"]["block_party_results__election_seats_party_0"]["#data"])) {
+      return;
+    }
     $rows = $output["#rows"]["block_party_results__election_seats_party_0"]["#data"];
+    if (!is_array($rows)) {
+      return;
+    }
     $idx = 0;
     $removed = 0;
     foreach ($rows as $row) {
