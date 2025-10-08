@@ -32,7 +32,6 @@ class ElectionTimeline extends FieldPluginBase {
     $winner_ids = array_map(fn($item) => $item['target_id'], $node->get('localgov_election_winner')->getValue());
 
     $candidates = [];
-    $votes_map = [];
 
     foreach ($node->get('localgov_election_candidates')->referencedEntities() as $candidate_paragraph) {
       $votes_field = $candidate_paragraph->get('localgov_election_votes')->getValue();
@@ -55,8 +54,6 @@ class ElectionTimeline extends FieldPluginBase {
         'winner' => $is_winner,
         'id' => $cand_id,
       ];
-
-      $votes_map[$cand_id] = $votes;
     }
 
     // Find the lowest winning vote count.
@@ -96,11 +93,15 @@ class ElectionTimeline extends FieldPluginBase {
       return $b['votes'] <=> $a['votes'];
     });
 
+    // Get number of seats (count of seat paragraphs).
+    $seats = $node->get('localgov_election_seats')->count();
     // Return a render array.
     return [
       '#theme' => 'election_timeline_table_row',
       '#time' => date('H:i', $node->getChangedTime()),
       '#area' => $node->get('localgov_election_area_name')->value,
+      '#area_url' => $node->toUrl()->toString(),
+      '#seats' => $seats,
       '#candidates' => $candidates,
     ];
   }

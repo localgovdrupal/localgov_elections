@@ -15,3 +15,7 @@
 .view-election-results-timeline .ward-candidate-results > * {
   margin-bottom: 0.5rem;
 }
+
+table.election-timeline th[rowspan] {
+  vertical-align: top;
+}

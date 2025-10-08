@@ -7,7 +7,7 @@ Render a timeline table.
   <tr{{ candidate.winner ? ' class="winner"'}}>
     {% if loop.first %}
       <th rowspan="{{ rowspan }}">{{ time }}</th>
-      <th rowspan="{{ rowspan }}">{{ area }}</th>
+      <th rowspan="{{ rowspan }}"><a href="{{ area_url }}">{{ area }}</a>{% if seats > 1 %} ({{ seats }} seats){% endif %}</th>
     {% endif %}
     <td>{{ candidate.candidate|upper }}</td>
     <td>

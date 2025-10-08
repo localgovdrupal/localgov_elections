@@ -47,6 +47,8 @@ function localgov_elections_theme($existing, $type, $theme, $path): mixed {
       'variables' => [
         'time' => NULL,
         'area' => NULL,
+        'area_url' => NULL,
+        'seats' => 0,
         'candidates' => [],
       ],
       'template' => 'election-timeline-table-row',
