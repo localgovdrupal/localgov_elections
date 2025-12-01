@@ -90,14 +90,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          set_precision: false
-          precision: 0
-          decimal: .
-          separator: ','
-          format_plural: false
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
         localgov_election_winner:
           id: localgov_election_winner
           table: node__localgov_election_winner
@@ -135,7 +127,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: numeric
+          plugin_id: entity_target_id
           default_action: default
           exception:
             value: all
@@ -161,6 +153,7 @@ display:
           validate_options: {  }
           break_phrase: false
           not: false
+          target_entity_type_id: localgov_election
       filters:
         status:
           id: status
@@ -354,13 +347,6 @@ display:
           multi_type: separator
           separator: ','
           field_api_classes: false
-          set_precision: false
-          precision: 0
-          decimal: .
-          format_plural: 0
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
       sorts:
         status:
           id: status
@@ -942,14 +928,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          set_precision: false
-          precision: 0
-          decimal: .
-          separator: ','
-          format_plural: false
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
         localgov_election_hold_or_gain:
           id: localgov_election_hold_or_gain
           table: node__localgov_election_hold_or_gain
@@ -1707,13 +1685,6 @@ display:
           multi_type: separator
           separator: ','
           field_api_classes: false
-          set_precision: false
-          precision: 0
-          decimal: .
-          format_plural: 0
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
         election_majority:
           id: election_majority
           table: node

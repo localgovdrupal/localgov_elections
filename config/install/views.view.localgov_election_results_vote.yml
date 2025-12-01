@@ -158,13 +158,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          set_precision: false
-          precision: 0
-          decimal: .
-          format_plural: false
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
         election_share:
           id: election_share
           table: node
@@ -259,7 +252,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: numeric
+          plugin_id: entity_target_id
           default_action: default
           exception:
             value: all
@@ -291,6 +284,7 @@ display:
             multiple: 0
           break_phrase: false
           not: false
+          target_entity_type_id: localgov_election
       filters:
         status:
           id: status
@@ -553,13 +547,6 @@ display:
           multi_type: separator
           separator: ','
           field_api_classes: false
-          set_precision: false
-          precision: 0
-          decimal: .
-          format_plural: 0
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
       sorts:
         status:
           id: status
@@ -839,13 +826,6 @@ display:
           multi_type: separator
           separator: ','
           field_api_classes: false
-          set_precision: false
-          precision: 0
-          decimal: .
-          format_plural: 0
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
       style:
         type: table
         options:

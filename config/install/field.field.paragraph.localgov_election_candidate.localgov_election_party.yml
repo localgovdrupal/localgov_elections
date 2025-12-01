@@ -16,8 +16,6 @@ label: Party
 description: 'Registered political party name. Do not enter brackets in the party name.'
 required: true
 translatable: false
-default_value: ''
-default_value_callback: ''
 settings:
   handler: 'default:taxonomy_term'
   handler_settings:

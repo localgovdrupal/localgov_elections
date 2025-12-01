@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\localgov_elections\Functional;
+namespace Drupal\Tests\localgov_elections\Kernel;
 
 use Drupal\Core\Url;
-use Drupal\Tests\BrowserTestBase;
+use Drupal\KernelTests\KernelTestBase;
 use Drupal\file\Entity\File;
 use Drupal\node\NodeStorageInterface;
+use Drupal\path_alias\Entity\PathAlias;
 
 /**
  * Tests alias functionality for Election nodes.
  *
  * @group localgov_elections
  */
-final class ElectionAliasTest extends BrowserTestBase {
+final class ElectionAliasTest extends KernelTestBase {
 
   /**
    * {@inheritdoc}
@@ -24,7 +25,39 @@ final class ElectionAliasTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['localgov_elections'];
+  protected static $modules = [
+    'file',
+    'block',
+    'field',
+    'field_formatter_class',
+    'autocomplete_deluxe',
+    'geofield',
+    'datetime',
+    'menu_ui',
+    'options',
+    'color_field',
+    'link',
+    'system',
+    'node',
+    'user',
+    'field_group',
+    'paragraphs',
+    'paragraphs_table',
+    'path_alias',
+    'pathauto',
+    'text',
+    'token',
+    'taxonomy',
+    'entity_reference_revisions',
+    'color_field',
+    'charts',
+    'charts_chartjs',
+    'leaflet',
+    'leaflet_views',
+    'views',
+    'views_field_view',
+    'localgov_elections',
+  ];
 
 
   /**
@@ -66,15 +99,31 @@ final class ElectionAliasTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  // @codingStandardsIgnoreStart
-  protected $strictConfigSchema = FALSE;
-  // @codingStandardsIgnoreEnd
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
+
+    $this->installSchema('file', ['file_usage']);
+
+    $this->installEntitySchema('node');
+    $this->installEntitySchema('paragraph');
+    $this->installEntitySchema('user');
+    $this->installEntitySchema('file');
+    $this->installEntitySchema('path_alias');
+
+    $this->installConfig([
+      'field',
+      'node',
+      'user',
+      'entity_reference_revisions',
+      'paragraphs',
+      'field_group',
+      'pathauto',
+      'token',
+      'file',
+      'taxonomy',
+      'localgov_elections',
+    ]);
+
     $this->nodeStorage = $this->container->get('entity_type.manager')->getStorage('node');
     $this->aliasManager = $this->container->get('path_alias.manager');
 
@@ -85,6 +134,12 @@ final class ElectionAliasTest extends BrowserTestBase {
     ]);
 
     $this->election->save();
+
+    $initial_alias = PathAlias::create([
+      'path' => '/node/' . $this->election->id(),
+      'alias' => '/election/uk-election-2024',
+    ]);
+    $initial_alias->save();
 
     $file = File::create([
       'uri' => 'public://empty_test.pdf',
@@ -184,55 +239,50 @@ final class ElectionAliasTest extends BrowserTestBase {
    * Test election sub-page aliases change after election alias changes.
    */
   public function testSubPageAliasesChangeAfterElectionAliasChange(): void {
-
     // Get the current paths to compare later.
-    $election_path = $this->election->toUrl()->toString();
     $old_map_alias = $this->aliasPaths['map']['alias'];
     $old_results_alias = $this->aliasPaths['results']['alias'];
     $old_share_alias = $this->aliasPaths['share']['alias'];
     $old_candidate_alias = $this->aliasPaths['candidate']['alias'];
 
-    // Change the election alias.
-    $alias_query = $this->container->get('entity_type.manager')->getStorage('path_alias')->getQuery();
-    $alias_query->condition('alias', $election_path);
-    $alias_query->accessCheck(FALSE);
-    $alias = $alias_query->execute();
+    // Load the existing alias and update it.
+    $alias_storage = $this->container->get('entity_type.manager')->getStorage('path_alias');
+    $alias = $alias_storage->loadByProperties(['path' => '/node/' . $this->election->id()]);
     $alias = reset($alias);
-    $alias = $this->container->get('entity_type.manager')->getStorage('path_alias')->load($alias);
     /** @var \Drupal\path_alias\Entity\PathAlias $alias */
     $alias->set('alias', '/election/new-election-name');
     $alias->save();
 
     // Get the newly generated aliases.
-    $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1',
+    $map_page_alias = Url::fromRoute('view.localgov_election_electoral_map.page_1',
         [
           'node' => $this->election->id(),
         ]
-    );
+    )->toString();
 
-    $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
+    $results_page_alias = Url::fromRoute('view.localgov_election_results_timeline.page_1',
         [
           'node' => $this->election->id(),
         ]
-    );
+    )->toString();
 
-    $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
+    $share_page_alias = Url::fromRoute('view.localgov_election_results_vote.page_1',
         [
           'node' => $this->election->id(),
         ]
-    );
+    )->toString();
 
-    $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_1',
+    $candidate_page_alias = Url::fromRoute('view.localgov_electoral_candidates.page_1',
         [
           'node' => $this->election->id(),
         ]
-    );
+    )->toString();
 
     // Check they no longer match.
-    $this->assertNotEquals($map_page_url, $old_map_alias);
-    $this->assertNotEquals($results_page_url, $old_results_alias);
-    $this->assertNotEquals($share_page_url, $old_share_alias);
-    $this->assertNotEquals($candidate_page_url, $old_candidate_alias);
+    $this->assertNotEquals($map_page_alias, $old_map_alias);
+    $this->assertNotEquals($results_page_alias, $old_results_alias);
+    $this->assertNotEquals($share_page_alias, $old_share_alias);
+    $this->assertNotEquals($candidate_page_alias, $old_candidate_alias);
   }
 
 }

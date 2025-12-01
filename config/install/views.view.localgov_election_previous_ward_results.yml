@@ -85,7 +85,7 @@ display:
           type: number_unformatted
           settings: {  }
           group_column: null
-          group_columns: null
+          group_columns: []
           group_rows: true
           delta_limit: 0
           delta_offset: 0
@@ -94,13 +94,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          set_precision: false
-          precision: 0
-          decimal: .
-          format_plural: false
-          format_plural_string: !!binary MQNAY291bnQ=
-          prefix: ''
-          suffix: ''
       pager:
         type: some
         options:

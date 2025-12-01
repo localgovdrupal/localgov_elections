@@ -30,7 +30,6 @@ third_party_settings:
         id: ''
         description: ''
         required_fields: false
-        open: true
 id: node.localgov_election.default
 targetEntityType: node
 bundle: localgov_election

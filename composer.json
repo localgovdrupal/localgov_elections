@@ -1,21 +1,29 @@
 {
-    "name": "localgovdrupal/localgov_elections",
+    "name": "drupal/localgov_elections",
     "description": "Module to report on elections for LocalGov Drupal sites.",
     "type": "drupal-module",
-    "homepage": "https://github.com/localgovdrupal/localgov_elections",
+    "homepage": "https://www.drupal.org/project/localgov_elections",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
     "require": {
-        "drupal/default_content":"^2.0",
-        "drupal/autocomplete_deluxe": "^2.0",
-        "drupal/entity_extra_field": "^2.1@RC",
-        "drupal/color_field": "^3.0",
-        "drupal/field_formatter_class":" ^1.5",
-        "drupal/paragraphs_table": "^1.23 || ^2.0",
         "cweagans/composer-patches": "^1.6",
+        "drupal/autocomplete_deluxe": "^2.0",
         "drupal/charts": "^5.0",
+        "drupal/color_field": "^3.0",
+        "drupal/default_content":"^2.0",
+        "drupal/entity_extra_field": "^2.1@RC",
+        "drupal/field_formatter_class":" ^1.5",
+        "drupal/field_group": "^4.0",
+        "drupal/geofield": "^1.66",
+        "drupal/geocoder": "^4.30",
+        "drupal/leaflet": "^10.3",
+        "drupal/pathauto": "^1.14",
+        "drupal/paragraphs_table": "^1.23 || ^2.0",
         "drupal/views_field_view": "^1.0@beta",
         "drupal/views_simple_math_field": "^3.0"
+    },
+    "require-dev": {
+        "drupal/localgov_base": "^2.2"
     },
     "extra": {
         "enable-patching": true,
