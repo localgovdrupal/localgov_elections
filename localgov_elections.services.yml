@@ -5,3 +5,6 @@ services:
   localgov_elections.election_duplicator:
     class: Drupal\localgov_elections\Service\ElectionDuplicator
     arguments: ['@entity_type.manager']
+  localgov_elections.winner_calculator:
+    class: Drupal\localgov_elections\Service\WinnerCalculator
+    arguments: ['@entity_type.manager']

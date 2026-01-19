@@ -125,80 +125,14 @@ function localgov_elections_optional_fields_settings($services): void {
 function localgov_elections_entity_presave(EntityInterface $entity): void {
   if ($entity->getEntityTypeId() === 'node' && $entity->getType() === 'localgov_area_vote') {
 
-    $candidates_field = $entity->get('localgov_election_candidates');
     $finalised = $entity->localgov_election_votes_final?->value;
     $uncontested_area = $entity->localgov_election_no_contest?->value;
 
     if ($finalised === 1 || $uncontested_area === 1) {
-      // Count available seats, excluding uncontested seats.
-      $seats = $entity->get('localgov_election_seats')->referencedEntities();
-      $total_seats = count($seats);
-      $available_seats = 0;
-      foreach ($seats as $seat) {
-        if (!$seat->get('localgov_seat_not_contested')->value) {
-          $available_seats++;
-        }
-      }
+      $calculator = \Drupal::service('localgov_elections.winner_calculator');
+      $winners = $calculator->calculateWinners($entity);
 
-      // If no seats are available, clear winners and stop.
-      if ($total_seats === 0) {
-        $entity->set('localgov_election_winner', []);
-        return;
-      }
-
-      // Order candidates by delta in case of a tie.
-      $candidate_order_map = [];
-      foreach ($candidates_field as $delta => $item) {
-        if (!empty($item->target_id)) {
-          $candidate_order_map[(int) $item->target_id] = (int) $delta;
-        }
-      }
-
-      // Collect candidates with votes and their tie weight.
-      $candidates = [];
-      foreach ($candidates_field->referencedEntities() as $candidate) {
-        $cand_id = (int) $candidate->id();
-        $votes = (int) $candidate->get('localgov_election_votes')->value;
-        $tie_weight = $candidate_order_map[$cand_id] ?? PHP_INT_MAX;
-
-        $candidates[] = [
-          'cand_id'    => $cand_id,
-          'votes'      => $votes,
-          'tie_weight' => $tie_weight,
-        ];
-      }
-
-      if (!empty($candidates)) {
-        // Sort by votes DESC, then tie weight ASC.
-        $votes_col = array_column($candidates, 'votes');
-        $tie_col   = array_column($candidates, 'tie_weight');
-        array_multisort($votes_col, SORT_DESC, $tie_col, SORT_ASC, $candidates);
-
-        // Pick top N to fill available seats.
-        $winners = array_slice($candidates, 0, $available_seats);
-
-        // Load winner paragraph entities in the resolved order.
-        $winner_paragraphs = [];
-        foreach ($winners as $winner) {
-          if ($winner_paragraph = Paragraph::load($winner['cand_id'])) {
-            $winner_paragraphs[] = $winner_paragraph;
-          }
-        }
-      }
-
-      // Add uncontested seats to winners (no votes set).
-      foreach ($entity->get('localgov_election_seats')->referencedEntities() as $seat) {
-        if ($seat->get('localgov_seat_not_contested')->value) {
-          $uncontested_paragraph = $seat->get('localgov_candidate_uncontested')->entity;
-          if ($uncontested_paragraph) {
-            $winner_paragraphs[] = $uncontested_paragraph;
-          }
-        }
-      }
-
-      if (!empty($winner_paragraphs)) {
-        $entity->set('localgov_election_winner', $winner_paragraphs);
-      }
+      $entity->set('localgov_election_winner', $winners);
     }
     else {
       // If vote is not finalised, clear previous winners.
