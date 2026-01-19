@@ -60,6 +60,11 @@ function localgov_elections_theme($existing, $type, $theme, $path): mixed {
       ],
       'template' => 'election-timeline-table',
     ],
+    'analysis_block' => [
+      'variables' => [
+        'data' => [],
+      ],
+    ],
   ];
 }
 
