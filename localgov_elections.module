@@ -624,28 +624,15 @@ function localgov_elections_chart_alter(array &$element, $chart_id): void {
   $element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
 }
 
-/**
- * Calculates majority.
- */
 function _localgov_elections_calc_majority(): ?int {
   $node = \Drupal::routeMatch()->getParameter('node');
-  $majority = NULL;
-  if ($node instanceof NodeInterface) {
-    // Arg must be NID of an Election content type.
-    if ($node->getType() == 'localgov_election') {
-      $election = $node->id();
-
-      // Find all 'Election Area' nodes referencing this election.
-      $query = \Drupal::entityQuery('node')
-        ->condition('type', 'localgov_area_vote')
-        ->condition('localgov_election', $election);
-      $query->accessCheck(FALSE);
-      $num_rows = $query->count()->execute();
-      $majority = (floor($num_rows / 2)) + 1;
-      return (int) $majority;
-    }
+  if (!$node instanceof NodeInterface) {
+    return NULL;
   }
-  return NULL;
+
+  /** @var \Drupal\localgov_elections\Service\MajorityCalculator $calculator */
+  $calculator = \Drupal::service('localgov_elections.majority_calculator');
+  return $calculator->calculateMajority($node);
 }
 
 /**
@@ -893,12 +880,8 @@ function localgov_elections_preprocess_views_view__localgov_election_electoral_m
   $map_data_provider = \Drupal::service('localgov_elections.map_data_provider');
   $map_data = $map_data_provider->prepareMapData($view);
 
-  $has_multi_winners = !empty($map_data['multi_winner']);
-  $has_single_winners = !empty($map_data['single_winner']);
-
-  if ($has_multi_winners || $has_single_winners) {
-    $variables['#attached']['drupalSettings']['multiWinnerData'] = $map_data['multi_winner'];
-    $variables['#attached']['drupalSettings']['singleWinnerData'] = $map_data['single_winner'];
-    $variables['#attached']['library'][] = 'localgov_elections/multi-winner-map';
+  if (!empty($map_data)) {
+    $variables['#attached']['drupalSettings']['electoralMapData'] = $map_data;
+    $variables['#attached']['library'][] = 'localgov_elections/electoral-map';
   }
 }

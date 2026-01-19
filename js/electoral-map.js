@@ -1,36 +1,32 @@
 /**
  * @file
  * Multi-winner constituency visualisation using horizontal stripes.
- *
- * Creates equal-area horizontal stripes for multi-winner constituencies,
- * where each winner gets 1/n of the constituency area regardless of vote count.
- * Single-winner constituencies display with solid party colours.
  */
 
 (function ($, Drupal, drupalSettings) {
   'use strict';
 
-  Drupal.behaviors.multiWinnerBoundaries = {
+  Drupal.behaviors.electoralMapBoundaries = {
     attach: function (context, settings) {
-      if (!settings.multiWinnerData) {
+      if (!settings.electoralMapData) {
         return;
       }
 
-      // Process immediately if map exists, otherwise wait briefly for initialisation.
+      // Process immediately if map exists, otherwise wait briefly.
       if (typeof Drupal.leaflet !== 'undefined' && Object.keys(Drupal.leaflet).length > 0) {
-        processMultiWinnerData(settings.multiWinnerData);
+        processElectoralMapData(settings.electoralMapData);
       } else {
         setTimeout(function() {
-          processMultiWinnerData(settings.multiWinnerData);
+          processElectoralMapData(settings.electoralMapData);
         }, 50);
       }
     }
   };
 
   /**
-   * Process multi-winner data and apply visualisations to the map.
+   * Process electoral map data and apply visualisations.
    */
-  function processMultiWinnerData(multiWinnerData) {
+  function processElectoralMapData(mapData) {
     let mapContainer = document.getElementById('leaflet-map-view-localgov-election-electoral-map-page-map');
     if (!mapContainer) {
       return;
@@ -46,23 +42,22 @@
     let map = leafletData.lMap;
 
     // Prevent multiple processing.
-    if (map._multiWinnerProcessed) {
+    if (map._electoralMapProcessed) {
       return;
     }
-    map._multiWinnerProcessed = true;
+    map._electoralMapProcessed = true;
 
-    // Process single-winner constituencies.
-    if (drupalSettings.singleWinnerData) {
-      Object.keys(drupalSettings.singleWinnerData).forEach(function(nodeId) {
-        let data = drupalSettings.singleWinnerData[nodeId];
-        createSingleWinnerOverlay(map, JSON.parse(data.boundary), data.party_color);
-      });
-    }
+    // Process each electoral area.
+    Object.keys(mapData).forEach(function(nodeId) {
+      let data = mapData[nodeId];
 
-    // Create stripe overlays for multi-winner constituencies.
-    Object.keys(multiWinnerData).forEach(function(nodeId) {
-      let data = multiWinnerData[nodeId];
-      createStripeOverlays(map, data);
+      if (data.winners.length === 1) {
+        // Single winner - solid color.
+        createSingleWinnerOverlay(map, JSON.parse(data.boundary), data.winners[0].color);
+      } else {
+        // Multiple winners - horizontal stripes.
+        createStripeOverlays(map, data);
+      }
     });
 
     // Ensure boundary layers appear on top of overlays.
@@ -91,7 +86,7 @@
   }
 
   /**
-   * Bring boundary layers to the front to ensure they're visible above overlays.
+   * Bring boundary layers to the front.
    */
   function bringBoundariesToFront(map) {
     map.eachLayer(function(layer) {
@@ -105,16 +100,13 @@
 
   /**
    * Create horizontal stripe overlays for a multi-winner constituency.
-   * Each winner gets an equal-area horizontal stripe (1/n of total area).
    */
   function createStripeOverlays(map, data) {
     try {
       let boundary = JSON.parse(data.boundary);
-      let geometry = boundary.type === 'Feature' ? boundary.geometry : boundary;
       let numWinners = data.winners.length;
 
       data.winners.forEach(function(winner, index) {
-        // Create a boundary layer for each winner with their party colour.
         let boundaryLayer = L.geoJSON(boundary, {
           style: {
             fillColor: winner.color,
@@ -153,7 +145,7 @@
   }
 
   /**
-   * Find the SVG path element within a Leaflet layer for applying CSS styles.
+   * Find the SVG path element within a Leaflet layer.
    */
   function findPathElement(boundaryLayer) {
     let pathElement = null;

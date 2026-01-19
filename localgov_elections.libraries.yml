@@ -16,10 +16,10 @@ results_timeline:
     theme:
       css/election-timeline.css: { }
 
-multi-winner-map:
+electoral-map:
   version: 1.x
   js:
-    js/multi-winner-boundaries.js: {}
+    js/electoral-map.js: {}
   dependencies:
     - core/drupal
     - core/jquery
