@@ -15,9 +15,11 @@ entity_type: node
 bundle: localgov_area_vote
 label: 'Hold or gain'
 description: "Is this a hold or a gain for the winning party/candidate. This area's votes will not be reported on the  results timeline until either 'Hold' or 'Gain' is selected."
-required: false
+required: true
 translatable: false
-default_value: {  }
+default_value:
+  -
+    value: na
 default_value_callback: ''
 settings: {  }
 field_type: list_string

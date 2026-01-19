@@ -118,7 +118,7 @@ class AnalysisBlock extends BlockBase implements ContainerFactoryPluginInterface
 
     // Hold or Gain.
     $hold_or_gain = $node->get('localgov_election_hold_or_gain')->value;
-    if (!empty($hold_or_gain)) {
+    if (!empty($hold_or_gain) && $hold_or_gain !== 'na') {
       $data['hold_or_gain'] = $hold_or_gain;
     }
 

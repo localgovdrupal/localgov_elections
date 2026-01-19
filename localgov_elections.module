@@ -717,6 +717,7 @@ function localgov_elections_preprocess_block(&$variables): void {
  * Implements hook_form_BASE_FORM_ID_alter().
  */
 function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+  localgov_elections_configure_hold_gain_field($form, $form_state);
   $form['#validate'][] = "localgov_elections_area_vote_form_validation";
 
   // Show the area vote edit form if a seat is uncontested.
@@ -874,7 +875,32 @@ function localgov_elections_node_insert(NodeInterface $node) {
     }
   }
 }
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for add form.
+ */
+function localgov_elections_form_node_localgov_area_vote_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  localgov_elections_configure_hold_gain_field($form, $form_state);
+}
 
+/**
+ * Configure the hold/gain field visibility and help text.
+ */
+function localgov_elections_configure_hold_gain_field(&$form, FormStateInterface $form_state) {
+
+  // Add help text.
+  $form['localgov_election_hold_or_gain']['widget']['#description'] = t('Only applicable for single-seat areas. Leave as N/A for multi-seat areas or when outcome is not yet determined.');
+
+  $node = $form_state->getFormObject()->getEntity();
+
+  // Check seat count.
+  if ($node->hasField('localgov_election_seats')) {
+    $seat_count = $node->get('localgov_election_seats')->count();
+
+    if ($seat_count > 1) {
+      $form['localgov_election_hold_or_gain']['#access'] = FALSE;
+    }
+  }
+}
 /**
  * Implements hook_preprocess_views_view().
  */
@@ -890,3 +916,4 @@ function localgov_elections_preprocess_views_view__localgov_election_electoral_m
     $variables['#attached']['library'][] = 'localgov_elections/electoral-map';
   }
 }
+
