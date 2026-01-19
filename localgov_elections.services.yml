@@ -11,6 +11,8 @@ services:
   localgov_elections.alias_manager:
     class: Drupal\localgov_elections\Service\ElectionAliasManager
     arguments: ['@entity_type.manager', '@path.validator', '@logger.channel.localgov_elections']
+  localgov_elections.map_data_provider:
+    class: Drupal\localgov_elections\Service\MapDataProvider
   logger.channel.localgov_elections:
     parent: logger.channel_base
     arguments: ['localgov_elections']
