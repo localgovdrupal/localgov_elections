@@ -2,8 +2,6 @@
 
 namespace Drupal\localgov_elections\Service;
 
-use Drupal\node\NodeInterface;
-use Drupal\paragraphs\ParagraphInterface;
 use Drupal\views\ViewExecutable;
 
 /**

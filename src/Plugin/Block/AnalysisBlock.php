@@ -39,9 +39,9 @@ class AnalysisBlock extends BlockBase implements ContainerFactoryPluginInterface
    */
   public function __construct(
     array $configuration,
-          $plugin_id,
-          $plugin_definition,
-    RouteMatchInterface $route_match
+    $plugin_id,
+    $plugin_definition,
+    RouteMatchInterface $route_match,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->routeMatch = $route_match;
