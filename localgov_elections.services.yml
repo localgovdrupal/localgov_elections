@@ -8,3 +8,9 @@ services:
   localgov_elections.winner_calculator:
     class: Drupal\localgov_elections\Service\WinnerCalculator
     arguments: ['@entity_type.manager']
+  localgov_elections.alias_manager:
+    class: Drupal\localgov_elections\Service\ElectionAliasManager
+    arguments: ['@entity_type.manager', '@path.validator', '@logger.channel.localgov_elections']
+  logger.channel.localgov_elections:
+    parent: logger.channel_base
+    arguments: ['localgov_elections']
