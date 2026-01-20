@@ -61,6 +61,14 @@
     const backgroundColors = [];
     const foregroundColors = [];
 
+    // Convert pipe-separated labels to arrays for multi-line display.
+    chartData.data.labels = chartData.data.labels.map(label => {
+      if (typeof label === 'string' && label.includes('|')) {
+        return label.split('|');
+      }
+      return label;
+    });
+
     // Strip out rows with no content in label.
     chartData.data.labels.forEach(function stripEmptyLabels(entry, i) {
       if (entry === '') {
@@ -70,9 +78,11 @@
     });
 
     chartData.data.labels.forEach((entry, index) => {
+      const labelText = Array.isArray(entry) ? entry.join(' ') : entry;
+
       // Find the background colour, so we can apply it to the row.
       const found = Object.entries(settings.localgov_elections.parties).find(
-        ([, value]) => entry.includes(value.full_name),
+        ([, value]) => labelText.includes(value.full_name),
       );
 
       let bgColor;

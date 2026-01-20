@@ -243,7 +243,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ localgov_election_candidate|upper }}, {{ localgov_election_forename }}'
+            text: '{{ localgov_election_candidate|upper }}'
             make_link: false
             path: ''
             absolute: false
@@ -496,7 +496,7 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: '<div>{{ localgov_election_forename }} {{ localgov_election_candidate|upper }}</div><div> ({{ localgov_election_party }})</div>'
+            text: "{{ localgov_election_forename }} {{ localgov_election_candidate|upper }}|({{ localgov_election_party }})"
             make_link: false
             path: ''
             absolute: false
