@@ -483,6 +483,11 @@ function localgov_elections_views_pre_render(ViewExecutable $view): void {
       $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
     }
   }
+
+  if ($view->id() === 'localgov_election_results_vote') {
+    $view->element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
+    $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
+  }
 }
 
 /**
