@@ -77,6 +77,7 @@ class ElectionTimeline extends FieldPluginBase {
     foreach ($candidates as &$candidate) {
       $candidate['tie'] = $candidate['winner'] && $has_tie && $candidate['votes'] === $min_winner_votes;
     }
+
     if (empty($candidates)) {
       return [];
     }
@@ -95,10 +96,19 @@ class ElectionTimeline extends FieldPluginBase {
 
     // Get number of seats (count of seat paragraphs).
     $seats = $node->get('localgov_election_seats')->count();
+
+    // Format the finalised date as H:i.
+    $time_formatted = '';
+    $finalised_date = $node->get('localgov_election_finalised_date')->value;
+    if ($finalised_date) {
+      $date = new \DateTime($finalised_date);
+      $time_formatted = $date->format('H:i');
+    }
+
     // Return a render array.
     return [
       '#theme' => 'election_timeline_table_row',
-      '#time' => date('H:i', $node->getChangedTime()),
+      '#time' => $time_formatted,
       '#area' => $node->get('localgov_election_area_name')->value,
       '#area_url' => $node->toUrl()->toString(),
       '#seats' => $seats,

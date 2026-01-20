@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.localgov_area_vote.localgov_election_cand_file
     - field.field.node.localgov_area_vote.localgov_election_candidates
     - field.field.node.localgov_area_vote.localgov_election_electorate
+    - field.field.node.localgov_area_vote.localgov_election_finalised_date
     - field.field.node.localgov_area_vote.localgov_election_hold_or_gain
     - field.field.node.localgov_area_vote.localgov_election_no_contest
     - field.field.node.localgov_area_vote.localgov_election_prev_result
@@ -19,6 +20,7 @@ dependencies:
     - field.field.node.localgov_area_vote.localgov_election_winner
     - node.type.localgov_area_vote
   module:
+    - datetime
     - field_formatter_class
     - field_group
     - file
@@ -98,6 +100,7 @@ third_party_settings:
       children:
         - localgov_election_cand_file
         - localgov_election_votes_final
+        - localgov_election_finalised_date
         - localgov_election_no_contest
         - localgov_election_candidates
       label: 'Candidates and Votes'
@@ -222,6 +225,12 @@ content:
     settings:
       placeholder: ''
     third_party_settings: {  }
+  localgov_election_finalised_date:
+    type: datetime_default
+    weight: 32
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   localgov_election_hold_or_gain:
     type: options_buttons
     weight: 4
@@ -237,7 +246,7 @@ content:
     third_party_settings: {  }
   localgov_election_prev_winner:
     type: entity_reference_autocomplete
-    weight: 29
+    weight: 30
     region: content
     settings:
       match_operator: CONTAINS

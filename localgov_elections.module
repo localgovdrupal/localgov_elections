@@ -79,7 +79,7 @@ function localgov_elections_modules_installed($modules, $is_syncing): void {
     \Drupal::service('config.installer')->installOptionalConfig(NULL, [
       'config' => 'field.storage.node.localgov_services_parent',
     ]);
-    localgov_elections_optional_fields_settings($services);
+    _localgov_elections_optional_fields_settings($services);
   }
 }
 
@@ -89,7 +89,7 @@ function localgov_elections_modules_installed($modules, $is_syncing): void {
  * @param bool $services
  *   If localgov_services is (being) installed.
  */
-function localgov_elections_optional_fields_settings($services): void {
+function _localgov_elections_optional_fields_settings($services): void {
   $properties = [
     'targetEntityType' => 'node',
     'bundle' => 'localgov_election',
@@ -128,10 +128,11 @@ function localgov_elections_optional_fields_settings($services): void {
 function localgov_elections_entity_presave(EntityInterface $entity): void {
   if ($entity->getEntityTypeId() === 'node' && $entity->getType() === 'localgov_area_vote') {
 
-    $finalised = $entity->localgov_election_votes_final?->value;
-    $uncontested_area = $entity->localgov_election_no_contest?->value;
+    $finalised = $entity->get('localgov_election_votes_final')->value;
+    $uncontested_area = $entity->get('localgov_election_no_contest')->value;
 
     if ($finalised === 1 || $uncontested_area === 1) {
+      /** @var \Drupal\localgov_elections\Service\WinnerCalculator $calculator */
       $calculator = \Drupal::service('localgov_elections.winner_calculator');
       $winners = $calculator->calculateWinners($entity);
 
@@ -140,7 +141,7 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
     else {
       // If vote is not finalised, clear previous winners.
       if ($original = $entity->original) {
-        if ($original?->localgov_election_votes_final?->value == 1) {
+        if ($original->get('localgov_election_votes_final')->value == 1) {
           $entity->set('localgov_election_winner', []);
         }
       }
@@ -150,6 +151,119 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
   // Prevent creating multiple revisions for candidate paragraphs.
   if ($entity->getEntityTypeId() === 'paragraph' && $entity->getType() === 'localgov_election_candidate') {
     $entity->setNewRevision(FALSE);
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ *
+ * Create default seats when area vote is created.
+ */
+function localgov_elections_node_insert(NodeInterface $node) {
+  if ($node->bundle() !== 'localgov_area_vote') {
+    return;
+  }
+
+  // Ensure the reference to parent election exists.
+  if ($node->hasField('localgov_election') && !$node->get('localgov_election')->isEmpty()) {
+    $parent = $node->get('localgov_election')->entity;
+    if ($parent instanceof NodeInterface && $parent->hasField('localgov_election_seat_count')) {
+      $seat_count = (int) $parent->get('localgov_election_seat_count')->value;
+
+      // Only proceed if no seats already exist.
+      if (!$node->get('localgov_election_seats')->isEmpty()) {
+        return;
+      }
+
+      // Base name for seats.
+      $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
+      // If the area is marked as uncontested, set all seats to uncontested.
+      $area_uncontested = $node->get('localgov_election_no_contest')->value ?? 0;
+
+      $paragraph_storage = \Drupal::entityTypeManager()->getStorage('paragraph');
+      $seat_paragraphs = [];
+
+      // Always create at least 1 seat, more if parent requires it.
+      for ($i = 1; $i <= $seat_count; $i++) {
+        $seat_label = $seat_count > 1 ? $area_name . ' ' . $i : $area_name;
+
+        $seat_paragraph = $paragraph_storage->create([
+          'type' => 'localgov_area_seat',
+          'localgov_seat' => $seat_label,
+          'localgov_seat_not_contested' => $area_uncontested,
+        ]);
+        $seat_paragraph->save();
+
+        $seat_paragraphs[] = $seat_paragraph;
+      }
+
+      // Attach them to the node's reference field.
+      foreach ($seat_paragraphs as $seat_paragraph) {
+        $node->get('localgov_election_seats')->appendItem($seat_paragraph);
+      }
+
+      // Save the node again with attached paragraphs.
+      $node->save();
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_predelete().
+ */
+function localgov_elections_entity_predelete(EntityInterface $entity): void {
+  // Triggered just before an Election node is deleted.
+  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_election') {
+    $election_id = $entity->id();
+    $election_title = $entity->getTitle();
+    $deleted = 0;
+
+    // Delete all Division Vote entities referencing this election.
+    $areas_query = \Drupal::entityTypeManager()->getStorage('node')->getQuery();
+    $areas_query->condition('type', 'localgov_area_vote');
+    $areas_query->condition('status', 1);
+    $areas_query->condition('localgov_election', $election_id);
+    $areas_query->accessCheck(FALSE);
+    $areas = $areas_query->execute();
+
+    if ($areas) {
+      $areas = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple($areas);
+      foreach ($areas as $area) {
+        try {
+          $area->delete();
+          $deleted++;
+        }
+        catch (EntityStorageException $exception) {
+          \Drupal::logger('localgov_election')->error("Could not delete area with id " . $area->id());
+        }
+      }
+    }
+
+    \Drupal::logger('localgov_election')
+      ->notice("Election " . $election_title . " (ID " . $election_id . ") was deleted. " . $deleted . " Division Votes deleted");
+    \Drupal::messenger()->addStatus($deleted . ' Division Votes deleted from system');
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function localgov_elections_path_alias_insert(EntityInterface $entity): void {
+  $path = $entity->getPath();
+  $url = Url::fromUserInput($path);
+  $params = $url->getRouteParameters();
+
+  if (is_array($params) && array_key_exists('node', $params)) {
+    if ($node = Node::load($params['node'])) {
+      if ($node->bundle() === "localgov_election") {
+        $canonical_route = '/' . $node->toUrl()->getInternalPath();
+        if ($path === $canonical_route) {
+          /** @var \Drupal\localgov_elections\Service\ElectionAliasManager $alias_manager */
+          $alias_manager = \Drupal::service('localgov_elections.alias_manager');
+          $alias_manager->generateElectionAliases($node);
+        }
+      }
+    }
   }
 }
 
@@ -182,62 +296,71 @@ function localgov_elections_path_alias_update(EntityInterface $entity): void {
 }
 
 /**
- * Implements hook_ENTITY_TYPE_insert().
+ * Implements hook_form_BASE_FORM_ID_alter() for add form.
  */
-function localgov_elections_path_alias_insert(EntityInterface $entity): void {
-  $path = $entity->getPath();
-  $url = Url::fromUserInput($path);
-  $params = $url->getRouteParameters();
+function localgov_elections_form_node_localgov_area_vote_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  /** @var \Drupal\localgov_elections\Form\AreaVoteFormHelper $form_helper */
+  $form_helper = \Drupal::service('localgov_elections.area_vote_form_helper');
+  $form_helper->configureForm($form, $form_state);
+}
 
-  if (is_array($params) && array_key_exists('node', $params)) {
-    if ($node = Node::load($params['node'])) {
-      if ($node->bundle() === "localgov_election") {
-        $canonical_route = '/' . $node->toUrl()->getInternalPath();
-        if ($path === $canonical_route) {
-          /** @var \Drupal\localgov_elections\Service\ElectionAliasManager $alias_manager */
-          $alias_manager = \Drupal::service('localgov_elections.alias_manager');
-          $alias_manager->generateElectionAliases($node);
-        }
-      }
-    }
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for edit form.
+ */
+function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+  /** @var \Drupal\localgov_elections\Form\AreaVoteFormHelper $form_helper */
+  $form_helper = \Drupal::service('localgov_elections.area_vote_form_helper');
+  $form_helper->configureForm($form, $form_state);
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+  if (isset($form["name"]["widget"][0]['value'])) {
+    $form["name"]["widget"][0]['value']["#description"] = t("The party name. Do not enter brackets in the party name.");
   }
 }
 
 /**
- * Implements hook_entity_predelete().
+ * Validation function for area vote node forms.
  */
-function localgov_elections_entity_predelete(EntityInterface $entity): void {
-  // Triggered just before an Election node is deleted.
-  if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'localgov_election') {
-    $election_id = $entity->id();
-    $election_title = $entity->getTitle();
-    // Delete all Division Vote entities referencing this election.
-    $deleted = 0;
+function _localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state): void {
+  $uncontested = $form_state->getValue('localgov_election_no_contest')['value'];
+  $candidates = $form_state->getValue('localgov_election_candidates');
+  $candidate_keys = array_filter(array_keys($candidates), function ($key) {
+    return is_int($key);
+  });
 
-    $areas_query = Drupal::entityTypeManager()->getStorage('node')->getQuery();
-    $areas_query->condition('type', 'localgov_area_vote');
-    $areas_query->condition('status', 1);
-    $areas_query->condition('localgov_election', $election_id);
-    $areas_query->accessCheck(FALSE);
-    $areas = $areas_query->execute();
+  // If an area is uncontested, no candidates should be associated with the
+  // area node - they will be associated with each seat instead.
+  if ($uncontested && count($candidate_keys) > 0) {
+    $form_state->setErrorByName('localgov_election_candidates', t("If the seat is <b>not</b> contested there should only be uncontested candidates assigned to seats."));
+  }
 
-    if ($areas) {
-      $areas = Drupal::entityTypeManager()->getStorage('node')->loadMultiple($areas);
-      foreach ($areas as $area) {
-        try {
-          $area->delete();
-          $deleted++;
-        }
-        catch (EntityStorageException $exception) {
-          \Drupal::logger('localgov_election')->error("Could not delete area with id " . $area->id());
+  if ($uncontested) {
+    $storage = $form_state->get('field_storage');
+    if (isset($storage['#parents']['#fields']['localgov_election_candidates'])) {
+      $candidates = $storage['#parents']['#fields']['localgov_election_candidates'];
+    }
+    if (count($candidate_keys) > 0) {
+      $candidates = $candidates['paragraphs'];
+      foreach ($candidates['paragraphs'] as $entry) {
+        /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
+        if (isset($entry['entity'])) {
+          $entry = $entry['entity'];
+          if (!$entry->get('localgov_election_votes')->isEmpty()) {
+            $form_state->setErrorByName('localgov_election_candidates', t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
+          }
         }
       }
     }
+  }
 
-    \Drupal::logger('localgov_election')
-      ->notice("Election " . $election_title . " (ID " . $election_id . ") was deleted. " . $deleted . " Division Votes deleted");
-    Drupal::messenger()
-      ->addStatus($deleted . ' Division Votes deleted from system');
+  // Should not be able to finalise votes without having at least one candidate.
+  $finalised = $form_state->getValue('localgov_election_votes_final')['value'];
+  if ($finalised && !$uncontested && count($candidate_keys) < 1) {
+    $form_state->setErrorByName('localgov_election_candidates', t("You cannot finalise the votes with no candidates"));
   }
 }
 
@@ -302,7 +425,6 @@ function localgov_elections_views_data_alter(array &$data): void {
       'id' => 'winner_tie_indicator',
     ],
   ];
-
   $data['taxonomy_term_data']['election_share'] = [
     'title' => t('Percentage of election share'),
     'field' => [
@@ -335,52 +457,129 @@ function localgov_elections_views_data_alter(array &$data): void {
 }
 
 /**
- * Implements hook_menu_local_tasks_alter().
+ * Implements hook_views_pre_render().
  */
-function localgov_elections_menu_local_tasks_alter(&$data, $route_name): void {
-  // Hide 'Results timelines' tab from all nodes except 'Election' content
-  // types.
-  $node = \Drupal::routeMatch()->getParameter('node');
-  if ($node instanceof NodeInterface) {
-    // You can get nid and anything else you need from the node object.
-    $type = $node->getType();
-    if ($type != 'localgov_election') {
-      unset($data['tabs'][0]['views_view:view.localgov_election_results_timeline.page_timeline']);
-      unset($data['tabs'][0]['views_view:view.localgov_election_results_vote.page_vote_share']);
-      unset($data['tabs'][0]['views_view:view.localgov_electoral_candidates.page_candidates']);
-      unset($data['tabs'][0]['views_view:view.localgov_election_electoral_map.page_map']);
-    }
-    else {
-      $appropriate_fetch_routes = [
-        "entity.node.canonical",
-        "entity.node.edit_form",
-        "entity.node.version_history",
-        "entity.node.delete_form",
-        "entity.node.preview_link_generate",
-      ];
+function localgov_elections_views_pre_render(ViewExecutable $view): void {
+  $view_storage = $view->storage;
+  $dependencies = $view_storage ? $view_storage->get('dependencies') : [];
+  $enforced_modules = $dependencies['enforced']['module'] ?? [];
 
-      // Add the "add area" button to the local tasks if user has permission.
-      $can_add_areas = Drupal::currentUser()->hasPermission('can fetch boundaries');
-      if ($can_add_areas && in_array($route_name, $appropriate_fetch_routes, TRUE)) {
-        $data['tabs'][0]['boundary_fetch'] = [
-          '#theme' => 'menu_local_task',
-          '#weight' => 100,
-          '#link' => [
-            'title' => t('Add areas'),
-            'url' => Url::fromRoute('localgov_elections.boundary_fetch',
-                    ['node' => $node->id()]),
-          ],
-        ];
+  if (in_array('localgov_elections', $enforced_modules, TRUE)) {
+    $view->element['#attached']['library'][] = 'localgov_elections/election';
+  }
+
+  if ($view->id() === 'localgov_electoral_candidates') {
+    $view->element['#attached']['library'][] = 'localgov_elections/electoral_candidates_view';
+  }
+
+  if ($view->id() === 'localgov_election_results_timeline') {
+    $view->element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
+    $view->element['#attached']['library'][] = 'localgov_elections/results_timeline';
+    $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
+  }
+
+  if ($view->id() === 'localgov_election_results') {
+    if ($view->getDisplay()->display['id'] === 'summary_table') {
+      $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
+    }
+  }
+}
+
+/**
+ * Implements hook_views_post_render().
+ */
+function localgov_elections_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache): void {
+  if ($view->id() === 'localgov_election_results_via_parties') {
+    // Remove rows from rendered output where party is not standing in election.
+    if (!isset($output["#rows"]["block_party_results__election_seats_party_0"]["#data"])) {
+      return;
+    }
+    $rows = $output["#rows"]["block_party_results__election_seats_party_0"]["#data"];
+    if (!is_array($rows)) {
+      return;
+    }
+    $idx = 0;
+    $removed = 0;
+    foreach ($rows as $row) {
+      if (!isset($row)) {
+        array_splice($output["#rows"]["block_party_results__election_seats_party_0"]["#data"], $idx - $removed, 1);
+        array_splice($output["#rows"]["xaxis"]["#labels"], $idx - $removed, 1);
+        if (isset($output["#rows"]["block_party_results__election_seats_party_0"]["#mapped_data"])) {
+          array_splice($output["#rows"]["block_party_results__election_seats_party_0"]["#mapped_data"], $idx - $removed, 1);
+        }
+        $removed++;
+      }
+      $idx++;
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view().
+ */
+function localgov_elections_preprocess_views_view__localgov_election_electoral_map(&$variables) {
+  $view = $variables['view'];
+
+  /** @var \Drupal\localgov_elections\Service\MapDataProvider $map_data_provider */
+  $map_data_provider = \Drupal::service('localgov_elections.map_data_provider');
+  $map_data = $map_data_provider->prepareMapData($view);
+
+  if (!empty($map_data)) {
+    $variables['#attached']['drupalSettings']['electoralMapData'] = $map_data;
+    $variables['#attached']['library'][] = 'localgov_elections/electoral-map';
+  }
+}
+
+/**
+ * Implements hook_chart_alter().
+ */
+function localgov_elections_chart_alter(array &$element, $chart_id): void {
+  $element['#attached']['library'][] = 'localgov_elections/chartjs_overrides';
+  $element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
+}
+
+/**
+ * Implements hook_chart_definition_CHART_ID_alter().
+ */
+function localgov_elections_chart_definition_localgov_election_results_via_parties_block_party_results_alter(array &$definition, array $element, $chart_id): void {
+  $definition['yAxis'][0]['allowDecimals'] = FALSE;
+  if (!empty($definition['series'][0]['data'])) {
+    foreach ($definition['series'][0]['data'] as &$entry) {
+      if ($entry == NULL) {
+        $entry = 0;
       }
     }
   }
 
-  if ($route_name === 'entity.node.canonical') {
-    $node = \Drupal::routeMatch()->getParameter('node');
+  if ($majority = _localgov_elections_calc_majority()) {
+    $max = 0;
+    if (!empty($definition['series'][0]['data'])) {
+      $max = max($definition['series'][0]['data']);
+    }
 
-    if ($node instanceof NodeInterface && $node->bundle() !== 'localgov_election') {
-      // Remove duplicate tab if not localgov_election.
-      unset($data['tabs'][0]['localgov_elections.election_duplicate_tab']);
+    if ($majority > $max) {
+      $max = $majority;
+    }
+
+    // Allow hiding of plot line.
+    if ($election = \Drupal::request()->get('node')) {
+      if ($election->hasField("localgov_election_majority")) {
+        $display_majority_details = $election->get("localgov_election_majority")?->value;
+      }
+      else {
+        $display_majority_details = FALSE;
+      }
+      if ($display_majority_details) {
+        $definition['yAxis'][0]['plotLines'] = [
+          [
+            'color' => '#8c8a8a',
+            'width' => 6,
+            'value' => $majority,
+            'dashStyle' => 'LongDash',
+          ],
+        ];
+      }
+      $definition['yAxis'][0]['max'] = $max + 4;
     }
   }
 }
@@ -392,8 +591,8 @@ function localgov_elections_preprocess_node(&$variables): void {
   $node = $variables['elements']['#node'];
 
   if ($node->bundle() == 'localgov_area_vote') {
-    $finalised = $node->localgov_election_votes_final?->value;
-    $not_contested = $node->get('localgov_election_no_contest')?->value;
+    $finalised = $node->get('localgov_election_votes_final')->value;
+    $not_contested = $node->get('localgov_election_no_contest')->value;
 
     if ($finalised == 1) {
       if ($not_contested) {
@@ -403,13 +602,11 @@ function localgov_elections_preprocess_node(&$variables): void {
       }
       else {
         $block_manager = \Drupal::service('plugin.manager.block');
-
         $plugin_block = $block_manager->createInstance('analysis_block', []);
         $analysis = $plugin_block->build();
 
         // Add the cache tags/contexts.
-        \Drupal::service('renderer')
-          ->addCacheableDependency($analysis, $plugin_block);
+        \Drupal::service('renderer')->addCacheableDependency($analysis, $plugin_block);
 
         $variables['content']['results'] = [
           '#theme' => 'area_result',
@@ -434,7 +631,6 @@ function localgov_elections_preprocess_node(&$variables): void {
         '#children' => t('No results have been declared yet.'),
       ];
     }
-
   }
   elseif ($node->bundle() == 'localgov_election') {
     if ($node->hasField('localgov_election_majority')) {
@@ -443,6 +639,7 @@ function localgov_elections_preprocess_node(&$variables): void {
     else {
       $display_majority = FALSE;
     }
+
     $variables['content']['results_fieldset'] = [
       '#type' => 'container',
       '#prefix' => '<div class="area-summary"> <div class="area-summary__header" ><h2>' . t("Seats won") . '</h2></div>',
@@ -495,180 +692,6 @@ function localgov_elections_preprocess_node(&$variables): void {
 }
 
 /**
- * Implements hook_views_pre_render().
- */
-function localgov_elections_views_pre_render(ViewExecutable $view): void {
-
-  $view_storage = $view->storage;
-  $dependencies = $view_storage ? $view_storage->get('dependencies') : [];
-  $enforced_modules = $dependencies['enforced']['module'] ?? [];
-
-  if (in_array('localgov_elections', $enforced_modules, TRUE)) {
-    $view->element['#attached']['library'][] = 'localgov_elections/election';
-  }
-
-  if ($view->id() === 'localgov_electoral_candidates') {
-    $view->element['#attached']['library'][] = 'localgov_elections/electoral_candidates_view';
-  }
-
-  if ($view->id() === 'localgov_election_results_timeline') {
-    $view->element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
-    $view->element['#attached']['library'][] = 'localgov_elections/results_timeline';
-    $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
-  }
-
-  if ($view->id() === 'localgov_election_results') {
-    if ($view->getDisplay()->display['id'] === 'summary_table') {
-      $view->element['#attached']['library'][] = 'localgov_elections/party_colours';
-    }
-  }
-}
-
-/**
- * Implements hook_views_post_render().
- */
-function localgov_elections_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache): void {
-  if ($view->id() === 'localgov_election_results_via_parties') {
-    // Remove rows from rendered output where party is not standing in election
-    // (these rows will be NULL)
-    if (!isset($output["#rows"]["block_party_results__election_seats_party_0"]["#data"])) {
-      return;
-    }
-    $rows = $output["#rows"]["block_party_results__election_seats_party_0"]["#data"];
-    if (!is_array($rows)) {
-      return;
-    }
-    $idx = 0;
-    $removed = 0;
-    foreach ($rows as $row) {
-      if (!isset($row)) {
-        array_splice($output["#rows"]["block_party_results__election_seats_party_0"]["#data"], $idx - $removed, 1);
-        array_splice($output["#rows"]["xaxis"]["#labels"], $idx - $removed, 1);
-        if (isset($output["#rows"]["block_party_results__election_seats_party_0"]["#mapped_data"])) {
-          array_splice($output["#rows"]["block_party_results__election_seats_party_0"]["#mapped_data"], $idx - $removed, 1);
-        }
-        $removed++;
-      }
-      $idx++;
-    }
-  }
-}
-
-/**
- * Implements hook_chart_definition_CHART_ID_alter().
- */
-function localgov_elections_chart_definition_localgov_election_results_via_parties_block_party_results_alter(array &$definition, array $element, $chart_id): void {
-  $definition['yAxis'][0]['allowDecimals'] = FALSE;
-  if (!empty($definition['series'][0]['data'])) {
-    foreach ($definition['series'][0]['data'] as &$entry) {
-      if ($entry == NULL) {
-        $entry = 0;
-      }
-    }
-  }
-
-  if ($majority = _localgov_elections_calc_majority()) {
-    $max = 0;
-    if (!empty($definition['series'][0]['data'])) {
-      $max = max($definition['series'][0]['data']);
-    }
-
-    if ($majority > $max) {
-      $max = $majority;
-    }
-
-    // Allow hiding of plot line.
-    if ($election = Drupal::request()->get('node')) {
-      if ($election->hasField("localgov_election_majority")) {
-        $display_majority_details = $election->get("localgov_election_majority")?->value;
-      }
-      else {
-        $display_majority_details = FALSE;
-      }
-      if ($display_majority_details) {
-        $definition['yAxis'][0]['plotLines'] = [
-            [
-              'color' => '#8c8a8a',
-              'width' => 6,
-              'value' => $majority,
-              'dashStyle' => 'LongDash',
-            ],
-        ];
-      }
-      $definition['yAxis'][0]['max'] = $max + 4;
-    }
-  }
-}
-
-/**
- * Implements hook_page_attachments_alter().
- */
-function localgov_elections_page_attachments(array &$attachments): void {
-  $route = Drupal::routeMatch();
-
-  if ($node = $route->getParameter('node')) {
-    if ($node != NULL && $node instanceof NodeInterface) {
-      if ($node->bundle() === 'localgov_election') {
-        $attachments['#attached']['library'][] = 'localgov_elections/election';
-      }
-      elseif ($node->bundle() === 'localgov_area_vote') {
-        $attachments['#attached']['library'][] = 'localgov_elections/election';
-        $attachments['#attached']['library'][] = 'localgov_elections/area_results';
-      }
-    }
-  }
-}
-
-/**
- * Implements hook_chart_alter().
- */
-function localgov_elections_chart_alter(array &$element, $chart_id): void {
-  $element['#attached']['library'][] = 'localgov_elections/chartjs_overrides';
-  $element['#attached']['drupalSettings']['localgov_elections']['parties'] = _localgov_elections_party_colours();
-}
-
-/**
- * Calculate number of seats needed for a majority.
- */
-function _localgov_elections_calc_majority(): ?int {
-  $node = \Drupal::routeMatch()->getParameter('node');
-  if (!$node instanceof NodeInterface) {
-    return NULL;
-  }
-
-  /** @var \Drupal\localgov_elections\Service\MajorityCalculator $calculator */
-  $calculator = \Drupal::service('localgov_elections.majority_calculator');
-  return $calculator->calculateMajority($node);
-}
-
-/**
- * Gets party colours.
- */
-function _localgov_elections_party_colours(): array {
-  $results = [];
-  $terms = Drupal::entityTypeManager()
-    ->getStorage('taxonomy_term')
-    ->loadByProperties(['vid' => 'localgov_party']);
-  if ($terms && is_array($terms)) {
-    foreach ($terms as $term) {
-      $colour = $term->localgov_election_party_colour?->first()?->color;
-      $abbr = $term->localgov_election_abbreviation?->value;
-      if ($colour && $abbr) {
-        $abbr = strtolower($abbr);
-
-        $results[$abbr] = [
-          'text-colour' => $term->localgov_election_text_colour?->first()?->color,
-          'colour' => $colour,
-          'full_name' => $term->name?->value,
-          'abbr' => $abbr,
-        ];
-      }
-    }
-  }
-  return $results;
-}
-
-/**
  * Implements hook_preprocess_HOOK().
  */
 function localgov_elections_preprocess_election_menu(&$variables): void {
@@ -676,12 +699,12 @@ function localgov_elections_preprocess_election_menu(&$variables): void {
   $attributes->setAttribute('id', 'election-menu');
   $variables['attributes'] = $attributes;
 
-  $current = Drupal::routeMatch()->getRouteName();
+  $current = \Drupal::routeMatch()->getRouteName();
   foreach ($variables['links'] as $link) {
-    /** @var Drupal\Core\Link $url */
+    /** @var \Drupal\Core\Link $url */
     $url = $link['link'];
     if ($url->getUrl()->getRouteName() == $current) {
-      if ($node = Drupal::routeMatch()->getParameter('node')) {
+      if ($node = \Drupal::routeMatch()->getParameter('node')) {
         if ($node instanceof NodeInterface) {
           if ($node->bundle() == 'localgov_area_vote') {
             return;
@@ -701,9 +724,7 @@ function localgov_elections_preprocess_block(&$variables): void {
     $variables['attributes']['class'][] = 'election-menu-block';
   }
 
-  // We want to set the page title to be the name of the area,
-  // But still allow a title like "Election 2024 - Oxford East" in the node
-  // edit form, so it's easier to find on the /admin/content page.
+  // Set the page title to be the name of the area.
   $node = \Drupal::request()->attributes->get('node');
   if ($node && $node instanceof NodeInterface) {
     if ($node->bundle() == 'localgov_area_vote') {
@@ -715,207 +736,112 @@ function localgov_elections_preprocess_block(&$variables): void {
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter().
+ * Implements hook_menu_local_tasks_alter().
  */
-function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
-  localgov_elections_configure_hold_gain_field($form, $form_state);
-  $form['#validate'][] = "localgov_elections_area_vote_form_validation";
+function localgov_elections_menu_local_tasks_alter(&$data, $route_name): void {
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface) {
+    $type = $node->getType();
+    if ($type != 'localgov_election') {
+      // Hide election-specific tabs from non-election nodes.
+      unset($data['tabs'][0]['views_view:view.localgov_election_results_timeline.page_timeline']);
+      unset($data['tabs'][0]['views_view:view.localgov_election_results_vote.page_vote_share']);
+      unset($data['tabs'][0]['views_view:view.localgov_electoral_candidates.page_candidates']);
+      unset($data['tabs'][0]['views_view:view.localgov_election_electoral_map.page_map']);
+    }
+    else {
+      $appropriate_fetch_routes = [
+        "entity.node.canonical",
+        "entity.node.edit_form",
+        "entity.node.version_history",
+        "entity.node.delete_form",
+        "entity.node.preview_link_generate",
+      ];
 
-  // Show the area vote edit form if a seat is uncontested.
-  if (!empty($form['localgov_election_seats']['widget'])) {
-    $node = $form_state->getFormObject()->getEntity();
-    foreach ($node->get('localgov_election_seats')->referencedEntities() as $delta => $paragraph) {
-      if ($paragraph->bundle() === 'localgov_area_seat' && $paragraph->get('localgov_seat_not_contested')->value) {
-        if (isset($form['localgov_election_seats']['widget'][$delta]['top']['summary']['fields_info']['#summary']['content'])) {
-          $summary = &$form['localgov_election_seats']['widget'][$delta]['top']['summary']['fields_info']['#summary']['content'];
+      // Add the "add area" button to the local tasks if user has permission.
+      $can_add_areas = \Drupal::currentUser()->hasPermission('can fetch boundaries');
+      if ($can_add_areas && in_array($route_name, $appropriate_fetch_routes, TRUE)) {
+        $data['tabs'][0]['boundary_fetch'] = [
+          '#theme' => 'menu_local_task',
+          '#weight' => 100,
+          '#link' => [
+            'title' => t('Add areas'),
+            'url' => Url::fromRoute('localgov_elections.boundary_fetch', ['node' => $node->id()]),
+          ],
+        ];
+      }
+    }
+  }
 
-          if (isset($summary[0])) {
-            $summary[0] .= ', Not contested';
-          }
-        }
+  if ($route_name === 'entity.node.canonical') {
+    $node = \Drupal::routeMatch()->getParameter('node');
+
+    if ($node instanceof NodeInterface && $node->bundle() !== 'localgov_election') {
+      // Remove duplicate tab if not localgov_election.
+      unset($data['tabs'][0]['localgov_elections.election_duplicate_tab']);
+    }
+  }
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function localgov_elections_page_attachments(array &$attachments): void {
+  $route = \Drupal::routeMatch();
+
+  if ($node = $route->getParameter('node')) {
+    if ($node != NULL && $node instanceof NodeInterface) {
+      if ($node->bundle() === 'localgov_election') {
+        $attachments['#attached']['library'][] = 'localgov_elections/election';
+      }
+      elseif ($node->bundle() === 'localgov_area_vote') {
+        $attachments['#attached']['library'][] = 'localgov_elections/election';
+        $attachments['#attached']['library'][] = 'localgov_elections/area_results';
       }
     }
   }
 }
 
 /**
- * Implements hook_form_BASE_FORM_ID_alter().
+ * Calculate number of seats needed for a majority.
  */
-function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
-  if (isset($form["name"]["widget"][0]['value'])) {
-    $form["name"]["widget"][0]['value']["#description"] = t("The party name. Do not enter brackets in the party nameph.");
+function _localgov_elections_calc_majority(): ?int {
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!$node instanceof NodeInterface) {
+    return NULL;
   }
+
+  /** @var \Drupal\localgov_elections\Service\MajorityCalculator $calculator */
+  $calculator = \Drupal::service('localgov_elections.majority_calculator');
+  return $calculator->calculateMajority($node);
 }
 
 /**
- * Validation function for area vote node forms.
+ * Get party colours and metadata.
  */
-function localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state): void {
-  $uncontested = $form_state->getValue('localgov_election_no_contest')['value'];
-  $candidates = $form_state->getValue('localgov_election_candidates');
-  $candidate_keys = array_filter(array_keys($candidates), function ($key) {
-    return is_int($key);
-  });
+function _localgov_elections_party_colours(): array {
+  $results = [];
+  $terms = \Drupal::entityTypeManager()
+    ->getStorage('taxonomy_term')
+    ->loadByProperties(['vid' => 'localgov_party']);
 
-  // If an area is uncontested, no candidates should be associate with the
-  // area node - they will be associated with each seat instead.
-  if ($uncontested && count($candidate_keys) > 0) {
-    $form_state->setErrorByName('localgov_election_candidates', t("If the seat is <b>not</b> contested there should only be uncontested candidates assigned to seats."));
-  }
+  if ($terms && is_array($terms)) {
+    foreach ($terms as $term) {
+      $colour = $term->get('localgov_election_party_colour')->color ?? NULL;
+      $abbr = $term->get('localgov_election_abbreviation')->value ?? NULL;
 
-  if ($uncontested) {
-    $storage = $form_state->get('field_storage');
-    if (isset($storage['#parents']['#fields']['localgov_election_candidates'])) {
-      $candidates = $storage['#parents']['#fields']['localgov_election_candidates'];
-    }
-    if (count($candidate_keys) > 0) {
-      $candidates = $candidates['paragraphs'];
-      foreach ($candidates['paragraphs'] as $entry) {
-        /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
-        if (isset($entry['entity'])) {
-          $entry = $entry['entity'];
-          if (!$entry->get('localgov_election_votes')->isEmpty()) {
-            $form_state->setErrorByName('localgov_election_candidates', t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
-          }
-        }
+      if ($colour && $abbr) {
+        $abbr = strtolower($abbr);
+
+        $results[$abbr] = [
+          'text-colour' => $term->get('localgov_election_text_colour')->color ?? NULL,
+          'colour' => $colour,
+          'full_name' => $term->getName(),
+          'abbr' => $abbr,
+        ];
       }
     }
   }
 
-  // Should not be able to finalise votes without having at least one candidate.
-  $finalised = $form_state->getValue('localgov_election_votes_final')['value'];
-  if ($finalised && !$uncontested && count($candidate_keys) < 1) {
-    $form_state->setErrorByName('localgov_election_candidates', t("You cannot finalise the votes with no candidates"));
-  }
-}
-
-/**
- * Implements hook_form_alter().
- */
-function localgov_elections_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $target_forms = [
-    'node_localgov_area_vote_form',
-    'node_localgov_area_vote_edit_form',
-  ];
-
-  if (in_array($form_id, $target_forms, TRUE)) {
-
-    if (isset($form['localgov_election_seats']['widget'])) {
-      foreach ($form['localgov_election_seats']['widget'] as $delta => &$seat_element) {
-        if (is_numeric($delta) && isset($seat_element['subform'])) {
-
-          // Show/hide candidate field based on uncontested checkbox.
-          if (isset($seat_element['subform']['localgov_candidate_uncontested'])) {
-            $seat_element['subform']['localgov_candidate_uncontested']['#states'] = [
-              'visible' => [
-                ':input[name="localgov_election_seats[' . $delta . '][subform][localgov_seat_not_contested][value]"]' => ['checked' => TRUE],
-              ],
-            ];
-          }
-        }
-      }
-    }
-
-    $form['#attached']['library'][] = 'localgov_elections/localgov_elections_form';
-  }
-}
-
-/**
- * Implements hook_node_insert().
- *
- * Create default seats when area vote is created.
- */
-function localgov_elections_node_insert(NodeInterface $node) {
-  if ($node->bundle() !== 'localgov_area_vote') {
-    return;
-  }
-  // Ensure the reference to parent election exists.
-  if ($node->hasField('localgov_election') && !$node->get('localgov_election')
-    ->isEmpty()) {
-    $parent = $node->get('localgov_election')->entity;
-    if ($parent instanceof NodeInterface && $parent->hasField('localgov_election_seat_count')) {
-      $seat_count = (int) $parent->get('localgov_election_seat_count')->value;
-
-      // Only proceed if no seats already exist.
-      if (!$node->get('localgov_election_seats')->isEmpty()) {
-        return;
-      }
-
-      // Base name for seats.
-      $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
-      // If the area is marked as uncontested we want to set all seats to
-      // uncontested.
-      $area_uncontested = $node->get('localgov_election_no_contest')->value ??
-        0;
-
-      $paragraph_storage = \Drupal::entityTypeManager()
-        ->getStorage('paragraph');
-      $seat_paragraphs = [];
-
-      // Always create at least 1 seat, more if parent requires it.
-      for ($i = 1; $i <= $seat_count; $i++) {
-        $seat_label = $seat_count > 1 ? $area_name . ' ' . $i : $area_name;
-
-        $seat_paragraph = $paragraph_storage->create([
-          'type' => 'localgov_area_seat',
-          'localgov_seat' => $seat_label,
-          'localgov_seat_not_contested' => $area_uncontested,
-        ]);
-        $seat_paragraph->save();
-
-        $seat_paragraphs[] = $seat_paragraph;
-      }
-
-      // Attach them to the node's reference field.
-      foreach ($seat_paragraphs as $seat_paragraph) {
-        $node->get('localgov_election_seats')->appendItem($seat_paragraph);
-      }
-
-      // Save the node again with attached paragraphs.
-      $node->save();
-    }
-  }
-}
-
-/**
- * Implements hook_form_BASE_FORM_ID_alter() for add form.
- */
-function localgov_elections_form_node_localgov_area_vote_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  localgov_elections_configure_hold_gain_field($form, $form_state);
-}
-
-/**
- * Configure the hold/gain field visibility and help text.
- */
-function localgov_elections_configure_hold_gain_field(&$form, FormStateInterface $form_state) {
-
-  // Add help text.
-  $form['localgov_election_hold_or_gain']['widget']['#description'] = t('Only applicable for single-seat areas. Leave as N/A for multi-seat areas or when outcome is not yet determined.');
-
-  $node = $form_state->getFormObject()->getEntity();
-
-  // Check seat count.
-  if ($node->hasField('localgov_election_seats')) {
-    $seat_count = $node->get('localgov_election_seats')->count();
-
-    if ($seat_count > 1) {
-      $form['localgov_election_hold_or_gain']['#access'] = FALSE;
-    }
-  }
-}
-
-/**
- * Implements hook_preprocess_views_view().
- */
-function localgov_elections_preprocess_views_view__localgov_election_electoral_map(&$variables) {
-  $view = $variables['view'];
-
-  /** @var \Drupal\localgov_elections\Service\MapDataProvider $map_data_provider */
-  $map_data_provider = \Drupal::service('localgov_elections.map_data_provider');
-  $map_data = $map_data_provider->prepareMapData($view);
-
-  if (!empty($map_data)) {
-    $variables['#attached']['drupalSettings']['electoralMapData'] = $map_data;
-    $variables['#attached']['library'][] = 'localgov_elections/electoral-map';
-  }
+  return $results;
 }

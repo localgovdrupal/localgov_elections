@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_election_finalised_date
+    - node.type.localgov_area_vote
+  module:
+    - datetime
+id: node.localgov_area_vote.localgov_election_finalised_date
+field_name: localgov_election_finalised_date
+entity_type: node
+bundle: localgov_area_vote
+label: 'Votes finalised date'
+description: 'The date and time when votes were finalised for this area.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

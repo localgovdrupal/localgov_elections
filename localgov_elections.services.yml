@@ -2,6 +2,8 @@ services:
   localgov_elections.alias_manager:
     class: Drupal\localgov_elections\Service\ElectionAliasManager
     arguments: ['@entity_type.manager', '@path.validator', '@logger.channel.localgov_elections']
+  localgov_elections.area_vote_form_helper:
+    class: Drupal\localgov_elections\Form\AreaVoteFormHelper
   localgov_elections.election_duplicator:
     class: Drupal\localgov_elections\Service\ElectionDuplicator
     arguments: ['@entity_type.manager']
