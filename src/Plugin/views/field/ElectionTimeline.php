@@ -47,7 +47,8 @@ class ElectionTimeline extends FieldPluginBase {
       $party = $candidate_paragraph->get('localgov_election_party')->entity;
 
       $candidates[] = [
-        'candidate' => $candidate_name = $candidate_paragraph->get('localgov_election_candidate')->value ?? '',
+        'candidate' => $candidate_paragraph->get('localgov_election_candidate')->value ?? '',
+        'forename' => $candidate_paragraph->get('localgov_election_forename')->value ?? '',  // ADD THIS
         'party' => $candidate_paragraph->get('localgov_election_party')->entity?->label() ?? '',
         'abbreviation' => $party?->get('localgov_election_abbreviation')->value ?? '',
         'votes' => $votes,

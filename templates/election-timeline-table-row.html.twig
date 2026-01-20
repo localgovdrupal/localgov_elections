@@ -7,9 +7,14 @@ Render a timeline table.
   <tr{{ candidate.winner ? ' class="winner"'}}>
     {% if loop.first %}
       <th rowspan="{{ rowspan }}">{{ time }}</th>
-      <th rowspan="{{ rowspan }}"><a href="{{ area_url }}">{{ area }}</a>{% if seats > 1 %} ({{ seats }} seats){% endif %}</th>
+      <th rowspan="{{ rowspan }}"><a href="{{ area_url }}">{{ area }}</a>{% if seats > 1 %} <br>({{ seats }} seats){% endif %}</th>
     {% endif %}
-    <td>{{ candidate.candidate|upper }}</td>
+    <td>
+      {{ candidate.candidate|upper }}{% if candidate.forename %}, {{ candidate.forename }}{% endif %}
+      {% if candidate.winner %}
+        <br>(elected)
+      {% endif %}
+    </td>
     <td>
       {% if candidate.winner %}
         <span class="party {{ candidate.abbreviation|lower }}">
@@ -19,6 +24,6 @@ Render a timeline table.
         {{ candidate.party }}
       {% endif %}
     </td>
-    <td>{{ candidate.votes }}{% if candidate.tie %} (tie winner){% endif %}</td>
+    <td>{{ candidate.votes }}{% if candidate.tie %}<br>(on tie){% endif %}</td>
   </tr>
 {% endfor %}

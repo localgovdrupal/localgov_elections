@@ -1,6 +1,9 @@
-.view-election-results-timeline .winner {
-  font-family: sans-serif;
-  font-weight: bold;
+.election-timeline {
+  --table-bg-color: #ededed;
+}
+
+.election-timeline .winner td {
+  background-color: #fdf5e6;
 }
 
 .view-election-results-timeline .ward-candidate-results,
@@ -18,4 +21,8 @@
 
 table.election-timeline th[rowspan] {
   vertical-align: top;
+}
+
+.election-timeline tbody tr:has(th[rowspan]) {
+  border-top: 3px solid #999;
 }
