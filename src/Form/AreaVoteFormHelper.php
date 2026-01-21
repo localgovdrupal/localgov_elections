@@ -22,8 +22,9 @@ class AreaVoteFormHelper {
    *   The form state.
    */
   public function configureForm(array &$form, FormStateInterface $form_state): void {
-    // Add validation.
-    $form['#validate'][] = '_localgov_elections_area_vote_form_validation';
+    $form['#validate'][] = [$this, 'validateSeatsAndCandidates'];
+    $form['#validate'][] = [$this, 'validateAreaVoteForm'];
+    $form['#validate'][] = [$this, 'validateContestedCandidates'];
 
     // Configure individual field behaviors.
     $this->configureHoldGainField($form, $form_state);
@@ -33,6 +34,143 @@ class AreaVoteFormHelper {
 
     // Attach form library.
     $form['#attached']['library'][] = 'localgov_elections/localgov_elections_form';
+  }
+
+  /**
+   * Validate area vote form seats and candidates.
+   */
+  public function validateSeatsAndCandidates(array &$form, FormStateInterface $form_state): void {
+    $seats_values = $form_state->getValue('localgov_election_seats');
+
+    if (!is_array($seats_values)) {
+      return;
+    }
+
+    foreach ($seats_values as $delta => $seat_data) {
+      if (!is_numeric($delta) || !is_array($seat_data)) {
+        continue;
+      }
+
+      // New seats have subform, existing seats don't.
+      if (!isset($seat_data['subform']['localgov_candidate_uncontested'])) {
+        continue;
+      }
+
+      $candidates = $seat_data['subform']['localgov_candidate_uncontested'];
+
+      if (!is_array($candidates)) {
+        continue;
+      }
+
+      foreach ($candidates as $cand_delta => $candidate_data) {
+        if (!is_numeric($cand_delta) || !is_array($candidate_data)) {
+          continue;
+        }
+
+        if (!isset($candidate_data['subform'])) {
+          continue;
+        }
+
+        $subform = $candidate_data['subform'];
+        $has_name = !empty($subform['localgov_election_candidate'][0]['value'] ?? NULL);
+        $has_party = !empty($subform['localgov_election_party']['target_id'] ?? NULL);
+
+        if ($has_name && !$has_party) {
+          $form_state->setError($form['localgov_election_seats'], $this->t('Uncontested candidate name requires a party to be specified.'));
+          return;
+        }
+        if ($has_party && !$has_name) {
+          $form_state->setError($form['localgov_election_seats'], $this->t('Uncontested candidate party requires a candidate name.'));
+          return;
+        }
+      }
+    }
+  }
+
+  /**
+   * Validate area vote form.
+   */
+  public function validateAreaVoteForm(array &$form, FormStateInterface $form_state): void {
+    $uncontested = $form_state->getValue('localgov_election_no_contest')['value'];
+    $candidates = $form_state->getValue('localgov_election_candidates');
+    $candidate_keys = array_filter(array_keys($candidates), function ($key) {
+      return is_int($key);
+    });
+
+    // If an area is uncontested, no candidates should be associated with the
+    // area node - they will be associated with each seat instead.
+    if ($uncontested && count($candidate_keys) > 0) {
+      $form_state->setErrorByName('localgov_election_candidates', $this->t("If the seat is <b>not</b> contested there should only be uncontested candidates assigned to seats."));
+    }
+
+    if ($uncontested) {
+      $storage = $form_state->get('field_storage');
+      if (isset($storage['#parents']['#fields']['localgov_election_candidates'])) {
+        $candidates = $storage['#parents']['#fields']['localgov_election_candidates'];
+      }
+      if (count($candidate_keys) > 0) {
+        $candidates = $candidates['paragraphs'];
+        foreach ($candidates['paragraphs'] as $entry) {
+          /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
+          if (isset($entry['entity'])) {
+            $entry = $entry['entity'];
+            if (!$entry->get('localgov_election_votes')->isEmpty()) {
+              $form_state->setErrorByName('localgov_election_candidates', $this->t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
+            }
+          }
+        }
+      }
+    }
+
+    // Should not be able to finalise votes without at least one candidate.
+    $finalised = $form_state->getValue('localgov_election_votes_final')['value'];
+    if ($finalised && !$uncontested && count($candidate_keys) < 1) {
+      $form_state->setErrorByName('localgov_election_candidates', $this->t("You cannot finalise the votes with no candidates"));
+    }
+  }
+
+  /**
+   * Validate candidates.
+   */
+  public function validateContestedCandidates(array &$form, FormStateInterface $form_state): void {
+    $candidates_values = $form_state->getValue('localgov_election_candidates');
+
+    if (!is_array($candidates_values)) {
+      return;
+    }
+
+    foreach ($candidates_values as $delta => $candidate_data) {
+      if (!is_numeric($delta) || !is_array($candidate_data)) {
+        continue;
+      }
+
+      // Skip if no subform exists.
+      if (!isset($candidate_data['subform'])) {
+        continue;
+      }
+
+      $subform = $candidate_data['subform'];
+
+      $forename = $subform['localgov_election_forename'][0]['value'] ?? '';
+      $surname = $subform['localgov_election_candidate'][0]['value'] ?? '';
+      $party = $subform['localgov_election_party']['target_id'] ?? '';
+
+      // All three fields are required for contested candidates.
+      if (empty($forename)) {
+        $form_state->setError($form['localgov_election_candidates'], $this->t('Candidates require forename to be specified.'));
+        return;
+      }
+
+      if (empty($surname)) {
+        $form_state->setError($form['localgov_election_candidates'], $this->t('Candidates require surname to be specified.'));
+        return;
+      }
+
+      if (empty($party)) {
+        $form_state->setError($form['localgov_election_candidates'], $this->t('Candidates require party to be specified.'));
+        return;
+      }
+    }
   }
 
   /**

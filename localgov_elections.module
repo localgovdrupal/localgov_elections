@@ -146,6 +146,43 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
         }
       }
     }
+
+    // Remove completely empty candidates from seats
+    if ($entity->hasField('localgov_election_seats')) {
+      foreach ($entity->get('localgov_election_seats') as $seat_item) {
+        $seat = $seat_item->entity;
+        if ($seat && $seat->bundle() === 'localgov_area_seat') {
+          $candidates = $seat->get('localgov_candidate_uncontested');
+          $to_delete = [];
+
+          foreach ($candidates as $delta => $candidate_item) {
+            $candidate = $candidate_item->entity;
+            if ($candidate) {
+              // Check all candidate fields for content
+              $has_any_data = FALSE;
+              foreach ($candidate->getFields() as $field) {
+                if (!$field->isEmpty() && !in_array($field->getName(), ['id', 'uuid', 'type', 'langcode', 'status', 'created', 'changed', 'parent_id', 'parent_type', 'parent_field_name'])) {
+                  $has_any_data = TRUE;
+                  break;
+                }
+              }
+
+              // If completely empty, delete it
+              if (!$has_any_data) {
+                $to_delete[] = $delta;
+              }
+            }
+          }
+
+          // Remove and delete
+          foreach (array_reverse($to_delete) as $delta) {
+            $candidate = $candidates[$delta]->entity;
+            $candidates->removeItem($delta);
+            $candidate->delete();
+          }
+        }
+      }
+    }
   }
 
   // Prevent creating multiple revisions for candidate paragraphs.
@@ -319,48 +356,6 @@ function localgov_elections_form_node_localgov_area_vote_edit_form_alter(&$form,
 function localgov_elections_form_taxonomy_term_localgov_party_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   if (isset($form["name"]["widget"][0]['value'])) {
     $form["name"]["widget"][0]['value']["#description"] = t("The party name. Do not enter brackets in the party name.");
-  }
-}
-
-/**
- * Validation function for area vote node forms.
- */
-function _localgov_elections_area_vote_form_validation($form, FormStateInterface $form_state): void {
-  $uncontested = $form_state->getValue('localgov_election_no_contest')['value'];
-  $candidates = $form_state->getValue('localgov_election_candidates');
-  $candidate_keys = array_filter(array_keys($candidates), function ($key) {
-    return is_int($key);
-  });
-
-  // If an area is uncontested, no candidates should be associated with the
-  // area node - they will be associated with each seat instead.
-  if ($uncontested && count($candidate_keys) > 0) {
-    $form_state->setErrorByName('localgov_election_candidates', t("If the seat is <b>not</b> contested there should only be uncontested candidates assigned to seats."));
-  }
-
-  if ($uncontested) {
-    $storage = $form_state->get('field_storage');
-    if (isset($storage['#parents']['#fields']['localgov_election_candidates'])) {
-      $candidates = $storage['#parents']['#fields']['localgov_election_candidates'];
-    }
-    if (count($candidate_keys) > 0) {
-      $candidates = $candidates['paragraphs'];
-      foreach ($candidates['paragraphs'] as $entry) {
-        /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
-        if (isset($entry['entity'])) {
-          $entry = $entry['entity'];
-          if (!$entry->get('localgov_election_votes')->isEmpty()) {
-            $form_state->setErrorByName('localgov_election_candidates', t("If the seat is not contested there should be no votes registered with a candidate. The vote field should be empty."));
-          }
-        }
-      }
-    }
-  }
-
-  // Should not be able to finalise votes without having at least one candidate.
-  $finalised = $form_state->getValue('localgov_election_votes_final')['value'];
-  if ($finalised && !$uncontested && count($candidate_keys) < 1) {
-    $form_state->setErrorByName('localgov_election_candidates', t("You cannot finalise the votes with no candidates"));
   }
 }
 
@@ -849,4 +844,32 @@ function _localgov_elections_party_colours(): array {
   }
 
   return $results;
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function localgov_elections_entity_update(EntityInterface $entity): void {
+  if ($entity->getEntityTypeId() === 'node' && $entity->getType() === 'localgov_area_vote') {
+    // Clean up empty uncontested candidates from seats
+    if ($entity->hasField('localgov_election_seats')) {
+      $seats = $entity->get('localgov_election_seats')->referencedEntities();
+
+      foreach ($seats as $delta => $seat) {
+        if ($seat->bundle() === 'localgov_area_seat') {
+          $seat_not_contested = $seat->get('localgov_seat_not_contested')->value;
+          $candidate = $seat->get('localgov_candidate_uncontested')->entity;
+
+          if ($candidate) {
+            $party_count = $candidate->get('localgov_election_party')->count();
+            $should_delete = !$seat_not_contested || $candidate->get('localgov_election_party')->isEmpty();
+
+            if ($should_delete) {
+              $candidate->delete();
+            }
+          }
+        }
+      }
+    }
+  }
 }
