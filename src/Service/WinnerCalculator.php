@@ -45,15 +45,10 @@ class WinnerCalculator {
     $uncontested_area = $area_vote->get('localgov_election_no_contest')?->value;
     $available_seats = $this->countAvailableSeats($area_vote);
 
-    // If no seats are available, no winners.
-    if ($available_seats === 0) {
-      return [];
-    }
-
     $winners = [];
 
-    // Calculate contested winners if there are any.
-    if (!$uncontested_area) {
+    // Calculate contested winners if there are any contested seats.
+    if (!$uncontested_area && $available_seats > 0) {
       $contested_winners = $this->calculateContestedWinners(
         $area_vote,
         $available_seats
