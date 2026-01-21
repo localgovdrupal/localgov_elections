@@ -496,7 +496,7 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: "{{ localgov_election_forename }} {{ localgov_election_candidate|upper }}|({{ localgov_election_party }})"
+            text: '{{ localgov_election_forename }} {{ localgov_election_candidate|upper }}|({{ localgov_election_party }})'
             make_link: false
             path: ''
             absolute: false

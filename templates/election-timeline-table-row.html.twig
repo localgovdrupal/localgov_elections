@@ -12,7 +12,9 @@ Render a timeline table.
     <td>
       {{ candidate.candidate|upper }}{% if candidate.forename %}, {{ candidate.forename }}{% endif %}
       {% if candidate.winner %}
-        <br>(elected)
+        <br>(elected
+        {% if candidate.tie %}<br> on tie{% endif %}
+        )
       {% endif %}
     </td>
     <td>
@@ -24,6 +26,6 @@ Render a timeline table.
         {{ candidate.party }}
       {% endif %}
     </td>
-    <td>{{ candidate.votes }}{% if candidate.tie %}<br>(on tie){% endif %}</td>
+    <td>{{ candidate.votes }}</td>
   </tr>
 {% endfor %}
