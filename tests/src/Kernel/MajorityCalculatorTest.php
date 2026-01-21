@@ -77,14 +77,36 @@ class MajorityCalculatorTest extends KernelTestBase {
   }
 
   /**
+   * Create an election node.
+   */
+  protected function createElection(string $title = 'Test Election'): Node {
+    $election = Node::create([
+      'type' => 'localgov_election',
+      'title' => $title,
+    ]);
+    $election->save();
+    return $election;
+  }
+
+  /**
+   * Create multiple area votes for an election.
+   */
+  protected function createAreas(Node $election, int $count): void {
+    for ($i = 1; $i <= $count; $i++) {
+      $area = Node::create([
+        'type' => 'localgov_area_vote',
+        'title' => "Area $i",
+        'localgov_election' => $election,
+      ]);
+      $area->save();
+    }
+  }
+
+  /**
    * Test election with no areas returns 1.
    */
   public function testElectionWithNoAreasReturnsOne(): void {
-    $election = Node::create([
-      'type' => 'localgov_election',
-      'title' => 'Test Election',
-    ]);
-    $election->save();
+    $election = $this->createElection();
 
     $majority = $this->majorityCalculator->calculateMajority($election);
     $this->assertEquals(1, $majority);
@@ -94,18 +116,8 @@ class MajorityCalculatorTest extends KernelTestBase {
    * Test election with one area requires one seat for majority.
    */
   public function testElectionWithOneArea(): void {
-    $election = Node::create([
-      'type' => 'localgov_election',
-      'title' => 'Test Election',
-    ]);
-    $election->save();
-
-    $area = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Area 1',
-      'localgov_election' => $election,
-    ]);
-    $area->save();
+    $election = $this->createElection();
+    $this->createAreas($election, 1);
 
     $majority = $this->majorityCalculator->calculateMajority($election);
     $this->assertEquals(1, $majority, 'With 1 area, majority is 1');
@@ -115,20 +127,8 @@ class MajorityCalculatorTest extends KernelTestBase {
    * Test election with two areas requires two seats for majority.
    */
   public function testElectionWithTwoAreas(): void {
-    $election = Node::create([
-      'type' => 'localgov_election',
-      'title' => 'Test Election',
-    ]);
-    $election->save();
-
-    for ($i = 1; $i <= 2; $i++) {
-      $area = Node::create([
-        'type' => 'localgov_area_vote',
-        'title' => "Area $i",
-        'localgov_election' => $election,
-      ]);
-      $area->save();
-    }
+    $election = $this->createElection();
+    $this->createAreas($election, 2);
 
     $majority = $this->majorityCalculator->calculateMajority($election);
     $this->assertEquals(2, $majority, 'With 2 areas, majority is 2');
@@ -138,20 +138,8 @@ class MajorityCalculatorTest extends KernelTestBase {
    * Test election with three areas requires two seats for majority.
    */
   public function testElectionWithThreeAreas(): void {
-    $election = Node::create([
-      'type' => 'localgov_election',
-      'title' => 'Test Election',
-    ]);
-    $election->save();
-
-    for ($i = 1; $i <= 3; $i++) {
-      $area = Node::create([
-        'type' => 'localgov_area_vote',
-        'title' => "Area $i",
-        'localgov_election' => $election,
-      ]);
-      $area->save();
-    }
+    $election = $this->createElection();
+    $this->createAreas($election, 3);
 
     $majority = $this->majorityCalculator->calculateMajority($election);
     $this->assertEquals(2, $majority, 'With 3 areas, majority is 2 (floor(3/2) + 1)');
@@ -161,21 +149,8 @@ class MajorityCalculatorTest extends KernelTestBase {
    * Test election with even number of areas.
    */
   public function testElectionWithEvenNumberOfAreas(): void {
-    $election = Node::create([
-      'type' => 'localgov_election',
-      'title' => 'Test Election',
-    ]);
-    $election->save();
-
-    // Create 50 areas.
-    for ($i = 1; $i <= 50; $i++) {
-      $area = Node::create([
-        'type' => 'localgov_area_vote',
-        'title' => "Area $i",
-        'localgov_election' => $election,
-      ]);
-      $area->save();
-    }
+    $election = $this->createElection();
+    $this->createAreas($election, 50);
 
     $majority = $this->majorityCalculator->calculateMajority($election);
     $this->assertEquals(26, $majority, 'With 50 areas, majority is 26 (floor(50/2) + 1)');
@@ -185,21 +160,8 @@ class MajorityCalculatorTest extends KernelTestBase {
    * Test election with odd number of areas.
    */
   public function testElectionWithOddNumberOfAreas(): void {
-    $election = Node::create([
-      'type' => 'localgov_election',
-      'title' => 'Test Election',
-    ]);
-    $election->save();
-
-    // Create 51 areas.
-    for ($i = 1; $i <= 51; $i++) {
-      $area = Node::create([
-        'type' => 'localgov_area_vote',
-        'title' => "Area $i",
-        'localgov_election' => $election,
-      ]);
-      $area->save();
-    }
+    $election = $this->createElection();
+    $this->createAreas($election, 51);
 
     $majority = $this->majorityCalculator->calculateMajority($election);
     $this->assertEquals(26, $majority, 'With 51 areas, majority is 26 (floor(51/2) + 1)');

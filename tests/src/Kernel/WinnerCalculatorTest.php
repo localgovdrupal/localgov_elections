@@ -77,14 +77,58 @@ class WinnerCalculatorTest extends KernelTestBase {
   }
 
   /**
+   * Create an area vote node.
+   */
+  protected function createAreaVote(string $title, array $additional_fields = []): Node {
+    $area = Node::create(array_merge([
+      'type' => 'localgov_area_vote',
+      'title' => $title,
+    ], $additional_fields));
+    $area->save();
+    return $area;
+  }
+
+  /**
+   * Create a candidate paragraph.
+   */
+  protected function createCandidate(?int $votes = NULL): Paragraph {
+    $fields = [
+      'type' => 'localgov_election_candidate',
+    ];
+
+    if ($votes !== NULL) {
+      $fields['localgov_election_votes'] = $votes;
+    }
+
+    $candidate = Paragraph::create($fields);
+    $candidate->save();
+    return $candidate;
+  }
+
+  /**
+   * Create a seat paragraph.
+   */
+  protected function createSeat(string $name, bool $contested = TRUE, $uncontested_candidate = NULL): Paragraph {
+    $fields = [
+      'type' => 'localgov_area_seat',
+      'localgov_seat' => $name,
+      'localgov_seat_not_contested' => !$contested,
+    ];
+
+    if ($uncontested_candidate) {
+      $fields['localgov_candidate_uncontested'] = $uncontested_candidate;
+    }
+
+    $seat = Paragraph::create($fields);
+    $seat->save();
+    return $seat;
+  }
+
+  /**
    * Test area vote with no seats returns empty array.
    */
   public function testAreaVoteWithNoSeatsReturnsEmpty(): void {
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Test Area',
-    ]);
-    $area_vote->save();
+    $area_vote = $this->createAreaVote('Test Area');
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
     $this->assertEmpty($winners);
@@ -94,43 +138,16 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test single seat election with clear winner.
    */
   public function testSingleSeatElectionClearWinner(): void {
-    $candidate1 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 100,
-    ]);
-    $candidate1->save();
+    $candidate1 = $this->createCandidate(100);
+    $candidate2 = $this->createCandidate(200);
+    $candidate3 = $this->createCandidate(150);
+    $seat = $this->createSeat('Seat 1');
 
-    $candidate2 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 200,
-    ]);
-    $candidate2->save();
-
-    $candidate3 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 150,
-    ]);
-    $candidate3->save();
-
-    $seat = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 1',
-      'localgov_seat_not_contested' => FALSE,
-    ]);
-    $seat->save();
-
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Test Area',
+    $area_vote = $this->createAreaVote('Test Area', [
       'localgov_election_seats' => [$seat],
-      'localgov_election_candidates' => [
-        $candidate1,
-        $candidate2,
-        $candidate3,
-      ],
+      'localgov_election_candidates' => [$candidate1, $candidate2, $candidate3],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -142,43 +159,16 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test tie-breaking uses candidate field order.
    */
   public function testTieBreakingUsesCandidateFieldOrder(): void {
-    $candidate1 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 100,
-    ]);
-    $candidate1->save();
+    $candidate1 = $this->createCandidate(100);
+    $candidate2 = $this->createCandidate(100);
+    $candidate3 = $this->createCandidate(100);
+    $seat = $this->createSeat('Seat 1');
 
-    $candidate2 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 100,
-    ]);
-    $candidate2->save();
-
-    $candidate3 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 100,
-    ]);
-    $candidate3->save();
-
-    $seat = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 1',
-      'localgov_seat_not_contested' => FALSE,
-    ]);
-    $seat->save();
-
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Tied Area',
+    $area_vote = $this->createAreaVote('Tied Area', [
       'localgov_election_seats' => [$seat],
-      'localgov_election_candidates' => [
-        $candidate1,
-        $candidate2,
-        $candidate3,
-      ],
+      'localgov_election_candidates' => [$candidate1, $candidate2, $candidate3],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -192,36 +182,20 @@ class WinnerCalculatorTest extends KernelTestBase {
    */
   public function testMultiSeatElectionReturnsTopCandidates(): void {
     $candidates = [];
-    $vote_counts = [300, 250, 200, 150, 100];
-
-    foreach ($vote_counts as $votes) {
-      $candidate = Paragraph::create([
-        'type' => 'localgov_election_candidate',
-        'localgov_election_votes' => $votes,
-      ]);
-      $candidate->save();
-      $candidates[] = $candidate;
+    foreach ([300, 250, 200, 150, 100] as $votes) {
+      $candidates[] = $this->createCandidate($votes);
     }
 
     $seats = [];
     for ($i = 0; $i < 3; $i++) {
-      $seat = Paragraph::create([
-        'type' => 'localgov_area_seat',
-        'localgov_seat' => 'Seat ' . ($i + 1),
-        'localgov_seat_not_contested' => FALSE,
-      ]);
-      $seat->save();
-      $seats[] = $seat;
+      $seats[] = $this->createSeat('Seat ' . ($i + 1));
     }
 
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Multi-Seat Area',
+    $area_vote = $this->createAreaVote('Multi-Seat Area', [
       'localgov_election_seats' => $seats,
       'localgov_election_candidates' => $candidates,
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -235,55 +209,21 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test multi-seat tie at boundary uses field order.
    */
   public function testMultiSeatTieAtBoundaryUsesFieldOrder(): void {
-    $candidate1 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 300,
-    ]);
-    $candidate1->save();
-
-    $candidate2 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 200,
-    ]);
-    $candidate2->save();
-
-    // These two tied for the last seat.
-    $candidate3 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 150,
-    ]);
-    $candidate3->save();
-
-    $candidate4 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 150,
-    ]);
-    $candidate4->save();
+    $candidate1 = $this->createCandidate(300);
+    $candidate2 = $this->createCandidate(200);
+    $candidate3 = $this->createCandidate(150);
+    $candidate4 = $this->createCandidate(150);
 
     $seats = [];
     for ($i = 0; $i < 3; $i++) {
-      $seat = Paragraph::create([
-        'type' => 'localgov_area_seat',
-        'localgov_seat' => 'Seat ' . ($i + 1),
-        'localgov_seat_not_contested' => FALSE,
-      ]);
-      $seat->save();
-      $seats[] = $seat;
+      $seats[] = $this->createSeat('Seat ' . ($i + 1));
     }
 
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Tied Boundary Area',
+    $area_vote = $this->createAreaVote('Tied Boundary Area', [
       'localgov_election_seats' => $seats,
-      'localgov_election_candidates' => [
-        $candidate1,
-        $candidate2,
-        $candidate3,
-        $candidate4,
-      ],
+      'localgov_election_candidates' => [$candidate1, $candidate2, $candidate3, $candidate4],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -298,37 +238,19 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test fewer candidates than seats returns all candidates.
    */
   public function testFewerCandidatesThanSeatsReturnsAllCandidates(): void {
-    $candidate1 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 100,
-    ]);
-    $candidate1->save();
-
-    $candidate2 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 50,
-    ]);
-    $candidate2->save();
+    $candidate1 = $this->createCandidate(100);
+    $candidate2 = $this->createCandidate(50);
 
     $seats = [];
     for ($i = 0; $i < 3; $i++) {
-      $seat = Paragraph::create([
-        'type' => 'localgov_area_seat',
-        'localgov_seat' => 'Seat ' . ($i + 1),
-        'localgov_seat_not_contested' => FALSE,
-      ]);
-      $seat->save();
-      $seats[] = $seat;
+      $seats[] = $this->createSeat('Seat ' . ($i + 1));
     }
 
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'More Seats Area',
+    $area_vote = $this->createAreaVote('More Seats Area', [
       'localgov_election_seats' => $seats,
       'localgov_election_candidates' => [$candidate1, $candidate2],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -339,26 +261,13 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test uncontested seat returns uncontested candidate.
    */
   public function testUncontestedSeatReturnsUncontestedCandidate(): void {
-    $uncontested_candidate = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-    ]);
-    $uncontested_candidate->save();
+    $uncontested_candidate = $this->createCandidate();
+    $seat = $this->createSeat('Seat 1', FALSE, $uncontested_candidate);
 
-    $seat = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 1',
-      'localgov_seat_not_contested' => TRUE,
-      'localgov_candidate_uncontested' => $uncontested_candidate,
-    ]);
-    $seat->save();
-
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Uncontested Area',
+    $area_vote = $this->createAreaVote('Uncontested Area', [
       'localgov_election_seats' => [$seat],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -370,46 +279,18 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test mixed contested and uncontested seats.
    */
   public function testMixedContestedAndUncontestedSeats(): void {
-    $candidate1 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 200,
-    ]);
-    $candidate1->save();
+    $candidate1 = $this->createCandidate(200);
+    $candidate2 = $this->createCandidate(150);
+    $uncontested_candidate = $this->createCandidate();
 
-    $candidate2 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 150,
-    ]);
-    $candidate2->save();
+    $contested_seat = $this->createSeat('Seat 1');
+    $uncontested_seat = $this->createSeat('Seat 2', FALSE, $uncontested_candidate);
 
-    $uncontested_candidate = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-    ]);
-    $uncontested_candidate->save();
-
-    $contested_seat = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 1',
-      'localgov_seat_not_contested' => FALSE,
-    ]);
-    $contested_seat->save();
-
-    $uncontested_seat = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 2',
-      'localgov_seat_not_contested' => TRUE,
-      'localgov_candidate_uncontested' => $uncontested_candidate,
-    ]);
-    $uncontested_seat->save();
-
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Mixed Area',
+    $area_vote = $this->createAreaVote('Mixed Area', [
       'localgov_election_seats' => [$contested_seat, $uncontested_seat],
       'localgov_election_candidates' => [$candidate1, $candidate2],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -422,26 +303,13 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test entire area marked as uncontested.
    */
   public function testEntireAreaUncontested(): void {
-    $uncontested_candidate = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-    ]);
-    $uncontested_candidate->save();
+    $uncontested_candidate = $this->createCandidate();
+    $seat = $this->createSeat('Seat 1', FALSE, $uncontested_candidate);
 
-    $seat = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 1',
-      'localgov_seat_not_contested' => TRUE,
-      'localgov_candidate_uncontested' => $uncontested_candidate,
-    ]);
-    $seat->save();
-
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Fully Uncontested Area',
+    $area_vote = $this->createAreaVote('Fully Uncontested Area', [
       'localgov_election_seats' => [$seat],
       'localgov_election_no_contest' => TRUE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -453,20 +321,12 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test area with no candidates returns empty.
    */
   public function testAreaWithNoCandidatesReturnsEmpty(): void {
-    $seat = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 1',
-      'localgov_seat_not_contested' => FALSE,
-    ]);
-    $seat->save();
+    $seat = $this->createSeat('Seat 1');
 
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'No Candidates Area',
+    $area_vote = $this->createAreaVote('No Candidates Area', [
       'localgov_election_seats' => [$seat],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -477,33 +337,15 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test candidates with zero votes are handled correctly.
    */
   public function testCandidatesWithZeroVotes(): void {
-    $candidate1 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 0,
-    ]);
-    $candidate1->save();
+    $candidate1 = $this->createCandidate(0);
+    $candidate2 = $this->createCandidate(1);
+    $seat = $this->createSeat('Seat 1');
 
-    $candidate2 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-      'localgov_election_votes' => 1,
-    ]);
-    $candidate2->save();
-
-    $seat = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 1',
-      'localgov_seat_not_contested' => FALSE,
-    ]);
-    $seat->save();
-
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Zero Votes Area',
+    $area_vote = $this->createAreaVote('Zero Votes Area', [
       'localgov_election_seats' => [$seat],
       'localgov_election_candidates' => [$candidate1, $candidate2],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
@@ -515,39 +357,16 @@ class WinnerCalculatorTest extends KernelTestBase {
    * Test multiple uncontested seats.
    */
   public function testMultipleUncontestedSeats(): void {
-    $uncontested1 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-    ]);
-    $uncontested1->save();
+    $uncontested1 = $this->createCandidate();
+    $uncontested2 = $this->createCandidate();
 
-    $uncontested2 = Paragraph::create([
-      'type' => 'localgov_election_candidate',
-    ]);
-    $uncontested2->save();
+    $seat1 = $this->createSeat('Seat 1', FALSE, $uncontested1);
+    $seat2 = $this->createSeat('Seat 2', FALSE, $uncontested2);
 
-    $seat1 = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 1',
-      'localgov_seat_not_contested' => TRUE,
-      'localgov_candidate_uncontested' => $uncontested1,
-    ]);
-    $seat1->save();
-
-    $seat2 = Paragraph::create([
-      'type' => 'localgov_area_seat',
-      'localgov_seat' => 'Seat 2',
-      'localgov_seat_not_contested' => TRUE,
-      'localgov_candidate_uncontested' => $uncontested2,
-    ]);
-    $seat2->save();
-
-    $area_vote = Node::create([
-      'type' => 'localgov_area_vote',
-      'title' => 'Multiple Uncontested Area',
+    $area_vote = $this->createAreaVote('Multiple Uncontested Area', [
       'localgov_election_seats' => [$seat1, $seat2],
       'localgov_election_no_contest' => FALSE,
     ]);
-    $area_vote->save();
 
     $winners = $this->winnerCalculator->calculateWinners($area_vote);
 
