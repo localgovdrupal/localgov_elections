@@ -147,7 +147,7 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
       }
     }
 
-    // Remove completely empty candidates from seats
+    // Remove completely empty candidates from seats.
     if ($entity->hasField('localgov_election_seats')) {
       foreach ($entity->get('localgov_election_seats') as $seat_item) {
         $seat = $seat_item->entity;
@@ -158,23 +158,35 @@ function localgov_elections_entity_presave(EntityInterface $entity): void {
           foreach ($candidates as $delta => $candidate_item) {
             $candidate = $candidate_item->entity;
             if ($candidate) {
-              // Check all candidate fields for content
+              // Check all candidate fields for content.
               $has_any_data = FALSE;
+              $excluded_fields = [
+                'id',
+                'uuid',
+                'type',
+                'langcode',
+                'status',
+                'created',
+                'changed',
+                'parent_id',
+                'parent_type',
+                'parent_field_name',
+              ];
               foreach ($candidate->getFields() as $field) {
-                if (!$field->isEmpty() && !in_array($field->getName(), ['id', 'uuid', 'type', 'langcode', 'status', 'created', 'changed', 'parent_id', 'parent_type', 'parent_field_name'])) {
+                if (!$field->isEmpty() && !in_array($field->getName(), $excluded_fields)) {
                   $has_any_data = TRUE;
                   break;
                 }
               }
 
-              // If completely empty, delete it
+              // If completely empty, delete it.
               if (!$has_any_data) {
                 $to_delete[] = $delta;
               }
             }
           }
 
-          // Remove and delete
+          // Remove and delete.
           foreach (array_reverse($to_delete) as $delta) {
             $candidate = $candidates[$delta]->entity;
             $candidates->removeItem($delta);
@@ -851,17 +863,16 @@ function _localgov_elections_party_colours(): array {
  */
 function localgov_elections_entity_update(EntityInterface $entity): void {
   if ($entity->getEntityTypeId() === 'node' && $entity->getType() === 'localgov_area_vote') {
-    // Clean up empty uncontested candidates from seats
+    // Clean up empty uncontested candidates from seats.
     if ($entity->hasField('localgov_election_seats')) {
       $seats = $entity->get('localgov_election_seats')->referencedEntities();
 
-      foreach ($seats as $delta => $seat) {
+      foreach ($seats as $seat) {
         if ($seat->bundle() === 'localgov_area_seat') {
           $seat_not_contested = $seat->get('localgov_seat_not_contested')->value;
           $candidate = $seat->get('localgov_candidate_uncontested')->entity;
 
           if ($candidate) {
-            $party_count = $candidate->get('localgov_election_party')->count();
             $should_delete = !$seat_not_contested || $candidate->get('localgov_election_party')->isEmpty();
 
             if ($should_delete) {
