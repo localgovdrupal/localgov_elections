@@ -90,11 +90,10 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     $urls = [];
     $urls[] = [
       'attributes' => new Attribute(),
-      'link' => Link::fromTextAndUrl($this->t('Summary'), Url::fromRoute('entity.node.canonical', ['node' => $this->node->id()])),
+      'link' => Link::fromTextAndUrl($this->t('Results'), Url::fromRoute('entity.node.canonical', ['node' => $this->node->id()])),
     ];
 
-    // Allow editors to hide the map
-    // It certainly won't work when we allow multiple winners / seats.
+    // Allow editors to hide the map.
     if ($node->hasField('localgov_election_display_map')) {
       $display_map = $node->get('localgov_election_display_map')?->value;
     }
@@ -128,7 +127,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     if ($results) {
       // Hide share of the vote for national parliamentary elections as per:
       // https://github.com/localgovdrupal/localgov_elections/issues/15
-      if ($node->get('localgov_election_type')?->value != "NationalParliamentary") {
+      if ($node->get('localgov_election_type')?->value !== "NationalParliamentary") {
         $urls[] = [
           'attributes' => new Attribute(),
           'link' => Link::fromTextAndUrl($this->t('Results timeline'), Url::fromRoute('view.localgov_election_results_timeline.page_timeline', ['node' => $this->node->id()])),
@@ -137,7 +136,7 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
 
       // Hide share of the vote for national parliamentary elections as per:
       // https://github.com/localgovdrupal/localgov_elections/issues/57
-      if ($node->get('localgov_election_type')?->value != "NationalParliamentary") {
+      if ($node->get('localgov_election_type')?->value !== "NationalParliamentary") {
         $urls[] = [
           'attributes' => new Attribute(),
           'link' => Link::fromTextAndUrl($this->t('Share of the vote'), Url::fromRoute('view.localgov_election_results_vote.page_vote_share', ['node' => $this->node->id()])),
@@ -170,20 +169,24 @@ class ElectionmenuBlock extends BlockBase implements ContainerFactoryPluginInter
     $node = $this->routeMatch->getParameter('node');
 
     if (!($node instanceof NodeInterface)) {
-      if (is_int(intval($node))) {
-        $node = $this->entityTypeManager->getStorage('node')->load((intval($node)));
-      }
+      $node = $this->entityTypeManager->getStorage('node')->load((int) $node);
     }
     if ($node instanceof NodeInterface) {
-      if ($node->bundle() == 'localgov_area_vote') {
-        $node_ref = $node->localgov_election?->first()->getValue()['target_id'];
-        if ($node_ref) {
-          $node = $this->entityTypeManager->getStorage('node')->load((intval($node_ref)));
+      if ($node->bundle() === 'localgov_area_vote') {
+        $election_field = $node->localgov_election?->first();
+        if ($election_field) {
+          $node_ref = $election_field->getValue()['target_id'];
+          $node = $this->entityTypeManager->getStorage('node')->load((int) $node_ref);
         }
-        // Should never reach this but return nothing if we do.
         else {
+          // Area vote without parent election.
           return [];
         }
+      }
+
+      // Only build menu for election nodes.
+      if ($node->bundle() !== 'localgov_election') {
+        return [];
       }
 
       $this->node = $node;
