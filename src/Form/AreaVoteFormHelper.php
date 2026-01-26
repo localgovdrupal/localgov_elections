@@ -108,9 +108,8 @@ class AreaVoteFormHelper {
       if (isset($storage['#parents']['#fields']['localgov_election_candidates'])) {
         $candidates = $storage['#parents']['#fields']['localgov_election_candidates'];
       }
-      if (count($candidate_keys) > 0) {
-        $candidates = $candidates['paragraphs'];
-        foreach ($candidates['paragraphs'] as $entry) {
+      if (count($candidate_keys) > 0 && isset($candidates['paragraphs']['paragraphs'])) {
+        foreach ($candidates['paragraphs']['paragraphs'] as $entry) {
           /** @var \Drupal\paragraphs\Entity\Paragraph $entry */
           if (isset($entry['entity'])) {
             $entry = $entry['entity'];
