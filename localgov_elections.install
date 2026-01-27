@@ -5,7 +5,6 @@
  * Install, update and uninstall functions for the LocalGov Elections Module.
  */
 
-use Drupal\Core\Config\Entity\ConfigEntityStorage;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Entity\EntityStorageException;
 
@@ -127,7 +126,23 @@ function localgov_elections_update_10003(): void {
     'core.entity_view_display.paragraph.localgov_area_seat.summary',
   ];
 
-  // Existing config to update (will overwrite).
+  // Views must be updated FIRST because their filter plugin changed from
+  // 'numeric' to 'entity_target_id'. The old 'numeric' plugin schema expects
+  // value.min/max properties that cause validation failures during other
+  // config operations.
+  $views_to_update = [
+    'views.view.localgov_election_area_results',
+    'views.view.localgov_election_electoral_map',
+    'views.view.localgov_election_previous_ward_results',
+    'views.view.localgov_election_results',
+    'views.view.localgov_election_results_timeline',
+    'views.view.localgov_election_results_via_parties',
+    'views.view.localgov_election_results_vote',
+    'views.view.localgov_election_ward_winners',
+    'views.view.localgov_electoral_candidates',
+  ];
+
+  // Other existing config to update (will overwrite).
   $config_to_update = [
     // Updated form displays.
     'core.entity_form_display.node.localgov_area_vote.default',
@@ -145,22 +160,25 @@ function localgov_elections_update_10003(): void {
     // Updated entity types.
     'node.type.localgov_area_vote',
     'paragraphs.paragraphs_type.localgov_area_vote',
-    // Updated views.
-    'views.view.localgov_election_area_results',
-    'views.view.localgov_election_electoral_map',
-    'views.view.localgov_election_previous_ward_results',
-    'views.view.localgov_election_results',
-    'views.view.localgov_election_results_timeline',
-    'views.view.localgov_election_results_via_parties',
-    'views.view.localgov_election_results_vote',
-    'views.view.localgov_election_ward_winners',
-    'views.view.localgov_electoral_candidates',
   ];
 
-  /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */
-  $config_manager = \Drupal::service('config.manager');
+  // Update views FIRST to fix the filter plugin schema change.
+  foreach ($views_to_update as $config_name) {
+    $data = $source->read($config_name);
+    if (!$data) {
+      \Drupal::logger('localgov_elections')->warning(
+        'Config @name not found in module.',
+        ['@name' => $config_name]
+      );
+      continue;
+    }
+
+    \Drupal::configFactory()->getEditable($config_name)->setData($data)->save(TRUE);
+  }
 
   // Create new config items (skip if already exists).
+  // Field storage configs must use entity API to create database tables.
+  // Other configs use setData() to bypass schema validation.
   foreach ($config_to_create as $config_name) {
     $data = $source->read($config_name);
     if (!$data) {
@@ -177,20 +195,20 @@ function localgov_elections_update_10003(): void {
       continue;
     }
 
-    // Determine entity type from config name and create appropriately.
-    $entity_type_id = $config_manager->getEntityTypeIdByName($config_name);
-    if ($entity_type_id) {
+    // Field storage needs entity API to create database tables.
+    if (str_starts_with($config_name, 'field.storage.')) {
       /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
-      $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
+      $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
       $entity = $storage->createFromStorageRecord($data);
       $entity->save();
     }
     else {
-      $config->setData($data)->save();
+      $config->setData($data)->save(TRUE);
     }
   }
 
-  // Update existing config items (overwrite).
+  // Update existing config items by directly overwriting config data.
+  // Using save(TRUE) marks data as trusted and skips schema validation.
   foreach ($config_to_update as $config_name) {
     $data = $source->read($config_name);
     if (!$data) {
@@ -201,25 +219,7 @@ function localgov_elections_update_10003(): void {
       continue;
     }
 
-    $entity_type_id = $config_manager->getEntityTypeIdByName($config_name);
-    if ($entity_type_id) {
-      /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
-      $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
-      $id = ConfigEntityStorage::getIDFromConfigName($config_name, $storage->getEntityType()->getConfigPrefix());
-      /** @var \Drupal\Core\Config\Entity\ConfigEntityInterface|null $existing */
-      $existing = $storage->load($id);
-      if ($existing) {
-        $entity = $storage->updateFromStorageRecord($existing, $data);
-        $entity->save();
-      }
-      else {
-        $entity = $storage->createFromStorageRecord($data);
-        $entity->save();
-      }
-    }
-    else {
-      \Drupal::configFactory()->getEditable($config_name)->setData($data)->save();
-    }
+    \Drupal::configFactory()->getEditable($config_name)->setData($data)->save(TRUE);
   }
 
   \Drupal::logger('localgov_elections')->notice(
@@ -228,7 +228,7 @@ function localgov_elections_update_10003(): void {
 }
 
 /**
- * Add seat paragraphs to existing area votes for multi-seat support.
+ * Add seat paragraphs to existing area votes.
  */
 function localgov_elections_update_10004(&$sandbox): void {
   $entity_type_manager = \Drupal::entityTypeManager();
@@ -331,6 +331,37 @@ function localgov_elections_update_10004(&$sandbox): void {
     \Drupal::logger('localgov_elections')->notice(
       'Added seat paragraphs to @count area votes.',
       ['@count' => $sandbox['created']]
+    );
+
+    // Recalculate winners for all finalised area votes.
+    // Get fresh storage instances and reset caches after batch processing.
+    $entity_type_manager = \Drupal::entityTypeManager();
+    $entity_type_manager->getStorage('node')->resetCache();
+    $entity_type_manager->getStorage('paragraph')->resetCache();
+    $node_storage = $entity_type_manager->getStorage('node');
+
+    /** @var \Drupal\localgov_elections\Service\WinnerCalculator $calculator */
+    $calculator = \Drupal::service('localgov_elections.winner_calculator');
+    $finalised_nids = $node_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'localgov_area_vote')
+      ->condition('localgov_election_votes_final', 1)
+      ->execute();
+
+    $winners_updated = 0;
+    foreach ($finalised_nids as $nid) {
+      $node = $node_storage->load($nid);
+      if ($node) {
+        $winners = $calculator->calculateWinners($node);
+        $node->set('localgov_election_winner', $winners);
+        $node->save();
+        $winners_updated++;
+      }
+    }
+
+    \Drupal::logger('localgov_elections')->notice(
+      'Recalculated winners for @count finalised area votes.',
+      ['@count' => $winners_updated]
     );
   }
 }
