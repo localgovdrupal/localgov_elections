@@ -77,7 +77,7 @@ class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, Cont
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
-    $opts = $this->getAreasToDownload();
+    $opts = $this->getAvailableAreas();
     $form['options'] = [
       '#title' => $this->t('Areas to download'),
       '#type' => 'tableselect',
@@ -96,7 +96,7 @@ class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, Cont
    *   Each value is an array with an 'area' key containing the display name.
    *   Returns empty array if no areas are found or on error.
    */
-  public function getAreasToDownload(): array {
+  public function getAvailableAreas(): array {
     $config = $this->plugin->getConfiguration();
     $listing_config = $config['listing_api'] ?? [];
     $opts = [];
@@ -150,14 +150,12 @@ class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, Cont
    * {@inheritdoc}
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state): void {
-    // No additional validation needed.
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
-    // No additional submit handling needed.
   }
 
 }

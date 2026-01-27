@@ -387,7 +387,6 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
-    // Nothing to do. The BoundarySourceForm handles saving the entity.
   }
 
   /**
@@ -467,11 +466,11 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
     $election_node = $this->entityTypeManager->getStorage('node')->load($election_nid);
 
     if (!$election_node instanceof NodeInterface) {
-      $this->messenger->addError($this->t('Node is not an Election Content Type Node'));
+      $this->messenger->addError($this->t('Node is not of content type Election'));
       return;
     }
 
-    $n_areas = 0;
+    $created_count = 0;
     foreach ($matched_features as $feature) {
       $name = (string) ApiHelper::getAttributeValue($feature, $name_field, $attributes_path);
 
@@ -486,13 +485,13 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
         'title' => $election_node->getTitle() . ' - ' . $name,
       ]);
       $area->save();
-      $n_areas++;
+      $created_count++;
     }
 
-    if ($n_areas > 0) {
+    if ($created_count > 0) {
       $this->messenger->addMessage($this->t(
-        'Created @n_area area votes records with boundary information',
-        ['@n_area' => $n_areas]
+        'Created @count area vote records with boundary information.',
+        ['@count' => $created_count]
       ));
     }
   }
