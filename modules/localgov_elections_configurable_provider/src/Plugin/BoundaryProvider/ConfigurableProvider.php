@@ -128,27 +128,25 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
     $form['filters'] = [
       '#type' => 'details',
       '#title' => $this->t('Filter parameters'),
-      '#description' => $this->t('Define filter values used to query the API. Each filter becomes a <code>{key}</code> token you can reference in the where clauses below. At least one filter is required.'),
+      '#description' => $this->t('Optional filter values used to query the API. Each filter becomes a <code>{key}</code> token you can reference in the where clauses below.'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
 
     for ($i = 0; $i < self::MAX_FILTERS; $i++) {
       $filter = $config['filters'][$i] ?? [];
-      $is_first = ($i === 0);
       $has_value = !empty($filter['key']);
 
       $form['filters'][$i] = [
         '#type' => 'details',
         '#title' => $this->t('Filter @num', ['@num' => $i + 1]),
-        '#open' => $is_first || $has_value,
+        '#open' => ($i === 0) || $has_value,
       ];
 
       $form['filters'][$i]['key'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Machine name'),
         '#default_value' => $filter['key'] ?? '',
-        '#required' => $is_first,
         '#description' => $this->t('Used as a <code>{token}</code> in where clauses. Use lowercase letters and underscores only.'),
         '#pattern' => '[a-z][a-z0-9_]*',
         '#maxlength' => 64,
@@ -158,7 +156,6 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
         '#type' => 'textfield',
         '#title' => $this->t('Label'),
         '#default_value' => $filter['label'] ?? '',
-        '#required' => $is_first,
         '#description' => $this->t('Human-readable label for this filter.'),
       ];
 
@@ -173,7 +170,6 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
         '#type' => 'textfield',
         '#title' => $this->t('Value'),
         '#default_value' => $filter['value'] ?? '',
-        '#required' => $is_first,
         '#description' => $this->t('The actual filter value for this boundary source.'),
       ];
     }
