@@ -1,7 +1,7 @@
 # Boundary Source Configuration Export
 # Exported from: ONS 2025 Wards
 #
-# To import: Go to Admin > Structure > Boundary Sources > Import
+# To import: Go to Admin > Structure > Boundary Sources > Import configuration
 # After importing, update the filter values for your local authority.
 #
 label: 'ONS 2025 Wards'
