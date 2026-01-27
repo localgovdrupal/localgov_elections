@@ -2,100 +2,120 @@
 
 ## Contents
 
-- [Preparing for an election](#preparing-for-an-election)
-  - [Add a boundary source](#add-a-boundary-source)
-  - [Add Parties](#add-parties)
-  - [Create an election](#create-an-election)
-  - [Add candidate and electoral area details](#add-candidate-and-electoral-area-details)
-  - [A not 'all-out' election](#a-not-all-out-election)
-- [Running an election](#running-an-election)
-  - [Entering electoral area results](#entering-electoral-area-results)
-  - [Tweet the result](#tweet-the-result)
+- [Setup](#setup)
+  - [Boundary sources](#boundary-sources)
+  - [Parties](#parties)
+- [Creating an election](#creating-an-election)
+  - [Adding electoral areas](#adding-electoral-areas)
+  - [Seats](#seats)
+  - [Adding candidates](#adding-candidates)
+  - [Partial elections](#partial-elections)
+- [Recording results](#recording-results)
+  - [Ties](#ties)
 
-## Preparing for an election
+## Setup
 
-The steps to prepare for an election are as follows:
+### Boundary sources
 
-- Add a boundary source (optional)
-- Add terms to Party taxonomy
-- Create an election
-- Add the candidate and electoral area details
+Boundary sources fetch electoral area boundaries from external APIs. Skip this if you don't need the map display or prefer to create areas manually.
 
-### Add a boundary source
+1. Go to **Structure > Boundary Sources** (`/admin/structure/boundary-source`)
+2. Select a provider from the dropdown and click **Add**
+3. Complete the configuration fields and click **Save**
 
-> NOTE: You can skip this step if you don't plan to use the mapping and/or have a small number of electoral areas and are happy to enter them manually.
+#### Available providers
 
-1. Go to `Structure > Boundary Sources` or `/admin/structure/boundary-source`.
-2. The available providers will be shown in the "Add a Provider" section. ![image](images/boundary-provider.png)
-3. Select the provider you wish to use from the dropdown and click "Add",
-4. Give the Boundary source a label and complete any other required fields. Each provider should provide documentation as to what the fields are.
-5. Click Save.
+**Configurable Provider** - Configure any REST API endpoint through the UI. Supports ArcGIS and other JSON/GeoJSON APIs. See the [sub-module README](../modules/localgov_elections_configurable_provider/README.md) for configuration details.
 
-#### Creating a Boundary Provider
+**ONS providers** - Pre-configured for Office of National Statistics boundary datasets:
+- ONS Wards 2024
+- ONS Divisions 2024
+- ONS Parishes 2024
+- Parliamentary Constituencies
 
-If you are interested in writing your own boundary provider plugin, you can read more in
-[providers.md](providers.md).
+Each ONS provider requires a local authority code. Check the provider's README for the specific field names and lookup values.
 
-### Add Parties
+#### Custom providers
 
-> NOTE: You can use the "LocalGov Elections Reporting - UK Parties" sub-module to get a headstart on this.
+To create a custom boundary provider plugin, see [providers.md](providers.md).
 
-1. Go to ` Structure > Taxonomy > Party` or `/admin/structure/taxonomy/manage/party/overview`
-2. Click Add term
-3. Complete the form for each party represented in the Election. Examples are:
-   - Name: Labour; Abbreviation: LAB; Party colour: 228,13,59; Opacity: 0; Text colour: 250,250,250; Opacity: 1;
-   - Name: Conservative; Abbreviation: CON; Party colour: 1,174,239; Opacity: 0; Text colour: 0,0,0; Opacity: 1;
-   - NOTE: Ensure that the text colour and Party colour have enough contrast to be accessible
-   - See [more parties and their colours](https://docs.google.com/spreadsheets/d/161Df7tQFZrKhVPAy4vCT19RoDXl2dAsqOWRdOkNInp4/edit#gid=0) (not tested for accessibility)
+### Parties
 
-### Create an election
+The **UK Parties** sub-module populates the party taxonomy with standard UK political parties, colours, and abbreviations. Enable it to skip manual setup.
 
-1. Go to `Content > Add content > Election` or `/node/add/election`
-2. Add in the required details.
-3. **Map Display**: If you are manually adding electoral areas or don't wish to show the map toggle the `Display map` slider from the default `on` to  `off`
-3. **Majority Display**: If you you are reporting on a sub-set of an election e.g. a Council reporting on the UK Westminster constituencies in their area then toggle the `Display majority details` slider from the default `on` to `off`
-4. Click Save.
+To add parties manually:
 
-#### Using a boundary source to create electoral areas
-1. After clicking Save in step 4 above, the tabs for view, edit, delete etc contains a tab for `Add areas`, click that.
-5. If you have more than one Boundary Source configured, select the one you wish to use.
-6. Now select the Areas you wish in the election. NOTE if preparing for an election which is only electing a proportion of seats you need to select all seats not just those being contested.
-7. Click Fetch.
+1. Go to **Structure > Taxonomy > Party** (`/admin/structure/taxonomy/manage/party/overview`)
+2. Click **Add term**
+3. Enter Name, Abbreviation, Party colour (RGB), and Text colour (RGB)
 
-#### Manually creating electoral areas
-For each electoral area you need, do the following:
-1. Go to `Content > Add content > Areas vote` or `/node/add/division_vote`
-2. Add the Title and Area name. You can also [Add candidate and electoral area details](#add-candidate-and-electoral-area-details) at the same time if you wish.
-3. Expand the `References` dropdown and using auto-completed select the election this area is being used in.
-4. Click Save.
+Ensure party and text colours have sufficient contrast for accessibility.
 
-### Add candidate and electoral area details
+## Creating an election
 
-1. On viewing the election node you will be presented with a list of electoral area results. Use the `[edit]` link to access each electoral area details. ![image](images/area-results.png)
+1. Go to **Content > Add content > Election** (`/node/add/localgov_election`)
+2. Enter the election title, date, and type
+3. Set the default number of seats per area (defaults to 1)
+4. Set **Display map** to off if not using boundary data
+5. Set **Display majority details** to off if reporting on a subset of seats (e.g. Westminster constituencies within a council area)
+6. Click **Save**
 
-2. You need to add the following details for each electoral area in the preparation stage
-   1. Details tab - Eligible voters
-   2. Candidates and Votes - Candidates (see below) and PDF list of candidates (optional).  When a PDF is added, it appears in the *Electoral candidates* page.
-   3. Previous election details (optional)
+### Adding electoral areas
 
-#### Adding a candidate
+#### From a boundary source
 
-1. In the Candidates and Votes tab, click the Add Candidate button
-2. Complete all the details on the form except Votes in the Result section.
-3. Repeat for all candidates in the electoral area
+1. After saving the election, click the **Add areas** tab
+2. Select a boundary source (if more than one is configured)
+3. Select the areas to include
+4. Click **Fetch**
 
-### A not 'all-out' election
+For partial elections, select all areas including those not being contested.
 
-If you are preparing for an election which is not 'all out' and only elects a proportion of seats then when adding electoral area details you need to click the 'Seat not contested' slider for the electoral areas which are not being contested this time. You will also need to add the details of the incumbant 'candidate'. This is so majority calculations still work.
+#### Manually
 
-## Running an election
+1. Go to **Content > Add content > Area vote** (`/node/add/localgov_area_vote`)
+2. Enter the Title and Area name
+3. In the **References** section, select the parent election
+4. Click **Save**
 
-Once the results from the count start to come in you can enter them from viewing the election node.
+### Seats
 
-### Entering electoral area results
+The default number of seats per area is set on the election form. This applies to all areas unless overridden individually in the **Seats** section of an area vote edit form.
 
-1. In the list of electoral areas on the election node view click `[edit]` for the electoral area concerned.
-2. For each candidate listed, click the Edit button and enter the number of votes they received.
-3. Click the 'Votes finalised' slider to confirm this result is declared.
-4. In the Overall results tab enter the number of spoils and whether it was a Hold or Gain for the winning party.
-5. Click Save.
+The number of seats determines how many winners are selected when votes are finalised. In a 3-seat ward, the top 3 vote-getters win.
+
+### Adding candidates
+
+1. View the election node to see the list of electoral areas
+2. Click **[edit]** next to an area
+3. In the **Details** tab, enter the number of eligible voters
+4. In the **Candidates and Votes** tab, click **Add Candidate**
+5. Enter forename, surname, and party for each candidate
+6. Optionally upload a PDF candidate list
+
+### Partial elections
+
+For elections where only some seats are contested:
+
+1. Edit each non-contested area
+2. Enable the **Seat not contested** toggle
+3. Add the incumbent as the uncontested candidate
+
+This ensures majority calculations remain accurate.
+
+## Recording results
+
+1. View the election node
+2. Click **[edit]** next to the area with results
+3. For each candidate, click **Edit** and enter their vote count
+4. Enable **Votes finalised** to confirm the result is declared
+5. In the **Overall results** tab, enter spoilt ballots and whether it was a Hold or Gain
+6. Click **Save**
+
+Winners are calculated automatically when votes are finalised.
+
+### Ties
+
+When candidates have equal votes, the winner is determined by their order in the candidates list. The candidate appearing first wins.
+
+To control tie-break order, drag candidates into the desired priority order before finalising votes. This matches the real-world practice where ties are typically resolved by lot, allowing you to record the actual outcome.

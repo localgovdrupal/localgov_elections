@@ -1,79 +1,54 @@
 # LocalGov Elections
 
-This module provides submodules, content types, views and configuration that allow the reporting of election results for
-the LocalGov Drupal distribution.
+Election reporting for UK local government elections. Provides content types, services, and views for managing and displaying election results.
 
-## Features
+## Installation
 
-- First past the post single seat per electoral area elections
-- 'All-out' and not 'all-out' (e.g. halves or thirds) elections
-- Table, graph and map based views of the results
-- Extensible boundary source provider for electoral areas and geo data
-
-## How to use
-
-See the [Documentation](docs/index.md) for more details
-
-## Installing
-
-### Installation
-
-You can install this module with the following composer command.
-
-```
+```bash
 composer require localgovdrupal/localgov_elections
 ```
 
-#### Libraries
+The Charts library is included via CDN by default. For local installation, see the [Charts module documentation](https://www.drupal.org/docs/contributed-modules/charts/50x-getting-started#s-using-composer-and-wikimediacomposer-merge-plugin).
 
-The libraries required by Charts/Highcharts are included, by default via CDN. If you wish to have these locally follow the instructions at https://www.drupal.org/docs/contributed-modules/charts/50x-getting-started#s-using-composer-and-wikimediacomposer-merge-plugin which uses the `composer.json` provided by the Charts module to install.
+## Submodules
 
-#### Submodules
+**Boundary Providers** - fetch electoral area boundaries from external APIs:
 
-You may also wish to use the submodules provided as part of the Localgov Election Reporting module. They are:
+- **Configurable Provider** - configure any REST API endpoint through the UI (recommended for new setups)
+- **ONS Wards 2024** - Office of National Statistics district ward boundaries
+- **ONS Divisions 2024** - Office of National Statistics county division boundaries
+- **ONS Parishes 2024** - Office of National Statistics parish boundaries
+- **Parliamentary Constituencies** - Westminster constituency boundaries
 
-1. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 District Wards - **DEPRECATED**
-2. LocalGov Elections Reporting ONS Wards 2023 - Boundary source provider for Office of National Statistics 2023 District Wards
-3. LocalGov Elections Reporting ONS Divisions 2024 - Boundary source provider for Office of National Statistics 2024 County Divisions
-4. LocalGov Elections Reporting ONS Parishes 2024 - Boundary source provider for Office of National Statistics 2024 Parishes
-5. Localgov Elections Parliamentary Constituency Provider - Boundary source provider for Office of National Statistics 2024 constituency boundaries
-6. LocalGov Elections Reporting Demo - Demo content to help with testing/evaluation
-7. LocalGov Elections Reporting - UK Parties - Adds the majority of UK political parties to the party taxonomy.
+**Supporting Modules**:
 
-Further details for these modules are in their own module READMEs and the [Documentation](docs/index.md).
+- **UK Parties** - populates party taxonomy with UK political parties, colours, and abbreviations
+- **Demo Content** - example election data for testing
 
-## Issues
+## Content Structure
 
-If you run into issues using this module, please report them
-at https://github.com/localgovdrupal/localgov_elections/issues
+- **Election** (`localgov_election`) - the parent election with date, type, and aggregated results
+- **Area Vote** (`localgov_area_vote`) - individual electoral areas with seats, candidates, and vote counts
 
-### Known issues
+Winners are calculated automatically when votes are marked as final.
 
-#### Node Revisions
+## Documentation
 
-Revisions do not currently work with the 'Areas vote' content type.
-We have implemented a work around to mitigate the situation by preventing
-the creation of revisions for the candidate paragraph entities.
+See [docs/index.md](docs/index.md) for usage instructions.
 
-We are tracking this in issue
-[#94](https://github.com/localgovdrupal/localgov_elections/issues/94).
+## Known Issues
 
-For the time being, we suggest not using attempting to use revisions with
-'Areas vote' nodes.
+**Node Revisions**: Revisions do not work reliably with Area Vote nodes due to the paragraph structure. We prevent revisions on candidate and seat paragraphs as a workaround. See [#94](https://github.com/localgovdrupal/localgov_elections/issues/94).
 
-If you have Localgov Workflows turned on, it will enable 'Create new revision'
-by default. This should not be a cause for concern, as the problematic candidate
-paragraphs are being forced to ignore revisions.
+## Support
 
-If you have any questions or problems, please ask in the #feature_elections
-channel in the LocalGov Drupal Slack channel.
+- Slack: **#feature_elections** in LocalGov Drupal
+- Issues: https://github.com/localgovdrupal/localgov_elections/issues
 
 ## Maintainers
 
-This project is currently maintained by:
+- Dan Champion https://www.drupal.org/u/danchamp
+- Duncan Davidson https://www.drupal.org/u/ded
+- Finn Lewis https://www.drupal.org/u/finn-lewis
 
-- Chris Wales https://github.com/chriswales95
-- Duncan Davidson https://github.com/dedavidson
-- Finn Lewis: https://www.drupal.org/u/finn-lewis
-
-It is based on work originally done by Rob Carr https://github.com/rgcarr.
+Based on work by Rob Carr https://github.com/rgcarr.
