@@ -5,6 +5,7 @@
  * Install, update and uninstall functions for the LocalGov Elections Module.
  */
 
+use Drupal\Core\Config\Entity\ConfigEntityStorage;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Entity\EntityStorageException;
 
@@ -32,7 +33,7 @@ function localgov_elections_install($is_syncing): void {
 
   $services = \Drupal::moduleHandler()->moduleExists('localgov_services_navigation');
   if ($services) {
-    localgov_elections_optional_fields_settings($services);
+    _localgov_elections_optional_fields_settings($services);
   }
 }
 
@@ -87,4 +88,249 @@ function localgov_elections_update_10002(): void {
   Drupal::logger('localgov_elections')->notice("Updated election area results view");
 
   drupal_flush_all_caches();
+}
+
+/**
+ * Import multi-seat configuration (paragraph type, fields, displays).
+ */
+function localgov_elections_update_10003(): void {
+  $module_path = \Drupal::service('extension.list.module')
+    ->getPath('localgov_elections');
+  $config_path = $module_path . '/config/install';
+  $source = new FileStorage($config_path);
+
+  // New config items to create (skipped if already exists).
+  $config_to_create = [
+    // Seat paragraph type.
+    'paragraphs.paragraphs_type.localgov_area_seat',
+    // New field storages.
+    'field.storage.paragraph.localgov_seat',
+    'field.storage.paragraph.localgov_seat_not_contested',
+    'field.storage.paragraph.localgov_term_length',
+    'field.storage.paragraph.localgov_candidate_uncontested',
+    'field.storage.node.localgov_election_seats',
+    'field.storage.node.localgov_election_seat_count',
+    'field.storage.node.localgov_election_finalised_date',
+    // New field instances on paragraph.
+    'field.field.paragraph.localgov_area_seat.localgov_seat',
+    'field.field.paragraph.localgov_area_seat.localgov_seat_not_contested',
+    'field.field.paragraph.localgov_area_seat.localgov_term_length',
+    'field.field.paragraph.localgov_area_seat.localgov_candidate_uncontested',
+    // New field instances on nodes.
+    'field.field.node.localgov_area_vote.localgov_election_seats',
+    'field.field.node.localgov_area_vote.localgov_election_finalised_date',
+    'field.field.node.localgov_election.localgov_election_seat_count',
+    // New form and view displays for paragraph.
+    'core.entity_form_display.paragraph.localgov_area_seat.default',
+    'core.entity_view_display.paragraph.localgov_area_seat.default',
+    'core.entity_view_display.paragraph.localgov_area_seat.preview',
+    'core.entity_view_display.paragraph.localgov_area_seat.summary',
+  ];
+
+  // Existing config to update (will overwrite).
+  $config_to_update = [
+    // Updated form displays.
+    'core.entity_form_display.node.localgov_area_vote.default',
+    'core.entity_form_display.node.localgov_election.default',
+    // Updated view displays.
+    'core.entity_view_display.node.localgov_area_vote.default',
+    'core.entity_view_display.node.localgov_area_vote.teaser',
+    // Updated field instances.
+    'field.field.node.localgov_area_vote.localgov_election_hold_or_gain',
+    'field.field.node.localgov_area_vote.localgov_election_no_contest',
+    'field.field.node.localgov_area_vote.localgov_election_winner',
+    'field.field.paragraph.localgov_election_candidate.localgov_election_party',
+    // Updated field storage (cardinality 1 -> unlimited for multi-seat).
+    'field.storage.node.localgov_election_winner',
+    // Updated entity types.
+    'node.type.localgov_area_vote',
+    'paragraphs.paragraphs_type.localgov_area_vote',
+    // Updated views.
+    'views.view.localgov_election_area_results',
+    'views.view.localgov_election_electoral_map',
+    'views.view.localgov_election_previous_ward_results',
+    'views.view.localgov_election_results',
+    'views.view.localgov_election_results_timeline',
+    'views.view.localgov_election_results_via_parties',
+    'views.view.localgov_election_results_vote',
+    'views.view.localgov_election_ward_winners',
+    'views.view.localgov_electoral_candidates',
+  ];
+
+  /** @var \Drupal\Core\Config\ConfigManagerInterface $config_manager */
+  $config_manager = \Drupal::service('config.manager');
+
+  // Create new config items (skip if already exists).
+  foreach ($config_to_create as $config_name) {
+    $data = $source->read($config_name);
+    if (!$data) {
+      \Drupal::logger('localgov_elections')->warning(
+        'Config @name not found in module.',
+        ['@name' => $config_name]
+      );
+      continue;
+    }
+
+    // Skip if config already exists.
+    $config = \Drupal::configFactory()->getEditable($config_name);
+    if (!$config->isNew()) {
+      continue;
+    }
+
+    // Determine entity type from config name and create appropriately.
+    $entity_type_id = $config_manager->getEntityTypeIdByName($config_name);
+    if ($entity_type_id) {
+      /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
+      $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
+      $entity = $storage->createFromStorageRecord($data);
+      $entity->save();
+    }
+    else {
+      $config->setData($data)->save();
+    }
+  }
+
+  // Update existing config items (overwrite).
+  foreach ($config_to_update as $config_name) {
+    $data = $source->read($config_name);
+    if (!$data) {
+      \Drupal::logger('localgov_elections')->warning(
+        'Config @name not found in module.',
+        ['@name' => $config_name]
+      );
+      continue;
+    }
+
+    $entity_type_id = $config_manager->getEntityTypeIdByName($config_name);
+    if ($entity_type_id) {
+      /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
+      $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
+      $id = ConfigEntityStorage::getIDFromConfigName($config_name, $storage->getEntityType()->getConfigPrefix());
+      /** @var \Drupal\Core\Config\Entity\ConfigEntityInterface|null $existing */
+      $existing = $storage->load($id);
+      if ($existing) {
+        $entity = $storage->updateFromStorageRecord($existing, $data);
+        $entity->save();
+      }
+      else {
+        $entity = $storage->createFromStorageRecord($data);
+        $entity->save();
+      }
+    }
+    else {
+      \Drupal::configFactory()->getEditable($config_name)->setData($data)->save();
+    }
+  }
+
+  \Drupal::logger('localgov_elections')->notice(
+    'Imported multi-seat configuration and updated views.'
+  );
+}
+
+/**
+ * Add seat paragraphs to existing area votes for multi-seat support.
+ */
+function localgov_elections_update_10004(&$sandbox): void {
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $node_storage = $entity_type_manager->getStorage('node');
+  $paragraph_storage = $entity_type_manager->getStorage('paragraph');
+
+  // Check if the paragraph type exists.
+  $paragraph_type = $entity_type_manager
+    ->getStorage('paragraphs_type')
+    ->load('localgov_area_seat');
+
+  if (!$paragraph_type) {
+    \Drupal::logger('localgov_elections')->error(
+      'Paragraph type localgov_area_seat not found. Run update 10003 first.'
+    );
+    return;
+  }
+
+  // Check if the field exists on area_vote nodes.
+  $field_definitions = \Drupal::service('entity_field.manager')
+    ->getFieldDefinitions('node', 'localgov_area_vote');
+  if (!isset($field_definitions['localgov_election_seats'])) {
+    \Drupal::logger('localgov_elections')->error(
+      'Field localgov_election_seats not found. Run update 10003 first.'
+    );
+    return;
+  }
+
+  // Initialize sandbox for batch processing.
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['current_id'] = 0;
+
+    // Count all area votes (we'll check for seats in the loop).
+    $query = $node_storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'localgov_area_vote');
+    $sandbox['max'] = $query->count()->execute();
+
+    if ($sandbox['max'] == 0) {
+      \Drupal::logger('localgov_elections')->notice(
+        'No area votes found.'
+      );
+      $sandbox['#finished'] = 1;
+      return;
+    }
+
+    $sandbox['created'] = 0;
+  }
+
+  // Process 50 nodes per batch.
+  $batch_size = 50;
+  $query = $node_storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'localgov_area_vote')
+    ->condition('nid', $sandbox['current_id'], '>')
+    ->sort('nid', 'ASC')
+    ->range(0, $batch_size);
+
+  $nids = $query->execute();
+
+  foreach ($nids as $nid) {
+    $node = $node_storage->load($nid);
+    $sandbox['current_id'] = $nid;
+    $sandbox['progress']++;
+
+    if (!$node) {
+      continue;
+    }
+
+    // Skip if seats already exist.
+    if (!$node->get('localgov_election_seats')->isEmpty()) {
+      continue;
+    }
+
+    // Create a single seat paragraph.
+    $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
+    $area_uncontested = (bool) $node->get('localgov_election_no_contest')->value;
+
+    $seat_paragraph = $paragraph_storage->create([
+      'type' => 'localgov_area_seat',
+      'localgov_seat' => $area_name,
+      'localgov_seat_not_contested' => $area_uncontested,
+    ]);
+    $seat_paragraph->save();
+
+    // Attach to the node.
+    $node->set('localgov_election_seats', [$seat_paragraph]);
+    $node->save();
+
+    $sandbox['created']++;
+  }
+
+  // Calculate progress.
+  $sandbox['#finished'] = $sandbox['max'] > 0
+    ? $sandbox['progress'] / $sandbox['max']
+    : 1;
+
+  if ($sandbox['#finished'] >= 1) {
+    \Drupal::logger('localgov_elections')->notice(
+      'Added seat paragraphs to @count area votes.',
+      ['@count' => $sandbox['created']]
+    );
+  }
 }
