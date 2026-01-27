@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for the Configurable Boundary Provider module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_entity_operation().
+ */
+function localgov_elections_configurable_provider_entity_operation(EntityInterface $entity): array {
+  $operations = [];
+
+  if ($entity->getEntityTypeId() === 'boundary_source') {
+    // Only show export for configurable provider sources.
+    if ($entity->get('plugin') === 'configurable_provider') {
+      $operations['export'] = [
+        'title' => t('Export'),
+        'url' => Url::fromRoute('localgov_elections_configurable_provider.boundary_source.export', [
+          'boundary_source' => $entity->id(),
+        ]),
+        'weight' => 50,
+      ];
+    }
+  }
+
+  return $operations;
+}

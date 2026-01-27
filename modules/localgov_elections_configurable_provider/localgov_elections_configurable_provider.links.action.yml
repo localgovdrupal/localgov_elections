@@ -1,0 +1,6 @@
+localgov_elections_configurable_provider.boundary_source.import:
+  route_name: localgov_elections_configurable_provider.boundary_source.import
+  title: 'Import configuration'
+  appears_on:
+    - entity.boundary_source.collection
+  weight: 10
