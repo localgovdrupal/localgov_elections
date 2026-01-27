@@ -58,22 +58,38 @@ class BoundarySourceImportForm extends FormBase {
    * Build step 1: YAML input.
    */
   protected function buildStep1(array $form, FormStateInterface $form_state): array {
-    $form['upload'] = [
-      '#type' => 'file',
+    $form['help'] = [
+      '#type' => 'item',
+      '#markup' => $this->t('Import a boundary source configuration exported from another site. You can either upload a .yml file or paste the YAML content directly.'),
+    ];
+
+    $form['upload_section'] = [
+      '#type' => 'details',
       '#title' => $this->t('Upload configuration file'),
+      '#open' => TRUE,
+      '#tree' => FALSE,
+    ];
+
+    $form['upload_section']['upload'] = [
+      '#type' => 'file',
+      '#title' => $this->t('File'),
+      '#title_display' => 'invisible',
       '#description' => $this->t('Upload an exported .yml file.'),
     ];
 
-    $form['or'] = [
-      '#type' => 'markup',
-      '#markup' => '<p><strong>' . $this->t('— or —') . '</strong></p>',
+    $form['paste_section'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Paste configuration YAML'),
+      '#open' => FALSE,
+      '#tree' => FALSE,
     ];
 
-    $form['yaml'] = [
+    $form['paste_section']['yaml'] = [
       '#type' => 'textarea',
-      '#title' => $this->t('Paste configuration YAML'),
+      '#title' => $this->t('YAML'),
+      '#title_display' => 'invisible',
       '#description' => $this->t('Paste the exported boundary source YAML configuration here.'),
-      '#rows' => 20,
+      '#rows' => 15,
     ];
 
     $form['actions'] = [
@@ -180,14 +196,17 @@ class BoundarySourceImportForm extends FormBase {
    */
   public function validateStep1(array &$form, FormStateInterface $form_state): void {
     $yaml = '';
+    $has_file = FALSE;
+    $has_paste = FALSE;
 
-    // Check for uploaded file first.
+    // Check for uploaded file.
     $files = $this->getRequest()->files->get('files', []);
-    if (!empty($files['upload'])) {
-      /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
-      $file = $files['upload'];
-      if ($file->isValid()) {
-        $yaml = file_get_contents($file->getRealPath());
+    $uploaded_file = $files['upload'] ?? NULL;
+    if ($uploaded_file) {
+      /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $uploaded_file */
+      if ($uploaded_file->isValid()) {
+        $yaml = file_get_contents($uploaded_file->getRealPath());
+        $has_file = TRUE;
       }
       else {
         $form_state->setErrorByName('upload', $this->t('File upload failed.'));
@@ -195,12 +214,24 @@ class BoundarySourceImportForm extends FormBase {
       }
     }
 
-    // Fall back to textarea if no file uploaded.
-    if (empty($yaml)) {
-      $yaml = $form_state->getValue('yaml');
+    // Check for pasted YAML.
+    $pasted_yaml = trim((string) $form_state->getValue('yaml', ''));
+    if ($pasted_yaml !== '') {
+      $has_paste = TRUE;
     }
 
-    if (empty($yaml)) {
+    // Reject if both provided.
+    if ($has_file && $has_paste) {
+      $form_state->setErrorByName('upload', $this->t('Please use either file upload or paste, not both.'));
+      return;
+    }
+
+    // Use pasted YAML if no file.
+    if (!$has_file) {
+      $yaml = $pasted_yaml;
+    }
+
+    if ($yaml === '') {
       $form_state->setErrorByName('yaml', $this->t('Please upload a file or paste YAML configuration.'));
       return;
     }

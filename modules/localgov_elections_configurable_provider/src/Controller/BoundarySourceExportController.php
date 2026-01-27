@@ -58,7 +58,7 @@ class BoundarySourceExportController extends ControllerBase {
     $header = "# Boundary Source Configuration Export\n";
     $header .= "# Exported from: " . $boundary_source->label() . "\n";
     $header .= "#\n";
-    $header .= "# To import: Go to Admin > Structure > Boundary Sources > Import\n";
+    $header .= "# To import: Go to Admin > Structure > Boundary Sources > Import configuration\n";
     $header .= "# After importing, update the filter values for your local authority.\n";
     $header .= "#\n";
 
