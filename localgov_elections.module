@@ -128,8 +128,8 @@ function _localgov_elections_optional_fields_settings($services): void {
 function localgov_elections_entity_presave(EntityInterface $entity): void {
   if ($entity->getEntityTypeId() === 'node' && $entity->getType() === 'localgov_area_vote') {
 
-    $finalised = $entity->get('localgov_election_votes_final')->value;
-    $uncontested_area = $entity->get('localgov_election_no_contest')->value;
+    $finalised = (int) $entity->get('localgov_election_votes_final')->value;
+    $uncontested_area = (int) $entity->get('localgov_election_no_contest')->value;
 
     if ($finalised === 1 || $uncontested_area === 1) {
       /** @var \Drupal\localgov_elections\Service\WinnerCalculator $calculator */
