@@ -1,5 +1,5 @@
 name: LocalGov Elections Reporting - Configurable Provider
-description: A configurable boundary provider for REST API endpoints. Allows site administrators to configure boundary data sources through the UI without requiring custom code.
+description: 'Provides a configurable electoral area boundary provider.'
 type: module
 package: LocalGov Drupal
 core_version_requirement: ^10 || ^11
