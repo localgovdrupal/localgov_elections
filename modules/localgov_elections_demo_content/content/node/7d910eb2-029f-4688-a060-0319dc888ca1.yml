@@ -270,4 +270,3 @@ default:
   localgov_election_votes_final:
     -
       value: true
-
