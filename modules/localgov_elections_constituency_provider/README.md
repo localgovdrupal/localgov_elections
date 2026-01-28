@@ -1,4 +1,5 @@
 # LocalGov Elections Reporting UK Parliamentary Constituency Boundary Provider
+## NOTE: This is **Deprecated** for all new installs use: LocalGov Elections - Configurable Provider
 
 The parliamentary constituency boundary provider makes it possible to automatically fetch consitutuency boundaries for
 election areas in a UK general election.
