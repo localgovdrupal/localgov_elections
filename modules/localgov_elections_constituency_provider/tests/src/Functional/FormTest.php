@@ -55,6 +55,7 @@ final class FormTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
+    $this->markTestSkipped('The constituency provider module is deprecated. Use localgov_elections_configurable_provider instead.');
     parent::setUp();
     $this->adminUser = $this->drupalCreateUser(['administer boundary_source', 'can fetch boundaries']);
     $this->drupalLogin($this->adminUser);
