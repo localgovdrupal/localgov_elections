@@ -86,6 +86,7 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
    */
   public function defaultConfiguration(): array {
     return [
+      'selection_mode' => 'tableselect',
       'filters' => [],
       'listing_api' => [
         'base_url' => '',
@@ -124,11 +125,24 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
   public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
     $config = $this->configuration + $this->defaultConfiguration();
 
+    // -- Selection mode --
+    $form['selection_mode'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Area selection mode'),
+      '#options' => [
+        'tableselect' => $this->t('Checkbox list (tableselect)'),
+        'autocomplete' => $this->t('Autocomplete search'),
+      ],
+      '#default_value' => $config['selection_mode'] ?? 'tableselect',
+      '#description' => $this->t('How users select areas to download. Use <em>Checkbox list</em> when filtering to a subset (e.g., wards within a local authority). Use <em>Autocomplete</em> when searching all items nationwide (e.g., parliamentary constituencies).'),
+      '#required' => TRUE,
+    ];
+
     // -- Filter parameters section --
     $form['filters'] = [
       '#type' => 'details',
       '#title' => $this->t('Filter parameters'),
-      '#description' => $this->t('Optional filter values used to query the API. Each filter becomes a <code>{key}</code> token you can reference in the where clauses below.'),
+      '#description' => $this->t('Filter values used to query the API. Each filter becomes a <code>{key}</code> token you can reference in the where clauses below. For <em>Autocomplete</em> mode, filters are optional (use <code>1=1</code> in the where clause to fetch all items).'),
       '#open' => TRUE,
       '#tree' => TRUE,
     ];
@@ -397,29 +411,48 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
   public function createBoundaries(BoundarySourceInterface $entity, array $form_values): void {
     $settings = $entity->getSettings();
     $boundary_config = $settings['boundary_api'] ?? [];
+    $selection_mode = $settings['selection_mode'] ?? 'tableselect';
 
     if (empty($boundary_config['base_url'])) {
       $this->messenger->addError($this->t('Boundary API endpoint is not configured.'));
       return;
     }
 
-    // Extract selected area codes from the download form tableselect.
-    // Cast to strings because PHP converts numeric-looking array keys to ints.
-    $selected_codes = array_map('strval', array_keys(array_filter(
-      $form_values['plugin']['config']['options'] ?? [],
-      function ($item) {
-        return $item !== 0;
+    // Extract selected values based on selection mode.
+    if ($selection_mode === 'autocomplete') {
+      // Autocomplete mode: values are area names.
+      $selected_names = $form_values['plugin']['config']['areas'] ?? [];
+      if (empty($selected_names)) {
+        $this->messenger->addError($this->t('No areas were selected.'));
+        return;
       }
-    )));
-
-    if (empty($selected_codes)) {
-      $this->messenger->addError($this->t('No areas were selected.'));
-      return;
+      $selected_codes = [];
+    }
+    else {
+      // Tableselect mode: values are area codes.
+      $selected_codes = array_map('strval', array_keys(array_filter(
+        $form_values['plugin']['config']['options'] ?? [],
+        function ($item) {
+          return $item !== 0;
+        }
+      )));
+      if (empty($selected_codes)) {
+        $this->messenger->addError($this->t('No areas were selected.'));
+        return;
+      }
+      $selected_names = [];
     }
 
-    // Build token replacements: filter values + selected_codes.
+    // Build token replacements.
     $tokens = ApiHelper::buildTokenMap($settings['filters'] ?? []);
-    $tokens['selected_codes'] = "'" . implode("','", $selected_codes) . "'";
+    if (!empty($selected_codes)) {
+      $tokens['selected_codes'] = "'" . implode("','", $selected_codes) . "'";
+    }
+    if (!empty($selected_names)) {
+      // Escape single quotes in names for SQL.
+      $escaped_names = array_map(fn($n) => str_replace("'", "''", $n), $selected_names);
+      $tokens['selected_names'] = "'" . implode("','", $escaped_names) . "'";
+    }
 
     $where = ApiHelper::replaceTokens($boundary_config['where'] ?? '', $tokens);
     $format = $boundary_config['format'] ?? 'geojson';
@@ -450,12 +483,22 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
 
     $features = ApiHelper::extractResults($response, $result_path);
 
-    // Filter to only the selected codes.
+    // Filter to only the selected items.
     $matched_features = [];
     foreach ($features as $feature) {
-      $code = ApiHelper::getAttributeValue($feature, $code_field, $attributes_path);
-      if (in_array((string) $code, $selected_codes, TRUE)) {
-        $matched_features[] = $feature;
+      if ($selection_mode === 'autocomplete') {
+        // Match by name for autocomplete mode.
+        $name = (string) ApiHelper::getAttributeValue($feature, $name_field, $attributes_path);
+        if (in_array($name, $selected_names, TRUE)) {
+          $matched_features[] = $feature;
+        }
+      }
+      else {
+        // Match by code for tableselect mode.
+        $code = ApiHelper::getAttributeValue($feature, $code_field, $attributes_path);
+        if (in_array((string) $code, $selected_codes, TRUE)) {
+          $matched_features[] = $feature;
+        }
       }
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\localgov_elections_configurable_provider\Form;
 
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -18,8 +19,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Download form for the configurable boundary provider.
  *
- * Fetches available areas from the configured listing API and presents
- * them as a tableselect for user selection.
+ * Supports two selection modes:
+ * - tableselect: Checkbox list of areas filtered by configured filters.
+ * - autocomplete: Search field for selecting areas by name.
  */
 class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, ContainerInjectionInterface {
 
@@ -41,11 +43,14 @@ class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, Cont
    *   The request stack.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
+   * @param \Drupal\Core\Cache\CacheBackendInterface $cacheBackend
+   *   The cache backend.
    */
   public function __construct(
     protected Client $httpClient,
     protected RequestStack $request,
     protected MessengerInterface $messenger,
+    protected CacheBackendInterface $cacheBackend,
   ) {}
 
   /**
@@ -55,7 +60,8 @@ class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, Cont
     return new static(
       $container->get('http_client'),
       $container->get('request_stack'),
-      $container->get('messenger')
+      $container->get('messenger'),
+      $container->get('cache.default')
     );
   }
 
@@ -77,6 +83,26 @@ class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, Cont
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
+    $config = $this->plugin->getConfiguration();
+    $selection_mode = $config['selection_mode'] ?? 'tableselect';
+
+    if ($selection_mode === 'autocomplete') {
+      return $this->buildAutocompleteForm($form);
+    }
+
+    return $this->buildTableselectForm($form);
+  }
+
+  /**
+   * Build the tableselect form variant.
+   *
+   * @param array $form
+   *   The form array.
+   *
+   * @return array
+   *   The form with tableselect element.
+   */
+  protected function buildTableselectForm(array $form): array {
     $opts = $this->getAvailableAreas();
     $form['options'] = [
       '#title' => $this->t('Areas to download'),
@@ -85,6 +111,32 @@ class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, Cont
       '#options' => $opts,
       '#required' => TRUE,
     ];
+    return $form;
+  }
+
+  /**
+   * Build the autocomplete form variant.
+   *
+   * @param array $form
+   *   The form array.
+   *
+   * @return array
+   *   The form with autocomplete element.
+   */
+  protected function buildAutocompleteForm(array $form): array {
+    $boundary_source = $this->plugin->getConfigInstance();
+    $boundary_source_id = $boundary_source ? $boundary_source->id() : '';
+
+    $form['areas'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Areas'),
+      '#maxlength' => 2000,
+      '#description' => $this->t('Type to search for areas. Use commas to select multiple areas.'),
+      '#autocomplete_route_name' => 'localgov_elections_configurable_provider.autocomplete',
+      '#autocomplete_route_parameters' => ['boundary_source' => $boundary_source_id],
+      '#required' => TRUE,
+    ];
+
     return $form;
   }
 
@@ -147,15 +199,97 @@ class ConfigurableDownloadForm implements BoundaryProviderSubformInterface, Cont
   }
 
   /**
+   * Get cache key for autocomplete data.
+   *
+   * @return string
+   *   The cache key.
+   */
+  protected function getAutocompleteCacheKey(): string {
+    $boundary_source = $this->plugin->getConfigInstance();
+    $boundary_source_id = $boundary_source ? $boundary_source->id() : 'unknown';
+    return 'localgov_elections_configurable_provider:autocomplete:' . $boundary_source_id;
+  }
+
+  /**
+   * Get cached area names for validation.
+   *
+   * @return array|null
+   *   Array of valid area names, or NULL if not cached.
+   */
+  protected function getCachedAreaNames(): ?array {
+    $cache_key = $this->getAutocompleteCacheKey();
+    $cached = $this->cacheBackend->get($cache_key);
+    if ($cached === FALSE) {
+      return NULL;
+    }
+
+    // Extract just the names from the cached data.
+    return array_column($cached->data, 'name');
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state): void {
+    $config = $this->plugin->getConfiguration();
+    $selection_mode = $config['selection_mode'] ?? 'tableselect';
+
+    if ($selection_mode !== 'autocomplete') {
+      return;
+    }
+
+    // Only validate on submit, not on AJAX events.
+    $triggering_element = $form_state->getTriggeringElement();
+    if (!$triggering_element || ($triggering_element['#type'] ?? '') !== 'submit') {
+      return;
+    }
+
+    $areas_input = $form_state->getValue('areas');
+    if (empty($areas_input)) {
+      return;
+    }
+
+    // Parse the comma-separated values.
+    $values = str_getcsv($areas_input);
+    $values = array_map(fn($value): string => trim(trim($value), '"'), $values);
+    $values = array_filter($values);
+
+    // Validate against cached area names.
+    $valid_names = $this->getCachedAreaNames();
+    if ($valid_names === NULL) {
+      // Cache not populated yet, skip validation.
+      return;
+    }
+
+    foreach ($values as $val) {
+      if (!in_array($val, $valid_names, TRUE)) {
+        $form_state->setErrorByName('areas', $this->t(
+          '"@value" does not appear to be a valid area name.',
+          ['@value' => $val]
+        ));
+      }
+    }
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
+    $config = $this->plugin->getConfiguration();
+    $selection_mode = $config['selection_mode'] ?? 'tableselect';
+
+    if ($selection_mode !== 'autocomplete') {
+      return;
+    }
+
+    // Convert comma-separated area names to an array.
+    $areas_input = $form_state->getValue('areas');
+    if (!empty($areas_input)) {
+      $values = str_getcsv($areas_input);
+      $values = array_map(fn($value): string => trim(trim($value), '"'), $values);
+      $values = array_filter($values);
+      $form_state->setValue('areas', $values);
+    }
   }
 
 }

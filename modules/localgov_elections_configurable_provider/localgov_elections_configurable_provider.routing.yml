@@ -17,3 +17,10 @@ localgov_elections_configurable_provider.boundary_source.import:
     _title: 'Import Boundary Source'
   requirements:
     _permission: 'administer boundary_source'
+
+localgov_elections_configurable_provider.autocomplete:
+  path: '/localgov-elections/configurable-provider/{boundary_source}/autocomplete'
+  defaults:
+    _controller: '\Drupal\localgov_elections_configurable_provider\Controller\ConfigurableAutocomplete::build'
+  requirements:
+    _permission: 'can fetch boundaries'
