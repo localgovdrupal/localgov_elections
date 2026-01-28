@@ -35,9 +35,8 @@ class ApiHelper {
   /**
    * Execute a REST API query.
    *
-   * Builds query parameters in the ArcGIS REST API style and returns
-   * the decoded JSON response body. The caller is responsible for
-   * extracting results from the response.
+   * Builds query parameters and returns the decoded JSON response body.
+   * The caller is responsible for extracting results from the response.
    *
    * @param \GuzzleHttp\Client $httpClient
    *   The HTTP client.
@@ -69,16 +68,19 @@ class ApiHelper {
     bool $return_geometry = FALSE,
     array $additional_params = [],
   ): array {
+    // Build minimal query params. API-specific params (like ArcGIS's
+    // returnDistinctValues, outSR, resultRecordCount) should be passed
+    // via $additional_params to keep this method generic.
+    $query_params = [
+      'where' => $where,
+      'outFields' => $out_fields,
+      'returnGeometry' => $return_geometry ? 'true' : 'false',
+      'f' => $format,
+    ];
+
+    // Additional params override/extend the base params.
     $params = [
-      'query' => array_merge([
-        'where' => $where,
-        'outFields' => $out_fields,
-        'returnDistinctValues' => 'true',
-        'returnGeometry' => $return_geometry ? 'true' : 'false',
-        'outSR' => '4326',
-        'f' => $format,
-        'resultRecordCount' => 10000,
-      ], $additional_params),
+      'query' => array_merge($query_params, $additional_params),
     ];
 
     $response = $httpClient->get($base_url, $params);

@@ -21,6 +21,7 @@ settings:
     name_field: WD25NM
     result_path: features
     attributes_path: attributes
+    additional_params: "returnDistinctValues=true\noutSR=4326\nresultRecordCount=10000"
   boundary_api:
     base_url: 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services/WD_MAY_2025_UK_BGC_V2/FeatureServer/0/query'
     where: "LAD25CD = '{lad_code}'"
@@ -30,3 +31,4 @@ settings:
     result_path: features
     attributes_path: properties
     format: geojson
+    additional_params: "outSR=4326\nresultRecordCount=10000"

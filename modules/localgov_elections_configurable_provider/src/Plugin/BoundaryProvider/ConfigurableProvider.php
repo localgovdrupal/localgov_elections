@@ -242,8 +242,9 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
       '#type' => 'textarea',
       '#title' => $this->t('Additional parameters'),
       '#default_value' => $listing['additional_params'] ?? '',
-      '#description' => $this->t('Optional extra query parameters, one per line in <code>key=value</code> format. These override defaults like <code>outSR=4326</code>. Useful for non-ArcGIS APIs or custom requirements.'),
-      '#rows' => 3,
+      '#description' => $this->t('Optional extra query parameters, one per line in <code>key=value</code> format. For ArcGIS/ONS APIs, you typically need:<br><code>returnDistinctValues=true</code><br><code>outSR=4326</code><br><code>resultRecordCount=10000</code>'),
+      '#rows' => 4,
+      '#placeholder' => "returnDistinctValues=true\noutSR=4326\nresultRecordCount=10000",
     ];
 
     // -- Boundary API section --
@@ -325,8 +326,9 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
       '#type' => 'textarea',
       '#title' => $this->t('Additional parameters'),
       '#default_value' => $boundary['additional_params'] ?? '',
-      '#description' => $this->t('Optional extra query parameters, one per line in <code>key=value</code> format. These override defaults like <code>outSR=4326</code>.'),
+      '#description' => $this->t('Optional extra query parameters, one per line in <code>key=value</code> format. For ArcGIS/ONS APIs, you typically need:<br><code>outSR=4326</code><br><code>resultRecordCount=10000</code>'),
       '#rows' => 3,
+      '#placeholder' => "outSR=4326\nresultRecordCount=10000",
     ];
 
     return $form;
