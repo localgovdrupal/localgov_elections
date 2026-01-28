@@ -404,12 +404,13 @@ class ConfigurableProvider extends BoundaryProviderPluginBase implements Contain
     }
 
     // Extract selected area codes from the download form tableselect.
-    $selected_codes = array_keys(array_filter(
+    // Cast to strings because PHP converts numeric-looking array keys to ints.
+    $selected_codes = array_map('strval', array_keys(array_filter(
       $form_values['plugin']['config']['options'] ?? [],
       function ($item) {
         return $item !== 0;
       }
-    ));
+    )));
 
     if (empty($selected_codes)) {
       $this->messenger->addError($this->t('No areas were selected.'));
