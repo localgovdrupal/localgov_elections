@@ -1,0 +1,56 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: 76d84471-1686-4f7a-931a-8dbe989f19f7
+  bundle: localgov_election
+  default_langcode: en
+default:
+  revision_uid:
+    -
+      target_id: 1
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 1
+  title:
+    -
+      value: 'Local Government Elections 2025'
+  created:
+    -
+      value: 1769607160
+  promote:
+    -
+      value: false
+  sticky:
+    -
+      value: false
+  path:
+    -
+      alias: /election/local-government-elections-2025
+      langcode: en
+      pathauto: 1
+  localgov_election_add_all_areas:
+    -
+      value: false
+  localgov_election_date:
+    -
+      value: '2025-06-01'
+  localgov_election_display_map:
+    -
+      value: true
+  localgov_election_majority:
+    -
+      value: false
+  localgov_election_seat_count:
+    -
+      value: 2
+  localgov_election_service_type:
+    -
+      uri: 'http://id.esd.org.uk/service/721'
+      title: 'Election results'
+      options: {  }
+  localgov_election_type:
+    -
+      value: DistrictAndBorough

@@ -1,0 +1,282 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: 105fc932-d880-4ece-b21b-6fe7bb9cf9b4
+  bundle: localgov_area_vote
+  default_langcode: en
+  depends:
+    76d84471-1686-4f7a-931a-8dbe989f19f7: node
+    017b30a5-ec34-4aba-a12e-612a5c43e661: taxonomy_term
+    b642d283-9860-4ac2-a584-7fb96b03f070: taxonomy_term
+    8d58c7a0-9201-4826-872a-8115a3f55535: taxonomy_term
+    33c84934-7f19-47e7-a243-43f1a29e9d1f: taxonomy_term
+default:
+  revision_uid:
+    -
+      target_id: 1
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 1
+  title:
+    -
+      value: 'Local Government Elections 2025 - Holywell'
+  created:
+    -
+      value: 1769607463
+  promote:
+    -
+      value: true
+  sticky:
+    -
+      value: false
+  path:
+    -
+      alias: /election/local-government-elections-2025/holywell
+      langcode: en
+      pathauto: 1
+  localgov_election:
+    -
+      entity: 76d84471-1686-4f7a-931a-8dbe989f19f7
+  localgov_election_area_name:
+    -
+      value: Holywell
+  localgov_election_boundary_data:
+    -
+      value: '{"type":"Feature","id":3850,"geometry":{"type":"Polygon","coordinates":[[[-1.23845886917716,51.7561751250628],[-1.23828748467084,51.7548162476508],[-1.23940187205341,51.7523886451784],[-1.24121632472072,51.7518275932738],[-1.24233522441802,51.7511019443723],[-1.24514774439502,51.7506273479785],[-1.24628507407425,51.7485225287803],[-1.24849072329838,51.7474181583608],[-1.24719522003526,51.7455360558076],[-1.24752619469306,51.74444027346],[-1.24862644267719,51.744037326035],[-1.25097564007397,51.7443103812147],[-1.25166269247073,51.7440207285285],[-1.25517743535285,51.7459024739729],[-1.25628601185438,51.745965219547],[-1.25645575725961,51.7470910687273],[-1.25684392069016,51.750367353266],[-1.25768535492571,51.7519650425205],[-1.25317059786353,51.7526251887493],[-1.25610854791478,51.7574037784419],[-1.25725592311933,51.7571323589517],[-1.25799873774313,51.7575974563339],[-1.25919128281667,51.7575033088721],[-1.25847145939724,51.7578441246071],[-1.25883928151323,51.7582087834767],[-1.2583510216706,51.7583854830589],[-1.25943131086717,51.7593058252935],[-1.25754234514064,51.7597219654768],[-1.25762359993735,51.7599831546987],[-1.25343033316567,51.7613916851525],[-1.25026565739513,51.7630628078922],[-1.2477003626629,51.7606511735667],[-1.24683430935123,51.7604522812017],[-1.24601784613043,51.7607554583716],[-1.24481098605569,51.7590933196607],[-1.24318543542777,51.7590873665659],[-1.24038252125303,51.7580946393268],[-1.23845886917716,51.7561751250628]]]},"properties":{"FID":3850,"WD25CD":"E05013106","WD25NM":"Holywell","WD25NMW":" ","LAD25CD":"E07000178","LAD25NM":"Oxford","LAD25NMW":" ","BNG_E":451942,"BNG_N":206292,"LONG":-1.248920948848682,"LAT":51.752925422195105,"Shape__Area":1695022.7076034546,"Shape__Length":6494.770148170872,"GlobalID":"638b525c-3986-47bf-9e65-6dc7d38bb460"}}'
+      geo_type: Polygon
+      lat: 51.75383235154
+      lon: -1.2492770244804
+      left: -1.2594313108672
+      top: 51.763062807892
+      right: -1.2382874846708
+      bottom: 51.744020728528
+      geohash: gcpn7
+      latlon: '51.75383235154,-1.2492770244804'
+  localgov_election_candidates:
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: d1355385-500e-4e05-a768-20e666bb2e2f
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608094
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Finney
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: John
+          localgov_election_party:
+            -
+              entity: 017b30a5-ec34-4aba-a12e-612a5c43e661
+          localgov_election_votes:
+            -
+              value: 2458
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 2a841f0c-1fd9-48b3-a32f-0dc5db24d097
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608111
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Booth
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Miriam
+          localgov_election_party:
+            -
+              entity: b642d283-9860-4ac2-a584-7fb96b03f070
+          localgov_election_votes:
+            -
+              value: 1568
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: b74082e2-e6b0-4bf9-93c5-07b79766df80
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608127
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Moss
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Brooke
+          localgov_election_party:
+            -
+              entity: 8d58c7a0-9201-4826-872a-8115a3f55535
+          localgov_election_votes:
+            -
+              value: 1687
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 1760016c-4893-4649-b15c-0245d272dee8
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608140
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Young
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Laura
+          localgov_election_party:
+            -
+              entity: 33c84934-7f19-47e7-a243-43f1a29e9d1f
+          localgov_election_votes:
+            -
+              value: 365
+  localgov_election_electorate:
+    -
+      value: 25468
+  localgov_election_finalised_date:
+    -
+      value: '2025-07-01T13:58:33'
+  localgov_election_no_contest:
+    -
+      value: false
+  localgov_election_seats:
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 2b26764e-52df-4162-8049-d87e00fadac1
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607463
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: 'Holywell 1'
+          localgov_seat_not_contested:
+            -
+              value: false
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: a121c088-b157-4d2c-8e3e-5450d65d0cad
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607463
+          behavior_settings:
+            -
+              value: {  }
+          localgov_candidate_uncontested:
+            -
+              entity:
+                _meta:
+                  version: '1.0'
+                  entity_type: paragraph
+                  uuid: 57c56402-dc36-4ddc-a22b-d379ca536bd3
+                  bundle: localgov_election_candidate
+                  default_langcode: en
+                default:
+                  status:
+                    -
+                      value: true
+                  created:
+                    -
+                      value: 1769608071
+                  behavior_settings:
+                    -
+                      value: {  }
+                  localgov_election_candidate:
+                    -
+                      value: Morris
+                  localgov_election_elected:
+                    -
+                      value: false
+                  localgov_election_forename:
+                    -
+                      value: Wyatt
+                  localgov_election_party:
+                    -
+                      entity: b642d283-9860-4ac2-a584-7fb96b03f070
+          localgov_seat:
+            -
+              value: 'Holywell 2'
+          localgov_seat_not_contested:
+            -
+              value: true
+  localgov_election_votes_final:
+    -
+      value: true

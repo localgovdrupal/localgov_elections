@@ -1,0 +1,288 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: deb48b68-3ef1-4727-a292-649a9d130b68
+  bundle: localgov_area_vote
+  default_langcode: en
+  depends:
+    76d84471-1686-4f7a-931a-8dbe989f19f7: node
+    017b30a5-ec34-4aba-a12e-612a5c43e661: taxonomy_term
+    b642d283-9860-4ac2-a584-7fb96b03f070: taxonomy_term
+    33c84934-7f19-47e7-a243-43f1a29e9d1f: taxonomy_term
+    8d045aee-e3b8-47c0-9273-054c6af9d417: taxonomy_term
+    8d58c7a0-9201-4826-872a-8115a3f55535: taxonomy_term
+default:
+  revision_uid:
+    -
+      target_id: 1
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 1
+  title:
+    -
+      value: 'Local Government Elections 2025 - Summertown'
+  created:
+    -
+      value: 1769607463
+  promote:
+    -
+      value: true
+  sticky:
+    -
+      value: false
+  path:
+    -
+      alias: /election/local-government-elections-2025/summertown
+      langcode: en
+      pathauto: 1
+  localgov_election:
+    -
+      entity: 76d84471-1686-4f7a-931a-8dbe989f19f7
+  localgov_election_area_name:
+    -
+      value: Summertown
+  localgov_election_boundary_data:
+    -
+      value: '{"type":"Feature","id":3860,"geometry":{"type":"Polygon","coordinates":[[[-1.25343042206984,51.7696484700389],[-1.25566568405605,51.7689972809958],[-1.25590920279505,51.7684665026768],[-1.25717243235736,51.7681382136989],[-1.25684859015024,51.7676524795518],[-1.26048323140823,51.7666710620042],[-1.2608526309401,51.766146458638],[-1.26119917415771,51.7662241416834],[-1.26102620627983,51.7656359050508],[-1.26470963137132,51.7648426201926],[-1.26525600773127,51.7663593026255],[-1.26635330418794,51.7664272742983],[-1.2688923868442,51.7659628986887],[-1.26927143992039,51.7676178490343],[-1.27336293944116,51.7669571665738],[-1.2759188008124,51.7670772856027],[-1.27890686518064,51.7695376317599],[-1.28034948483298,51.7719651749717],[-1.28377241600811,51.7741817590882],[-1.28205894526772,51.7751190047626],[-1.28220337343608,51.7777075827461],[-1.27903549919543,51.7784963988291],[-1.2783228133909,51.778410918316],[-1.27845548491533,51.7792303968704],[-1.2774804894532,51.7785304231089],[-1.27611921802262,51.7784639983999],[-1.27486072325347,51.7788706704222],[-1.27400692205005,51.7777877881559],[-1.27133480180384,51.778783892363],[-1.27028052639232,51.7776639974446],[-1.26941191392287,51.7779624869169],[-1.26958697886194,51.778200020327],[-1.26815982345185,51.7786551071929],[-1.2678852449741,51.7783617183683],[-1.26697159584417,51.7785149972177],[-1.26675530499863,51.7788841215108],[-1.26589867318309,51.7788537566425],[-1.26625155356182,51.7790554767624],[-1.26559259767619,51.7792452762597],[-1.26468207152334,51.7793889882125],[-1.26437074291914,51.77889068066],[-1.25934669926696,51.7801608616525],[-1.25782600335653,51.7808647453425],[-1.25827679800193,51.7810523611186],[-1.25802555584364,51.7814017817938],[-1.25178413029125,51.7793774914211],[-1.24846403649603,51.7772353269867],[-1.24846520061917,51.7757688065226],[-1.25123940181566,51.7718257512635],[-1.25327266376901,51.771128378401],[-1.25343042206984,51.7696484700389]]]},"properties":{"FID":3860,"WD25CD":"E05013116","WD25NM":"Summertown","WD25NMW":" ","LAD25CD":"E07000178","LAD25NM":"Oxford","LAD25NMW":" ","BNG_E":450720,"BNG_N":208529,"LONG":-1.266296559418325,"LAT":51.77314886496279,"Shape__Area":2768745.7383270264,"Shape__Length":7742.456686612254,"GlobalID":"b4e59c3b-0b0b-48e1-9eb1-16bae915dc55"}}'
+      geo_type: Polygon
+      lat: 51.773436863646
+      lon: -1.2654533234267
+      left: -1.2837724160081
+      top: 51.781401781794
+      right: -1.248464036496
+      bottom: 51.764842620193
+      geohash: gcpn
+      latlon: '51.773436863646,-1.2654533234267'
+  localgov_election_candidates:
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 4f41c705-9d13-41a0-881d-b290e40a290b
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607614
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Rees
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Victor
+          localgov_election_party:
+            -
+              entity: 017b30a5-ec34-4aba-a12e-612a5c43e661
+          localgov_election_votes:
+            -
+              value: 2500
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 724948d5-37b9-40a6-8056-96e1b8bdfdcf
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607633
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Berry
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Emmeline
+          localgov_election_party:
+            -
+              entity: b642d283-9860-4ac2-a584-7fb96b03f070
+          localgov_election_votes:
+            -
+              value: 3561
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 5f3744fd-5651-4da7-aadf-d8c62de9bfb2
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607654
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Murphy
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Ada
+          localgov_election_party:
+            -
+              entity: 33c84934-7f19-47e7-a243-43f1a29e9d1f
+          localgov_election_votes:
+            -
+              value: 2587
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 7adeda90-0d1c-4d45-8956-a64799236fe5
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607671
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Dean
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Andrew
+          localgov_election_party:
+            -
+              entity: 8d045aee-e3b8-47c0-9273-054c6af9d417
+          localgov_election_votes:
+            -
+              value: 3105
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: b2c34df7-7bac-4cc4-81ca-223a491a7d96
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607700
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Lane
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Ethan
+          localgov_election_party:
+            -
+              entity: 8d58c7a0-9201-4826-872a-8115a3f55535
+          localgov_election_votes:
+            -
+              value: 694
+  localgov_election_electorate:
+    -
+      value: 23014
+  localgov_election_finalised_date:
+    -
+      value: '2025-07-01T12:01:00'
+  localgov_election_no_contest:
+    -
+      value: false
+  localgov_election_seats:
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 14228df7-f040-41a0-a44a-6e1dacf62440
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607463
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: 'Summertown 1'
+          localgov_seat_not_contested:
+            -
+              value: false
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: ed07ea64-735e-47f7-b21a-eab0ffcc2340
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607463
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: 'Summertown 2'
+          localgov_seat_not_contested:
+            -
+              value: false
+  localgov_election_spoils:
+    -
+      value: 66
+  localgov_election_votes_final:
+    -
+      value: true

@@ -5,11 +5,11 @@ _meta:
   bundle: localgov_area_vote
   default_langcode: en
   depends:
+    23ffd187-52df-4106-9c19-af542d51a738: node
     017b30a5-ec34-4aba-a12e-612a5c43e661: taxonomy_term
     b642d283-9860-4ac2-a584-7fb96b03f070: taxonomy_term
     8d045aee-e3b8-47c0-9273-054c6af9d417: taxonomy_term
     8d58c7a0-9201-4826-872a-8115a3f55535: taxonomy_term
-    23ffd187-52df-4106-9c19-af542d51a738: node
 default:
   revision_uid:
     -
@@ -32,17 +32,14 @@ default:
   sticky:
     -
       value: false
-  revision_translation_affected:
-    -
-      value: true
-  moderation_state:
-    -
-      value: published
   path:
     -
       alias: /election/general-election-july-2024/witney
       langcode: en
       pathauto: 1
+  localgov_election:
+    -
+      entity: 23ffd187-52df-4106-9c19-af542d51a738
   localgov_election_area_name:
     -
       value: Witney
@@ -77,18 +74,15 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Cook
-          localgov_election_forenames:
-            -
-              value: Jessica
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: Jessica
           localgov_election_party:
             -
               entity: 017b30a5-ec34-4aba-a12e-612a5c43e661
@@ -113,18 +107,15 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Perry
-          localgov_election_forenames:
-            -
-              value: David
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: David
           localgov_election_party:
             -
               entity: b642d283-9860-4ac2-a584-7fb96b03f070
@@ -149,18 +140,15 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Webb
-          localgov_election_forenames:
-            -
-              value: Emily
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: Emily
           localgov_election_party:
             -
               entity: b642d283-9860-4ac2-a584-7fb96b03f070
@@ -185,18 +173,15 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Simmons
-          localgov_election_forenames:
-            -
-              value: Christopher
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: Christopher
           localgov_election_party:
             -
               entity: 8d045aee-e3b8-47c0-9273-054c6af9d417
@@ -221,45 +206,68 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Price
-          localgov_election_forenames:
-            -
-              value: Natalie
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: Natalie
           localgov_election_party:
             -
               entity: 8d58c7a0-9201-4826-872a-8115a3f55535
           localgov_election_votes:
             -
               value: 6874
-  localgov_election:
-    -
-      entity: 23ffd187-52df-4106-9c19-af542d51a738
   localgov_election_electorate:
     -
       value: 90000
+  localgov_election_finalised_date:
+    -
+      value: '2026-01-28T12:43:58'
   localgov_election_hold_or_gain:
     -
       value: Gain
+  localgov_election_no_contest:
+    -
+      value: false
   localgov_election_prev_winner:
     -
       entity: 017b30a5-ec34-4aba-a12e-612a5c43e661
   localgov_election_previous_year:
     -
       value: 2019
-  localgov_election_no_contest:
+  localgov_election_seats:
     -
-      value: false
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: cbc2239c-5e48-46a4-a217-a73846f35c40
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769593759
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: Witney
+          localgov_seat_not_contested:
+            -
+              value: false
   localgov_election_spoils:
     -
       value: 2000
   localgov_election_votes_final:
     -
       value: true
+

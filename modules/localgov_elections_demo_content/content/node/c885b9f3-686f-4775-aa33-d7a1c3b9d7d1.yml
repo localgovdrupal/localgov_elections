@@ -1,0 +1,285 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: c885b9f3-686f-4775-aa33-d7a1c3b9d7d1
+  bundle: localgov_area_vote
+  default_langcode: en
+  depends:
+    76d84471-1686-4f7a-931a-8dbe989f19f7: node
+    017b30a5-ec34-4aba-a12e-612a5c43e661: taxonomy_term
+    b642d283-9860-4ac2-a584-7fb96b03f070: taxonomy_term
+    33c84934-7f19-47e7-a243-43f1a29e9d1f: taxonomy_term
+    8d045aee-e3b8-47c0-9273-054c6af9d417: taxonomy_term
+    8d58c7a0-9201-4826-872a-8115a3f55535: taxonomy_term
+default:
+  revision_uid:
+    -
+      target_id: 1
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 1
+  title:
+    -
+      value: 'Local Government Elections 2025 - Marston'
+  created:
+    -
+      value: 1769607463
+  promote:
+    -
+      value: true
+  sticky:
+    -
+      value: false
+  path:
+    -
+      alias: /election/local-government-elections-2025/marston
+      langcode: en
+      pathauto: 1
+  localgov_election:
+    -
+      entity: 76d84471-1686-4f7a-931a-8dbe989f19f7
+  localgov_election_area_name:
+    -
+      value: Marston
+  localgov_election_boundary_data:
+    -
+      value: '{"type":"Feature","id":3853,"geometry":{"type":"Polygon","coordinates":[[[-1.22081529286482,51.7722583979639],[-1.22142920466089,51.7722067345076],[-1.22758603254422,51.7716916639085],[-1.22901786803895,51.7708478452272],[-1.230328058765,51.7692208247023],[-1.23102147145948,51.7691004179659],[-1.23224143690505,51.7680024058218],[-1.23159734534828,51.7676115881722],[-1.23444163897935,51.7649013112128],[-1.23544274721952,51.763195808181],[-1.23578565783965,51.7615094821149],[-1.23571483045899,51.7604677542731],[-1.23189009868265,51.7606937126094],[-1.2315656387638,51.7580382638168],[-1.23571158727214,51.7579978658618],[-1.23552728245746,51.7562127390075],[-1.23845886917716,51.7561751250628],[-1.24038252125303,51.7580946393268],[-1.24318543542777,51.7590873665659],[-1.24481098605569,51.7590933196607],[-1.24601784613043,51.7607554583716],[-1.24683430935123,51.7604522812017],[-1.2477003626629,51.7606511735667],[-1.25026565739513,51.7630628078922],[-1.25086492488064,51.7640602524509],[-1.25090409694889,51.7666904563851],[-1.25250735501649,51.7675350876379],[-1.25343042206984,51.7696484700389],[-1.25327266376901,51.771128378401],[-1.25123940181566,51.7718257512635],[-1.24846520061917,51.7757688065226],[-1.24846403649603,51.7772353269867],[-1.25178413029125,51.7793774914211],[-1.25802555584364,51.7814017817938],[-1.25893130844775,51.7817146944644],[-1.25921387349141,51.7827873108732],[-1.25826843295146,51.7839538549274],[-1.25847566770668,51.784575567961],[-1.25727391063341,51.7851874963963],[-1.25411376180561,51.7860485872193],[-1.25398594694602,51.786152137067],[-1.23169810368804,51.7768761260829],[-1.22798078322101,51.7764183272308],[-1.2279314315545,51.7752339077589],[-1.22081529286482,51.7722583979639]]]},"properties":{"FID":3853,"WD25CD":"E05013109","WD25NM":"Marston","WD25NMW":" ","LAD25CD":"E07000178","LAD25NM":"Oxford","LAD25NMW":" ","BNG_E":452528,"BNG_N":208101,"LONG":-1.240159657855964,"LAT":51.76913463632253,"Shape__Area":3687326.5224380493,"Shape__Length":10613.715207989957,"GlobalID":"42dc0e61-cb77-4549-9acc-2ae51af52565"}}'
+      geo_type: Polygon
+      lat: 51.771385256302
+      lon: -1.2418974781855
+      left: -1.2592138734914
+      top: 51.786152137067
+      right: -1.2208152928648
+      bottom: 51.756175125063
+      geohash: gcpn
+      latlon: '51.771385256302,-1.2418974781855'
+  localgov_election_candidates:
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 8014551d-da8e-4eb4-af13-efc4363b5382
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608182
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Miller
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Lola
+          localgov_election_party:
+            -
+              entity: 017b30a5-ec34-4aba-a12e-612a5c43e661
+          localgov_election_votes:
+            -
+              value: 1234
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: cb07d145-67f0-4d18-9bb0-a7cb5967b1b4
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608196
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Howard
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Rowan
+          localgov_election_party:
+            -
+              entity: b642d283-9860-4ac2-a584-7fb96b03f070
+          localgov_election_votes:
+            -
+              value: 1234
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 71ff6be8-868b-48ec-af41-37ef5f43588a
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608216
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Barnes
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Tyler
+          localgov_election_party:
+            -
+              entity: 33c84934-7f19-47e7-a243-43f1a29e9d1f
+          localgov_election_votes:
+            -
+              value: 1036
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 67f895f8-781a-4038-bbed-9be695ab8ec6
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608238
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Walsh
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Oliver
+          localgov_election_party:
+            -
+              entity: 8d045aee-e3b8-47c0-9273-054c6af9d417
+          localgov_election_votes:
+            -
+              value: 894
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 00c8cbe5-4e51-47c2-9e9f-8f25cbaf57bf
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769608254
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Poole
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Noel
+          localgov_election_party:
+            -
+              entity: 8d58c7a0-9201-4826-872a-8115a3f55535
+          localgov_election_votes:
+            -
+              value: 1298
+  localgov_election_electorate:
+    -
+      value: 17005
+  localgov_election_finalised_date:
+    -
+      value: '2025-07-01T16:08:08'
+  localgov_election_no_contest:
+    -
+      value: false
+  localgov_election_seats:
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 1d021082-3b80-497a-8b1e-207f2ac3ef4b
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607463
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: 'Marston 1'
+          localgov_seat_not_contested:
+            -
+              value: false
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: ba92ffbc-4932-419a-a23c-768e012b4784
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607463
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: 'Marston 2'
+          localgov_seat_not_contested:
+            -
+              value: false
+  localgov_election_votes_final:
+    -
+      value: true

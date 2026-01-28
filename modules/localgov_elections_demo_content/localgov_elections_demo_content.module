@@ -9,17 +9,56 @@
  * Implements hook_modules_installed().
  */
 function localgov_elections_demo_content_modules_installed($modules, $is_syncing): void {
-  if (!$is_syncing && in_array('default_content', $modules, TRUE)) {
-    // Regenerate all path aliases.
-    $nids = \Drupal::entityQuery('node')
-      ->condition('type', ['localgov_area_vote', 'localgov_election'], 'IN')
-      ->accessCheck(FALSE)
-      ->execute();
-    $nodes = \Drupal::entityTypeManager()
-      ->getStorage('node')
-      ->loadMultiple($nids);
+  if ($is_syncing) {
+    return;
+  }
+
+  // When this module is installed, process the imported demo content.
+  if (in_array('localgov_elections_demo_content', $modules, TRUE)) {
+    _localgov_elections_demo_content_post_import();
+  }
+}
+
+/**
+ * Post-import processing for demo content.
+ *
+ * Regenerates path aliases and calculates winners for imported area votes.
+ * Winners are not included in exports to avoid duplicate paragraph UUID issues
+ * (the same candidate paragraph would be embedded in both candidates and winner
+ * fields, causing import failures).
+ */
+function _localgov_elections_demo_content_post_import(): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+
+  // Load all election-related nodes.
+  $nids = $storage->getQuery()
+    ->condition('type', ['localgov_area_vote', 'localgov_election'], 'IN')
+    ->accessCheck(FALSE)
+    ->execute();
+  $nodes = $storage->loadMultiple($nids);
+
+  // Regenerate path aliases.
+  if (\Drupal::moduleHandler()->moduleExists('pathauto')) {
     foreach ($nodes as $node) {
       \Drupal::service('pathauto.generator')->updateEntityAlias($node, 'update');
+    }
+  }
+
+  // Calculate winners for finalised area votes.
+  /** @var \Drupal\localgov_elections\Service\WinnerCalculator $calculator */
+  $calculator = \Drupal::service('localgov_elections.winner_calculator');
+  $finalised_nids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'localgov_area_vote')
+    ->condition('localgov_election_votes_final', 1)
+    ->execute();
+
+  foreach ($finalised_nids as $nid) {
+    $node = $storage->load($nid);
+    if ($node) {
+      $winners = $calculator->calculateWinners($node);
+      $node->set('localgov_election_winner', $winners);
+      $node->save();
     }
   }
 }
