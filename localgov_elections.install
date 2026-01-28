@@ -304,6 +304,14 @@ function localgov_elections_update_10004(&$sandbox): void {
       continue;
     }
 
+    // For finalised nodes, copy the original 'changed' timestamp to the new
+    // finalised_date field. This preserves the timeline display from 2.x which
+    // used the node's modified timestamp.
+    $is_finalised = (bool) $node->get('localgov_election_votes_final')->value;
+    if ($is_finalised && $node->get('localgov_election_finalised_date')->isEmpty()) {
+      $node->set('localgov_election_finalised_date', $node->getChangedTime());
+    }
+
     // Create a single seat paragraph.
     $area_name = $node->get('localgov_election_area_name')->value ?? 'Seat';
     $area_uncontested = (bool) $node->get('localgov_election_no_contest')->value;
@@ -349,14 +357,28 @@ function localgov_elections_update_10004(&$sandbox): void {
       ->execute();
 
     $winners_updated = 0;
+    $timestamps_copied = 0;
     foreach ($finalised_nids as $nid) {
       $node = $node_storage->load($nid);
       if ($node) {
+        // Copy 'changed' timestamp to finalised_date if not already set.
+        // This handles nodes that were skipped in the main loop.
+        if ($node->get('localgov_election_finalised_date')->isEmpty()) {
+          $node->set('localgov_election_finalised_date', $node->getChangedTime());
+          $timestamps_copied++;
+        }
         $winners = $calculator->calculateWinners($node);
         $node->set('localgov_election_winner', $winners);
         $node->save();
         $winners_updated++;
       }
+    }
+
+    if ($timestamps_copied > 0) {
+      \Drupal::logger('localgov_elections')->notice(
+        'Copied timestamps to finalised_date for @count area votes.',
+        ['@count' => $timestamps_copied]
+      );
     }
 
     \Drupal::logger('localgov_elections')->notice(
