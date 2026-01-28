@@ -309,7 +309,7 @@ function localgov_elections_update_10004(&$sandbox): void {
     // used the node's modified timestamp.
     $is_finalised = (bool) $node->get('localgov_election_votes_final')->value;
     if ($is_finalised && $node->get('localgov_election_finalised_date')->isEmpty()) {
-      $node->set('localgov_election_finalised_date', $node->getChangedTime());
+      $node->set('localgov_election_finalised_date', date('Y-m-d\TH:i:s', $node->getChangedTime()));
     }
 
     // Create a single seat paragraph.
@@ -364,7 +364,7 @@ function localgov_elections_update_10004(&$sandbox): void {
         // Copy 'changed' timestamp to finalised_date if not already set.
         // This handles nodes that were skipped in the main loop.
         if ($node->get('localgov_election_finalised_date')->isEmpty()) {
-          $node->set('localgov_election_finalised_date', $node->getChangedTime());
+          $node->set('localgov_election_finalised_date', date('Y-m-d\TH:i:s', $node->getChangedTime()));
           $timestamps_copied++;
         }
         $winners = $calculator->calculateWinners($node);
