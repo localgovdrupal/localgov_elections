@@ -1502,6 +1502,19 @@ display:
           separator: ', '
           field_api_classes: false
       sorts:
+        localgov_election_area_name_value:
+          id: localgov_election_area_name_value
+          table: node__localgov_election_area_name
+          field: localgov_election_area_name_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: ''
+            field_identifier: ''
+          exposed: false
         localgov_election_votes_value:
           id: localgov_election_votes_value
           table: paragraph__localgov_election_votes
