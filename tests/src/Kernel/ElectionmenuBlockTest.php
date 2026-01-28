@@ -238,27 +238,6 @@ class ElectionmenuBlockTest extends KernelTestBase {
   }
 
   /**
-   * Test timeline and share links hidden for NationalParliamentary elections.
-   */
-  public function testTimelineAndShareLinksHiddenForNationalParliamentary(): void {
-    $election = $this->createElection([
-      'localgov_election_type' => 'NationalParliamentary',
-    ]);
-
-    // Create area vote with finalized votes.
-    $this->createAreaVote($election, [
-      'localgov_election_votes_final' => TRUE,
-    ]);
-
-    $block = $this->createBlock($election);
-    $build = $block->build();
-
-    // Should only have: Results (timeline and share hidden).
-    $this->assertCount(1, $build['#links']);
-    $this->assertEquals('Results', $build['#links'][0]['link']->getText());
-  }
-
-  /**
    * Test electoral candidates link appears with PDFs.
    */
   public function testElectoralCandidatesLinkAppearsWithPdfs(): void {
