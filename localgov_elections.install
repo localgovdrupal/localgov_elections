@@ -109,7 +109,8 @@ function localgov_elections_update_10003(): void {
     'field.storage.paragraph.localgov_candidate_uncontested',
     'field.storage.node.localgov_election_seats',
     'field.storage.node.localgov_election_seat_count',
-    'field.storage.node.localgov_election_finalised_date',
+    // Note: field.storage.node.localgov_election_finalised_date is created
+    // earlier in $field_storages_for_views as views depend on it.
     // New field instances on paragraph.
     'field.field.paragraph.localgov_area_seat.localgov_seat',
     'field.field.paragraph.localgov_area_seat.localgov_seat_not_contested',
@@ -142,6 +143,13 @@ function localgov_elections_update_10003(): void {
     'views.view.localgov_electoral_candidates',
   ];
 
+  // Field storages that views depend on (must be created before updating views).
+  // The timeline view sorts by localgov_election_finalised_date, so its field
+  // storage must exist before the view config is imported.
+  $field_storages_for_views = [
+    'field.storage.node.localgov_election_finalised_date',
+  ];
+
   // Other existing config to update (will overwrite).
   $config_to_update = [
     // Updated form displays.
@@ -162,6 +170,31 @@ function localgov_elections_update_10003(): void {
     'paragraphs.paragraphs_type.localgov_area_vote',
   ];
 
+  // Create field storages that views depend on. The timeline view sorts by
+  // localgov_election_finalised_date, so its field storage must exist first.
+  foreach ($field_storages_for_views as $config_name) {
+    $data = $source->read($config_name);
+    if (!$data) {
+      \Drupal::logger('localgov_elections')->warning(
+        'Config @name not found in module.',
+        ['@name' => $config_name]
+      );
+      continue;
+    }
+
+    // Skip if config already exists.
+    $config = \Drupal::configFactory()->getEditable($config_name);
+    if (!$config->isNew()) {
+      continue;
+    }
+
+    // Field storage needs entity API to create database tables.
+    /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+    $entity = $storage->createFromStorageRecord($data);
+    $entity->save();
+  }
+
   // Update views FIRST to fix the filter plugin schema change.
   foreach ($views_to_update as $config_name) {
     $data = $source->read($config_name);
@@ -173,7 +206,13 @@ function localgov_elections_update_10003(): void {
       continue;
     }
 
-    \Drupal::configFactory()->getEditable($config_name)->setData($data)->save(TRUE);
+    // Preserve existing UUID when updating views.
+    $config = \Drupal::configFactory()->getEditable($config_name);
+    $existing_uuid = $config->get('uuid');
+    if ($existing_uuid) {
+      $data['uuid'] = $existing_uuid;
+    }
+    $config->setData($data)->save(TRUE);
   }
 
   // Create new config items (skip if already exists).
@@ -195,10 +234,16 @@ function localgov_elections_update_10003(): void {
       continue;
     }
 
-    // Field storage needs entity API to create database tables.
+    // Field storage and field config need entity API to properly link together.
     if (str_starts_with($config_name, 'field.storage.')) {
       /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
       $storage = \Drupal::entityTypeManager()->getStorage('field_storage_config');
+      $entity = $storage->createFromStorageRecord($data);
+      $entity->save();
+    }
+    elseif (str_starts_with($config_name, 'field.field.')) {
+      /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
+      $storage = \Drupal::entityTypeManager()->getStorage('field_config');
       $entity = $storage->createFromStorageRecord($data);
       $entity->save();
     }
