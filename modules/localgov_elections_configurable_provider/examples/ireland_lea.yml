@@ -1,0 +1,47 @@
+# Boundary Source Configuration Export
+# Exported from: Ireland Local Electoral Areas
+#
+# To import: Go to Admin > Structure > Boundary Sources > Import configuration
+# After importing, update the filter value with your county name.
+#
+# Data source: Central Statistics Office (CSO) via data.gov.ie
+#
+# Available county filter values (26 geographic counties):
+# Carlow, Cavan, Clare, Cork, Donegal, Dublin, Galway, Kerry, Kildare,
+# Kilkenny, Laois, Leitrim, Limerick, Longford, Louth, Mayo, Meath, Monaghan,
+# Offaly, Roscommon, Sligo, Tipperary, Waterford, Westmeath, Wexford, Wicklow
+#
+# Note: The dataset uses geographic county names, not local authority names.
+# Dublin includes LEAs for Dublin City, Fingal, South Dublin, and
+# Dún Laoghaire-Rathdown. Cork, Galway, Limerick, and Waterford each include
+# LEAs for both city and county councils. You may need to select only the
+# relevant LEAs when downloading boundaries for a specific local authority.
+#
+label: 'Ireland LEAs'
+description: 'Local Electoral Areas from Central Statistics Office (CSO)'
+settings:
+  filters:
+    -
+      key: county
+      label: 'County Name'
+      description: 'Enter the county name exactly as it appears in the dataset (e.g. Dublin, Cork, Galway)'
+      value: ''
+  listing_api:
+    base_url: 'https://services-eu1.arcgis.com/FH5XCsx8rYXqnjF5/arcgis/rest/services/Local_Electoral_Areas_Boundaries_Generalised_50m/FeatureServer/0/query'
+    where: "COUNTY = '{county}'"
+    out_fields: 'LE_ID,LE_ENGLISH'
+    code_field: LE_ID
+    name_field: LE_ENGLISH
+    result_path: features
+    attributes_path: attributes
+    additional_params: "returnDistinctValues=true\noutSR=4326\nresultRecordCount=500"
+  boundary_api:
+    base_url: 'https://services-eu1.arcgis.com/FH5XCsx8rYXqnjF5/arcgis/rest/services/Local_Electoral_Areas_Boundaries_Generalised_50m/FeatureServer/0/query'
+    where: "COUNTY = '{county}'"
+    out_fields: '*'
+    code_field: LE_ID
+    name_field: LE_ENGLISH
+    result_path: features
+    attributes_path: properties
+    format: geojson
+    additional_params: "outSR=4326\nresultRecordCount=500"
