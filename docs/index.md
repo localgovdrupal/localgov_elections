@@ -25,15 +25,10 @@ Boundary sources fetch electoral area boundaries from external APIs. Skip this i
 
 #### Available providers
 
-**Configurable Provider** - Configure any REST API endpoint through the UI. Supports ArcGIS and other JSON/GeoJSON APIs. See the [sub-module README](../modules/localgov_elections_configurable_provider/README.md) for configuration details.
+**Configurable Provider** - Configure any REST API endpoint through the UI. Supports ArcGIS and other JSON/GeoJSON APIs. Includes example configurations for UK wards, Westminster parliamentary constituencies, and Irish local electoral areas. See the [sub-module README](../modules/localgov_elections_configurable_provider/README.md) for configuration details.
 
-**ONS providers** - Pre-configured for Office of National Statistics boundary datasets:
-- ONS Wards 2024
-- ONS Divisions 2024
-- ONS Parishes 2024
-- Parliamentary Constituencies
-
-Each ONS provider requires a local authority code. Check the provider's README for the specific field names and lookup values.
+*Deprecated providers* - The following sub-modules are deprecated in favour of the Configurable Provider:
+- ONS Wards 2023, ONS Wards 2024, ONS Divisions 2024, ONS Parishes 2024, Parliamentary Constituencies
 
 #### Custom providers
 
@@ -45,7 +40,7 @@ The **UK Parties** sub-module populates the party taxonomy with standard UK poli
 
 To add parties manually:
 
-1. Go to **Structure > Taxonomy > Party** (`/admin/structure/taxonomy/manage/party/overview`)
+1. Go to **Structure > Taxonomy > Party** (`/admin/structure/taxonomy/manage/localgov_party/overview`)
 2. Click **Add term**
 3. Enter Name, Abbreviation, Party colour (RGB), and Text colour (RGB)
 
@@ -66,12 +61,12 @@ Ensure party and text colours have sufficient contrast for accessibility.
 
 1. After saving the election, click the **Add areas** tab
 2. Select a boundary source (if more than one is configured)
-3. Select the areas to include
+3. Select the areas to include using either table select or auto-complete
 4. Click **Fetch**
 
-For partial elections, select all areas including those not being contested.
-
 #### Manually
+
+Areas can be created manually without boundary data. Set **Display map** to off on the parent election if no areas have boundaries.
 
 1. Go to **Content > Add content > Area vote** (`/node/add/localgov_area_vote`)
 2. Enter the Title and Area name
