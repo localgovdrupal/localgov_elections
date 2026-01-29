@@ -432,3 +432,17 @@ function localgov_elections_update_10004(&$sandbox): void {
     );
   }
 }
+
+/**
+ * Rename 'Areas vote' content type to 'Electoral area'.
+ */
+function localgov_elections_update_10005(): void {
+  $node_type = \Drupal::entityTypeManager()
+    ->getStorage('node_type')
+    ->load('localgov_area_vote');
+
+  if ($node_type) {
+    $node_type->set('name', 'Electoral area');
+    $node_type->save();
+  }
+}
