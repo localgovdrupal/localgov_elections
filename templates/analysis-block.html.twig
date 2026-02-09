@@ -1,0 +1,36 @@
+<div class="results-analysis-grid">
+  {% if data.electorate %}
+    <div class="results-analysis-grid__label results-analysis-grid__label--electorate">{{ 'Electorate'|t }}</div>
+    <div class="results-analysis-grid__value results-analysis-grid__value--electorate">{{ data.electorate }}</div>
+  {% endif %}
+
+  {% if data.spoils %}
+    <div class="results-analysis-grid__label results-analysis-grid__label--spoils">{{ 'Rejected ballot papers'|t }}</div>
+    <div class="results-analysis-grid__value results-analysis-grid__value--spoils">{{ data.spoils }}</div>
+  {% endif %}
+
+  {% if data.total_votes %}
+    <div class="results-analysis-grid__label results-analysis-grid__label--votes">{{ 'Votes cast'|t }}</div>
+    <div class="results-analysis-grid__value results-analysis-grid__value--votes">{{ data.total_votes }}</div>
+  {% endif %}
+
+  {% if data.turnout %}
+    <div class="results-analysis-grid__label results-analysis-grid__label--turnout">{{ '% turnout'|t }}</div>
+    <div class="results-analysis-grid__value results-analysis-grid__value--turnout">{{ data.turnout }}</div>
+  {% endif %}
+
+  {% if data.show_majority and data.majority is not null %}
+    <div class="results-analysis-grid__label results-analysis-grid__label--majority">{{ 'Majority'|t }}</div>
+    <div class="results-analysis-grid__value results-analysis-grid__value--majority">{{ data.majority }}</div>
+  {% endif %}
+
+  {% if data.hold_or_gain %}
+    <div class="results-analysis-grid__label results-analysis-grid__label--hold-or-gain">{{ 'Outcome'|t }}</div>
+    <div class="results-analysis-grid__value results-analysis-grid__value--hold-or-gain">{{ data.hold_or_gain }}</div>
+  {% endif %}
+
+  {% if data.previous_year %}
+    <div class="results-analysis-grid__label results-analysis-grid__label--previous">{{ data.previous_year }} {{ 'Result'|t }}</div>
+    <div class="results-analysis-grid__value results-analysis-grid__value--previous">{{ data.previous_winner_abbr|default('') }}</div>
+  {% endif %}
+</div>

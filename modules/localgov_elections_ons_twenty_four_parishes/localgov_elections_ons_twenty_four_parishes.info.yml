@@ -3,6 +3,8 @@ description: ONS Parishes 2024 Plugin
 type: module
 package: LocalGov Drupal
 core_version_requirement: ^10 || ^11
+lifecycle: deprecated
+lifecycle_link: https://github.com/localgovdrupal/localgov_elections/issues/172
 
 dependencies:
   - localgov_elections:localgov_elections

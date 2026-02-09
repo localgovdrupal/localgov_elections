@@ -297,6 +297,7 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
+          pagination_heading_level: h4
       exposed_form:
         type: basic
         options:
@@ -350,7 +351,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: numeric
+          plugin_id: entity_target_id
           operator: '='
           value:
             min: ''

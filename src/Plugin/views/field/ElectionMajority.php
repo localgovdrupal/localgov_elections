@@ -2,6 +2,7 @@
 
 namespace Drupal\localgov_elections\Plugin\views\field;
 
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
@@ -34,7 +35,7 @@ class ElectionMajority extends FieldPluginBase {
     $majority = NULL;
     if ($node instanceof NodeInterface) {
       // Arg must be NID of an Election content type.
-      if ($node->getType() == 'localgov_election') {
+      if ($node->getType() === 'localgov_election') {
         $election = $node->id();
 
         // Find all 'Election Area' nodes referencing this election.
@@ -43,8 +44,22 @@ class ElectionMajority extends FieldPluginBase {
           ->condition('localgov_election', $election);
         // Has to include the not contesed.
         $query->accessCheck(FALSE);
-        $num_rows = $query->count()->execute();
-        $majority = (floor($num_rows / 2)) + 1;
+
+        // Load all area_vote nodes for this election.
+        $area_ids = $query->execute();
+        $total_seats = 0;
+
+        foreach ($area_ids as $area_id) {
+          $area = Node::load($area_id);
+          if ($area) {
+            $total_seats += count($area->get('localgov_election_seats')->referencedEntities());
+          }
+        }
+
+        if ($total_seats > 0) {
+          $majority = floor($total_seats / 2) + 1;
+        }
+
       }
     }
     return $majority;

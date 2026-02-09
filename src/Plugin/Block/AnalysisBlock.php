@@ -3,8 +3,10 @@
 namespace Drupal\localgov_elections\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\node\Entity\Node;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\NodeInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides an analysis block.
@@ -14,155 +16,228 @@ use Drupal\node\NodeInterface;
  *   admin_label = @Translation("Ward results analysis block")
  * )
  */
-class AnalysisBlock extends BlockBase {
+class AnalysisBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The route match service.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
+   * Constructs an AnalysisBlock object.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The route match service.
+   */
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    RouteMatchInterface $route_match,
+  ) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->routeMatch = $route_match;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    /** @var \Drupal\Core\Routing\RouteMatchInterface $route_match */
+    $route_match = $container->get('current_route_match');
+
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $route_match
+    );
+  }
 
   /**
    * {@inheritDoc}
    */
   public function build() {
-    $markup = '';
+    $node = $this->routeMatch->getParameter('node');
 
-    // Get ID of current node.
-    // phpcs:ignore
-    $node = \Drupal::routeMatch()->getParameter('node');
-    if ($node instanceof NodeInterface) {
-      // $nid = $node->id();
-      // wrapper to be displayed as Grid or Flex table
-      $markup .= '<div class="results-analysis-grid">';
+    if (!$node instanceof NodeInterface) {
+      return [];
+    }
 
-      // Get Electorate.
-      $electorate = $node->localgov_election_electorate->value;
-      if (isset($electorate)) {
-        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--electorate">Electorate</div>';
-        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--electorate">' . $electorate . '</div>';
-      }
+    $data = $this->prepareAnalysisData($node);
 
-      // Get spoils.
-      $spoils = $node->localgov_election_spoils->value;
-      if (isset($spoils)) {
-        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--spoils">Rejected ballot papers</div>';
-        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--spoils">' . $spoils . '</div>';
-      }
+    return [
+      '#theme' => 'analysis_block',
+      '#data' => $data,
+    ];
+  }
 
-      // Get results of each candidate and sum votes cast.
-      $valid_total_votes = 0;
+  /**
+   * Prepare analysis data from the node.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The area vote node.
+   *
+   * @return array
+   *   Prepared data for the template.
+   */
+  protected function prepareAnalysisData(NodeInterface $node): array {
+    $data = [];
 
-      // Iterate through each candidate and store votes.
-      $first = 0;
-      $second = 0;
-      $results = [];
-      $majority = NULL;
-      $candidates = $node->get('localgov_election_candidates');
+    // Electorate.
+    $electorate = $node->get('localgov_election_electorate')->value;
+    if (isset($electorate)) {
+      $data['electorate'] = $electorate;
+    }
 
-      foreach ($candidates->referencedEntities() as $candidate) {
-        $votes = $candidate->get('localgov_election_votes')->value;
-        $valid_total_votes += $votes;
-        $results[] = $votes;
-      }
+    // Spoils (rejected ballots).
+    $spoils = $node->get('localgov_election_spoils')->value ?? 0;
+    if (isset($spoils)) {
+      $data['spoils'] = $spoils;
+    }
 
-      // Sort Vote results into descending order + reset key order.
-      $sorted = rsort($results);
+    // Calculate votes and majority.
+    $vote_data = $this->calculateVoteStatistics($node, $spoils);
+    $data = array_merge($data, $vote_data);
 
-      // Work out diff between #1 and #2 for majority value.
-      if ($sorted) {
-        if (isset($results[0])) {
-          $first = $results[0];
-        }
-        if (isset($results[1])) {
-          // Find DIFF.
-          $second = $results[1];
-          $majority = $first - $second;
-        }
-        else {
-          // Assume only 1 candidate standing.
-          $majority = $first;
-        }
-      }
+    // Turnout percentage.
+    if (!empty($data['total_votes']) && is_numeric($electorate)) {
+      $data['turnout'] = round((($data['total_votes']) / $electorate) * 100, 1);
+    }
 
-      // Total votes cast.
-      if ($valid_total_votes > 0) {
-        $total = $valid_total_votes + $spoils;
-        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--votes">Votes cast</div>';
-        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--votes">' . $total . '</div>';
-      }
+    // Check if we should display majority.
+    $data['show_majority'] = $this->shouldDisplayMajority($node);
 
-      // Calculate percentage turnout.
-      if ($valid_total_votes > 0 && is_numeric($electorate)) {
-        $turnout = round((($valid_total_votes + $spoils) / $electorate) * 100, 1);
+    // Hold or Gain.
+    $hold_or_gain = $node->get('localgov_election_hold_or_gain')->value;
+    if (!empty($hold_or_gain) && $hold_or_gain !== 'na') {
+      $data['hold_or_gain'] = $hold_or_gain;
+    }
 
-        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--turnout">% turnout</div>';
-        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--turnout">' . $turnout . '</div>';
-      }
+    // Previous election data.
+    $previous_data = $this->getPreviousElectionData($node);
+    $data = array_merge($data, $previous_data);
 
-      // Get the parent election so we can figure out if
-      // we can display the majority.
-      $display_majority = FALSE;
-      if ($election_nodes = $node->get('localgov_election')->referencedEntities()) {
-        if (isset($election_nodes[0])) {
-          $election_node = $election_nodes[0];
-          if ($election_node->hasField('localgov_election_majority')) {
-            if ($election_node->get('localgov_election_majority')?->value == "1") {
-              $display_majority = TRUE;
-            }
-          }
-        }
-      }
+    return $data;
+  }
 
-      // Display majority if we can.
-      if ($display_majority && !is_null($majority)) {
-        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--majority">Majority</div>';
-        $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--majority">' . $majority . '</div>';
-      }
+  /**
+   * Calculate vote statistics.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The area vote node.
+   * @param int $spoils
+   *   Number of spoiled ballots.
+   *
+   * @return array
+   *   Array with valid_votes, total_votes, and majority.
+   */
+  protected function calculateVoteStatistics(NodeInterface $node, int $spoils): array {
+    $valid_votes = 0;
+    $results = [];
 
-      // Retrieve results of previous election.
-      $previous_year = $node->localgov_election_previous_year->value;
-      $previous_winning_party = $node->localgov_election_prev_winner->entity;
-      $previous_result = $node->localgov_election_prev_result->referencedEntity;
-      $previous_winner_abbr = '';
-      if (isset($previous_winning_party)) {
-        $previous_winner_abbr = $previous_winning_party->localgov_election_abbreviation->value;
-      }
+    $candidates = $node->get('localgov_election_candidates');
+    foreach ($candidates->referencedEntities() as $candidate) {
+      $votes = $candidate->get('localgov_election_votes')->value ?? 0;
+      $valid_votes += $votes;
+      $results[] = $votes;
+    }
 
-      // If previous year not manually set, look if previous
-      // 'localgov_area_vote' has been set.
-      if (isset($previous_result)) {
-        // phpcs:ignore
-        $previous_localgov_area_vote = Node::load($previous_result->id());
-        $previous_election = $previous_localgov_area_vote->localgov_election;
+    // Sort descending to find first and second place.
+    rsort($results);
 
-        // Find year from 'localgov_area_vote' entity.
-        if (!isset($previous_year)) {
-          $previous_date = $previous_election->localgov_election_date;
-          if (isset($previous_date)) {
-            $previous_year = date('Y', $previous_date);
-          }
-        }
-
-        // Find winning party from 'localgov_area_vote' entity
-        // Need to check all candidates and see who won!
-        // @todo remove
-        if (!isset($previous_winning_party)) {
-          $previous_winner_abbr = "* TEST *";
-        }
-      }
-
-      if (isset($previous_year)) {
-        $markup .= '<div class="results-analysis-grid__label results-analysis-grid__label--previous">' . $previous_year . ' Result</div>';
-        if (isset($previous_winning_party)) {
-          $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--previous">' . $previous_winner_abbr . '</div>';
-        }
-        else {
-          $markup .= '<div class="results-analysis-grid__value results-analysis-grid__value--previous"></div>';
-        }
-      }
-
-      $markup .= '</div>';
+    $majority = NULL;
+    if (!empty($results)) {
+      $first = $results[0] ?? 0;
+      $second = $results[1] ?? 0;
+      $majority = $first - $second;
     }
 
     return [
-      '#type' => 'markup',
-      '#markup' => $markup,
+      'valid_votes' => $valid_votes,
+      'total_votes' => $valid_votes + $spoils,
+      'majority' => $majority,
     ];
+  }
+
+  /**
+   * Determine if majority should be displayed.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The area vote node.
+   *
+   * @return bool
+   *   TRUE if majority should be shown.
+   */
+  protected function shouldDisplayMajority(NodeInterface $node): bool {
+    // Don't show for multi-seat areas.
+    if ($node->hasField('localgov_election_seats')) {
+      $seat_count = $node->get('localgov_election_seats')->count();
+      if ($seat_count > 1) {
+        return FALSE;
+      }
+    }
+
+    // Check parent election setting.
+    $election_nodes = $node->get('localgov_election')->referencedEntities();
+    if (empty($election_nodes)) {
+      return FALSE;
+    }
+
+    $election_node = $election_nodes[0];
+    if (!$election_node->hasField('localgov_election_majority')) {
+      return FALSE;
+    }
+
+    return $election_node->get('localgov_election_majority')->value == "1";
+  }
+
+  /**
+   * Get previous election data.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The area vote node.
+   *
+   * @return array
+   *   Array with previous_year and previous_winner_abbr if available.
+   */
+  protected function getPreviousElectionData(NodeInterface $node): array {
+    $data = [];
+
+    $previous_year = $node->get('localgov_election_previous_year')->value;
+    $previous_winning_party = $node->get('localgov_election_prev_winner')->entity;
+
+    if ($previous_winning_party) {
+      $data['previous_winner_abbr'] = $previous_winning_party->get('localgov_election_abbreviation')->value;
+    }
+
+    // Try to get year from linked previous result if not manually set.
+    if (!isset($previous_year)) {
+      $previous_result = $node->get('localgov_election_prev_result')->entity;
+      if ($previous_result) {
+        $previous_election = $previous_result->get('localgov_election')->entity;
+        if ($previous_election) {
+          $previous_date = $previous_election->get('localgov_election_date')->value;
+          if ($previous_date) {
+            $previous_year = date('Y', $previous_date);
+          }
+        }
+      }
+    }
+
+    if (isset($previous_year)) {
+      $data['previous_year'] = $previous_year;
+    }
+
+    return $data;
   }
 
   /**

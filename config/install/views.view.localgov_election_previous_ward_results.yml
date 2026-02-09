@@ -331,8 +331,8 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.paragraph.localgov_election_votes'
-  block_3:
-    id: block_3
+  summary_table:
+    id: summary_table
     display_title: 'Winning party and year'
     display_plugin: block
     position: 1

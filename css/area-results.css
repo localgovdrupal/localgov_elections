@@ -1,0 +1,21 @@
+.results-analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 1rem auto;
+}
+
+.results-analysis-grid > * {
+  border-bottom: var(--table-border);
+  margin-bottom: 0.1rem;
+  padding-block: 1rem;
+}
+
+.area-result > * + * {
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: var(--table-border);
+}
+
+.area-result .label-wrapper {
+  display: inline-flex;
+}

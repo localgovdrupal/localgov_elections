@@ -10,10 +10,10 @@ third_party_settings:
   menu_ui:
     available_menus: {  }
     parent: ''
-name: 'Areas vote'
+name: 'Electoral area'
 type: localgov_area_vote
 description: 'Created for each electoral area within an election to store candidates and results'
-help: ''
+help: null
 new_revision: false
 preview_mode: 1
 display_submitted: false

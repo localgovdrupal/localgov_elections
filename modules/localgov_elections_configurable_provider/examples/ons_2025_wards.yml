@@ -1,0 +1,34 @@
+# Boundary Source Configuration Export
+# Exported from: ONS 2025 Wards
+#
+# To import: Go to Admin > Structure > Boundary Sources > Import configuration
+# After importing, update the filter values for your local authority.
+#
+label: 'ONS 2025 Wards'
+description: ''
+settings:
+  filters:
+    -
+      key: lad_code
+      label: 'Local Authority District Code (LAD25CD)'
+      description: ''
+      value: ''
+  listing_api:
+    base_url: 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services/WD_MAY_2025_UK_BGC_V2/FeatureServer/0/query'
+    where: "LAD25CD = '{lad_code}'"
+    out_fields: 'WD25NM,WD25CD'
+    code_field: WD25CD
+    name_field: WD25NM
+    result_path: features
+    attributes_path: attributes
+    additional_params: "returnDistinctValues=true\noutSR=4326\nresultRecordCount=10000"
+  boundary_api:
+    base_url: 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services/WD_MAY_2025_UK_BGC_V2/FeatureServer/0/query'
+    where: "LAD25CD = '{lad_code}'"
+    out_fields: '*'
+    code_field: WD25CD
+    name_field: WD25NM
+    result_path: features
+    attributes_path: properties
+    format: geojson
+    additional_params: "outSR=4326\nresultRecordCount=10000"

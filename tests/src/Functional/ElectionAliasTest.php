@@ -107,7 +107,7 @@ final class ElectionAliasTest extends BrowserTestBase {
     $this->areaVote->save();
 
     // Map page.
-    $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1',
+    $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_map',
         [
           'node' => $this->election->id(),
         ]
@@ -116,7 +116,7 @@ final class ElectionAliasTest extends BrowserTestBase {
     $this->aliasPaths['map'] = ['internal' => $map_page_url->getInternalPath(), 'alias' => $map_path];
 
     // Results timeline.
-    $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
+    $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_timeline',
         [
           'node' => $this->election->id(),
         ]
@@ -125,7 +125,7 @@ final class ElectionAliasTest extends BrowserTestBase {
     $this->aliasPaths['results'] = ['internal' => $results_page_url->getInternalPath(), 'alias' => $results_path];
 
     // Vote share.
-    $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
+    $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_vote_share',
         [
           'node' => $this->election->id(),
         ]
@@ -134,7 +134,7 @@ final class ElectionAliasTest extends BrowserTestBase {
     $this->aliasPaths['share'] = ['internal' => $share_page_url->getInternalPath(), 'alias' => $share_path];
 
     // Electoral candidates.
-    $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_1',
+    $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_candidates',
         [
           'node' => $this->election->id(),
         ]
@@ -204,25 +204,25 @@ final class ElectionAliasTest extends BrowserTestBase {
     $alias->save();
 
     // Get the newly generated aliases.
-    $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_1',
+    $map_page_url = Url::fromRoute('view.localgov_election_electoral_map.page_map',
         [
           'node' => $this->election->id(),
         ]
     );
 
-    $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_1',
+    $results_page_url = Url::fromRoute('view.localgov_election_results_timeline.page_timeline',
         [
           'node' => $this->election->id(),
         ]
     );
 
-    $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_1',
+    $share_page_url = Url::fromRoute('view.localgov_election_results_vote.page_vote_share',
         [
           'node' => $this->election->id(),
         ]
     );
 
-    $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_1',
+    $candidate_page_url = Url::fromRoute('view.localgov_electoral_candidates.page_candidates',
         [
           'node' => $this->election->id(),
         ]

@@ -1,53 +1,31 @@
-selectall:
-  version: 1.x
-  js:
-    js/selectall.js: { }
-  dependencies:
-    - core/drupal
-    - core/once
-
 election:
   version: 1.x
   css:
     theme:
       css/election-results.css: { }
 
-electoral_candidates_view:
+area_results:
   version: 1.x
   css:
     theme:
-      css/variables.css: { }
-      css/electoral-candidates-view.css: { }
-
-division_results:
-  version: 1.x
-  css:
-    theme:
-      css/variables.css: { }
-      css/ward-results.css: { }
-
-results_share:
-  version: 1.x
-  css:
-    theme:
-      css/variables.css: { }
+      css/area-results.css: { }
 
 results_timeline:
   version: 1.x
   css:
     theme:
-      css/variables.css: { }
       css/election-timeline.css: { }
 
-
-highcharts_overrides:
+electoral-map:
+  version: 1.x
   js:
-    js/highcharts-override.js: { weight: -5 }
+    js/electoral-map.js: {}
   dependencies:
-    - charts/global
     - core/drupal
-    - core/drupalSettings
-    - core/once
+    - core/jquery
+    - leaflet/leaflet-drupal
+    - leaflet_views/leaflet-views
+
 chartjs_overrides:
   js:
     js/chartjs-override.js: { weight: -5 }
@@ -74,3 +52,8 @@ election_menu:
   dependencies:
     - core/drupal
     - core/drupal.debounce
+
+localgov_elections_form:
+  css:
+    theme:
+      css/localgov-elections-form.css: {}

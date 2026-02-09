@@ -128,7 +128,7 @@ final class BoundaryFetchForm extends FormBase {
                 'callback' => '::subformCallback',
                 'disable-refocus' => FALSE,
                 'event' => 'change',
-                'method' => 'replace',
+                'method' => 'replaceWith',
                 'wrapper' => 'edit-output',
                 'progress' => [
                   'type' => 'throbber',

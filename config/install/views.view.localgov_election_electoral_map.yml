@@ -146,6 +146,55 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+        area_seats_count:
+          id: area_seats_count
+          table: node
+          field: area_seats_count
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: area_seats_count
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
         localgov_election_area_name:
           id: localgov_election_area_name
           table: node__localgov_election_area_name
@@ -157,8 +206,8 @@ display:
           label: ''
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: '{{ localgov_election_area_name }} ({{ area_seats_count }} {{ area_seats_count == 1 ? ''seat'' : ''seats'' }})'
             make_link: false
             path: ''
             absolute: false
@@ -321,7 +370,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          plugin_id: numeric
+          plugin_id: entity_target_id
           default_action: default
           exception:
             value: all
@@ -387,8 +436,8 @@ display:
             options: '{"permanent":false,"direction":"center"}'
           leaflet_popup:
             value: localgov_election_area_name
-            options: '{"maxWidth":"300","minWidth":"50","autoPan":true}'
             view_mode: full
+            options: '{"maxWidth":"300","minWidth":"50","autoPan":true}'
           leaflet_map: 'OSM Mapnik'
           height: '900'
           height_unit: px
@@ -443,10 +492,13 @@ display:
           fullscreen:
             control: false
             options: '{"position":"topleft","pseudoFullscreen":false}'
-          path: '{"color":"#444","opacity":"0.5","stroke":true,"weight":3,"fill":"depends","fillColor":"{{ localgov_election_party_colour }}","fillOpacity":"0.5","radius":"6"}'
+          path: '{"color":"#444","opacity":"0.5","stroke":true,"weight":3,"fill":"false"}'
+          feature_properties:
+            values: ''
           geocoder:
             control: false
             settings:
+              popup: false
               autocomplete:
                 placeholder: 'Search Address'
                 title: 'Search an Address on the Map'
@@ -468,12 +520,9 @@ display:
               min_terms: 4
               delay: 800
               zoom: 16
-              popup: false
               options: ''
           map_lazy_load:
             lazy_load: false
-          feature_properties:
-            values: ''
       row:
         type: 'entity:node'
         options:
@@ -533,8 +582,8 @@ display:
         - 'config:field.storage.node.localgov_election_area_name'
         - 'config:field.storage.node.localgov_election_boundary_data'
         - 'config:field.storage.taxonomy_term.localgov_election_party_colour'
-  page_1:
-    id: page_1
+  page_map:
+    id: page_map
     display_title: Page
     display_plugin: page
     position: 1

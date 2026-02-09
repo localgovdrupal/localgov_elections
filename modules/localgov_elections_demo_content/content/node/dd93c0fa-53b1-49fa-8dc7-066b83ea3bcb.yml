@@ -5,12 +5,12 @@ _meta:
   bundle: localgov_area_vote
   default_langcode: en
   depends:
+    23ffd187-52df-4106-9c19-af542d51a738: node
     017b30a5-ec34-4aba-a12e-612a5c43e661: taxonomy_term
     b642d283-9860-4ac2-a584-7fb96b03f070: taxonomy_term
     33c84934-7f19-47e7-a243-43f1a29e9d1f: taxonomy_term
     8d045aee-e3b8-47c0-9273-054c6af9d417: taxonomy_term
     8d58c7a0-9201-4826-872a-8115a3f55535: taxonomy_term
-    23ffd187-52df-4106-9c19-af542d51a738: node
 default:
   revision_uid:
     -
@@ -33,17 +33,14 @@ default:
   sticky:
     -
       value: false
-  revision_translation_affected:
-    -
-      value: true
-  moderation_state:
-    -
-      value: published
   path:
     -
       alias: /election/general-election-july-2024/didcot-and-wantage
       langcode: en
       pathauto: 1
+  localgov_election:
+    -
+      entity: 23ffd187-52df-4106-9c19-af542d51a738
   localgov_election_area_name:
     -
       value: 'Didcot and Wantage'
@@ -78,18 +75,18 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Mitchell
-          localgov_election_forenames:
-            -
-              value: 'Grace '
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: Grace
+          localgov_election_forenames:
+            -
+              value: ' '
           localgov_election_party:
             -
               entity: 017b30a5-ec34-4aba-a12e-612a5c43e661
@@ -114,18 +111,15 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Scott
-          localgov_election_forenames:
-            -
-              value: William
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: William
           localgov_election_party:
             -
               entity: b642d283-9860-4ac2-a584-7fb96b03f070
@@ -150,18 +144,15 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Carter
-          localgov_election_forenames:
-            -
-              value: Isla
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: Isla
           localgov_election_party:
             -
               entity: 33c84934-7f19-47e7-a243-43f1a29e9d1f
@@ -186,18 +177,15 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Phillips
-          localgov_election_forenames:
-            -
-              value: Edward
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: Edward
           localgov_election_party:
             -
               entity: 8d045aee-e3b8-47c0-9273-054c6af9d417
@@ -222,42 +210,64 @@ default:
           behavior_settings:
             -
               value: {  }
-          revision_translation_affected:
-            -
-              value: true
           localgov_election_candidate:
             -
               value: Turner
-          localgov_election_forenames:
-            -
-              value: Lucy
           localgov_election_elected:
             -
               value: false
+          localgov_election_forename:
+            -
+              value: Lucy
           localgov_election_party:
             -
               entity: 8d58c7a0-9201-4826-872a-8115a3f55535
           localgov_election_votes:
             -
               value: 11726
-  localgov_election:
-    -
-      entity: 23ffd187-52df-4106-9c19-af542d51a738
   localgov_election_electorate:
     -
       value: 90000
+  localgov_election_finalised_date:
+    -
+      value: '2026-01-28T12:56:01'
   localgov_election_hold_or_gain:
     -
       value: Gain
+  localgov_election_no_contest:
+    -
+      value: false
   localgov_election_prev_winner:
     -
       entity: 017b30a5-ec34-4aba-a12e-612a5c43e661
   localgov_election_previous_year:
     -
       value: 2019
-  localgov_election_no_contest:
+  localgov_election_seats:
     -
-      value: false
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 8dfa5f4f-6684-4e20-8e55-9a9a806a6346
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769593759
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: 'Didcot and Wantage'
+          localgov_seat_not_contested:
+            -
+              value: false
   localgov_election_spoils:
     -
       value: 2000

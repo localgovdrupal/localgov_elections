@@ -1,0 +1,34 @@
+# Boundary Source Configuration Export
+# Exported from: UK Parliamentary Constituencies 2024
+#
+# To import: Go to Admin > Structure > Boundary Sources > Import configuration
+#
+# This example uses autocomplete mode - users search for and select
+# constituencies by name rather than selecting from a filtered checkbox list.
+#
+# Data source: ONS Open Geography Portal
+#
+label: 'UK Parliamentary Constituencies 2024'
+description: 'Westminster Parliamentary Constituencies (July 2024 boundaries)'
+settings:
+  selection_mode: autocomplete
+  filters: []
+  listing_api:
+    base_url: 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BFC/FeatureServer/0/query'
+    where: '1=1'
+    out_fields: 'PCON24CD,PCON24NM'
+    code_field: PCON24CD
+    name_field: PCON24NM
+    result_path: features
+    attributes_path: attributes
+    additional_params: "returnDistinctValues=true\noutSR=4326\nresultRecordCount=1000"
+  boundary_api:
+    base_url: 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Westminster_Parliamentary_Constituencies_July_2024_Boundaries_UK_BFC/FeatureServer/0/query'
+    where: "PCON24NM IN ({selected_names})"
+    out_fields: '*'
+    code_field: PCON24CD
+    name_field: PCON24NM
+    result_path: features
+    attributes_path: properties
+    format: geojson
+    additional_params: "outSR=4326\nresultRecordCount=1000"

@@ -1,0 +1,288 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: db6989b7-6733-44c9-a9a5-091bd5888ae9
+  bundle: localgov_area_vote
+  default_langcode: en
+  depends:
+    76d84471-1686-4f7a-931a-8dbe989f19f7: node
+    017b30a5-ec34-4aba-a12e-612a5c43e661: taxonomy_term
+    b642d283-9860-4ac2-a584-7fb96b03f070: taxonomy_term
+    33c84934-7f19-47e7-a243-43f1a29e9d1f: taxonomy_term
+    8d045aee-e3b8-47c0-9273-054c6af9d417: taxonomy_term
+    8d58c7a0-9201-4826-872a-8115a3f55535: taxonomy_term
+default:
+  revision_uid:
+    -
+      target_id: 1
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 1
+  title:
+    -
+      value: 'Local Government Elections 2025 - Walton Manor'
+  created:
+    -
+      value: 1769607463
+  promote:
+    -
+      value: true
+  sticky:
+    -
+      value: false
+  path:
+    -
+      alias: /election/local-government-elections-2025/walton-manor
+      langcode: en
+      pathauto: 1
+  localgov_election:
+    -
+      entity: 76d84471-1686-4f7a-931a-8dbe989f19f7
+  localgov_election_area_name:
+    -
+      value: 'Walton Manor'
+  localgov_election_boundary_data:
+    -
+      value: '{"type":"Feature","id":3862,"geometry":{"type":"Polygon","coordinates":[[[-1.25026565739513,51.7630628078922],[-1.25343033316567,51.7613916851525],[-1.25762359993735,51.7599831546987],[-1.25754234514064,51.7597219654768],[-1.25943131086717,51.7593058252935],[-1.25996353617349,51.7591878249832],[-1.25987033116912,51.7574419650955],[-1.2608726461264,51.7588806398095],[-1.26351150905777,51.7578775878667],[-1.26386265694866,51.7584695436413],[-1.267885316171,51.7613935478585],[-1.27082097835589,51.7599443601868],[-1.27081277808724,51.759125850492],[-1.27223111323332,51.7590042170177],[-1.27336293944116,51.7669571665738],[-1.26927143992039,51.7676178490343],[-1.2688923868442,51.7659628986887],[-1.26635330418794,51.7664272742983],[-1.26525600773127,51.7663593026255],[-1.26470963137132,51.7648426201926],[-1.26102620627983,51.7656359050508],[-1.26119917415771,51.7662241416834],[-1.2608526309401,51.766146458638],[-1.26048323140823,51.7666710620042],[-1.25684859015024,51.7676524795518],[-1.25717243235736,51.7681382136989],[-1.25590920279505,51.7684665026768],[-1.25566568405605,51.7689972809958],[-1.25343042206984,51.7696484700389],[-1.25250735501649,51.7675350876379],[-1.25090409694889,51.7666904563851],[-1.25086492488064,51.7640602524509],[-1.25026565739513,51.7630628078922]]]},"properties":{"FID":3862,"WD25CD":"E05013118","WD25NM":"Walton Manor","WD25NMW":" ","LAD25CD":"E07000178","LAD25NM":"Oxford","LAD25NMW":" ","BNG_E":451047,"BNG_N":207468,"LONG":-1.261713205660708,"LAT":51.76358031643217,"Shape__Area":1180771.6945343018,"Shape__Length":6031.498457164382,"GlobalID":"b314f153-112f-4c59-899e-27c916120ae5"}}'
+      geo_type: Polygon
+      lat: 51.763542350977
+      lon: -1.2617567124415
+      left: -1.2733629394412
+      top: 51.769648470039
+      right: -1.2502656573951
+      bottom: 51.757441965096
+      geohash: gcpn
+      latlon: '51.763542350977,-1.2617567124415'
+  localgov_election_candidates:
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 2f58cc8c-a176-4e4b-8d5b-46fea7fe7ae5
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607761
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Patel
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Cody
+          localgov_election_party:
+            -
+              entity: 017b30a5-ec34-4aba-a12e-612a5c43e661
+          localgov_election_votes:
+            -
+              value: 1259
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: f37aaa80-dd45-4009-80cf-401adf2875ed
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607777
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Wallace
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Aurora
+          localgov_election_party:
+            -
+              entity: b642d283-9860-4ac2-a584-7fb96b03f070
+          localgov_election_votes:
+            -
+              value: 4861
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: faa5dd20-094f-475d-83ef-1f892d8f969b
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607795
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Morris
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Keira
+          localgov_election_party:
+            -
+              entity: 33c84934-7f19-47e7-a243-43f1a29e9d1f
+          localgov_election_votes:
+            -
+              value: 3668
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 5304ae77-da31-48fe-bfe9-e7dbcbecaaf8
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607808
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Knight
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Fraser
+          localgov_election_party:
+            -
+              entity: 8d045aee-e3b8-47c0-9273-054c6af9d417
+          localgov_election_votes:
+            -
+              value: 1579
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 64b4a1dd-a42e-4af7-a535-ab2c221448ef
+          bundle: localgov_election_candidate
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607828
+          behavior_settings:
+            -
+              value: {  }
+          localgov_election_candidate:
+            -
+              value: Webb
+          localgov_election_elected:
+            -
+              value: false
+          localgov_election_forename:
+            -
+              value: Bertie
+          localgov_election_party:
+            -
+              entity: 8d58c7a0-9201-4826-872a-8115a3f55535
+          localgov_election_votes:
+            -
+              value: 2541
+  localgov_election_electorate:
+    -
+      value: 25000
+  localgov_election_finalised_date:
+    -
+      value: '2025-07-01T12:24:56'
+  localgov_election_no_contest:
+    -
+      value: false
+  localgov_election_seats:
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 029a2e68-435b-4afe-a371-948be31f0567
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607463
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: 'Walton Manor 1'
+          localgov_seat_not_contested:
+            -
+              value: false
+    -
+      entity:
+        _meta:
+          version: '1.0'
+          entity_type: paragraph
+          uuid: 64171856-75a3-40f2-88dd-e038b67661bc
+          bundle: localgov_area_seat
+          default_langcode: en
+        default:
+          status:
+            -
+              value: true
+          created:
+            -
+              value: 1769607463
+          behavior_settings:
+            -
+              value: {  }
+          localgov_seat:
+            -
+              value: 'Walton Manor 2'
+          localgov_seat_not_contested:
+            -
+              value: false
+  localgov_election_spoils:
+    -
+      value: 25
+  localgov_election_votes_final:
+    -
+      value: true

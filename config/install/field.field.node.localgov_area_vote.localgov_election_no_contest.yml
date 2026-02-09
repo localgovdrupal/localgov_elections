@@ -11,7 +11,7 @@ id: node.localgov_area_vote.localgov_election_no_contest
 field_name: localgov_election_no_contest
 entity_type: node
 bundle: localgov_area_vote
-label: 'Seat not contested'
+label: 'Seats not contested'
 description: ''
 required: false
 translatable: false

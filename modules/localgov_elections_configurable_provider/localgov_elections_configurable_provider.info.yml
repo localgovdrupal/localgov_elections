@@ -1,0 +1,8 @@
+name: LocalGov Elections Reporting - Configurable Provider
+description: 'Provides a configurable electoral area boundary provider.'
+type: module
+package: LocalGov Drupal
+core_version_requirement: ^10 || ^11
+
+dependencies:
+  - localgov_elections:localgov_elections
